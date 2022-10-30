@@ -8,14 +8,6 @@
         android:summary="@string/enabled_sum"
         android:defaultValue="true"/>
 
-    <ListPreference
-        android:key="storage"
-        android:title="@string/prefs_storage_title"
-        android:entries="@array/storage_names"
-        android:entryValues="@array/storage_values"
-        android:defaultValue="private"
-        />
-
     <Preference
         android:key="public_storage_path"
         android:title="@string/prefs_storage_path_title" />
@@ -41,7 +33,7 @@
         android:entries="@array/format_names"
         android:entryValues="@array/format_values"
         app:useSimpleSummaryProvider="true"
-        android:defaultValue="aac_med"/>
+        android:defaultValue="wav"/>
 
     <ListPreference
        android:title="@string/prefs_mode_title"

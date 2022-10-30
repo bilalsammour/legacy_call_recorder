@@ -1,44 +1,32 @@
 <resources>
-    <style name="AppThemeLight" parent="Theme.MaterialComponents.Light.NoActionBar">
+    <style name="AppThemeLight" parent="Theme.Material3.Light.NoActionBar">
         <item name="colorPrimary">@color/primaryColor</item>
         <item name="colorPrimaryDark">@color/primaryDarkColor</item>
         <item name="colorAccent">@color/colorAccent</item>
 
-        <item name="android:windowBackground">@color/backgroundLightTheme</item>
-        <item name="android:textColorPrimary">@color/text_on_light</item>
-        <!-- https://stackoverflow.com/questions/17769198/android-change-color-of-disabled-text-using-theme-style-->
-        <item name="android:textColor">@color/text_on_light</item>
         <item name="contactSlotStyle">@style/contactSlotLight</item>
         <item name="separatorStyle">@style/separatorLight</item>
         <item name="detailHeaderStyle">@style/detailHeader.Light</item>
         <item name="tabletCurrentSelectionStyle">@style/tabletCurrentSelectionLight</item>
         <item name="playerControlStyle">@style/playerControlStyleLight</item>
-        <item name="drawerStyle">@style/drawerStyleLight</item>
         <item name="helpTabStyle">@style/helpTabStyleLight</item>
-<!-- https://stackoverflow.com/questions/36261421/how-to-change-android-button-text-color-globally-in-theme -->
        <item name="materialButtonStyle">@style/SettingsButtonColorLight</item>
     </style>
 
-    <style name="AppThemeDark" parent="Theme.MaterialComponents.NoActionBar">
+    <style name="AppThemeDark" parent="Theme.Material3.Dark.NoActionBar">
         <item name="colorPrimary">@color/primaryColor</item>
         <item name="colorPrimaryDark">@color/primaryDarkColor</item>
         <item name="colorAccent">@color/colorAccentLight</item>
 
-        <item name="android:textColorPrimary">@color/text_on_dark</item>
-        <item name="android:textColor">@color/text_on_dark</item>
         <item name="contactSlotStyle">@style/contactSlotDark</item>
         <item name="separatorStyle">@style/separatorDark</item>
         <item name="detailHeaderStyle">@style/detailHeader.Dark</item>
         <item name="tabletCurrentSelectionStyle">@style/tabletCurrentSelectionDark</item>
         <item name="playerControlStyle">@style/playerControlStyleDark</item>
-        <item name="drawerStyle">@style/drawerStyleDark</item>
         <item name="helpTabStyle">@style/helpTabStyleDark</item>
         <item name="materialButtonStyle">@style/SettingsButtonColorDark</item>
-        <item name="android:colorBackground">@color/darkBackground</item>
     </style>
 
-<!-- Stiluri diferite pentru un element în funcție de tema selectată:
-https://stackoverflow.com/questions/30487616/android-overriding-a-style-per-theme-->
     <style name="tabletCurrentSelectionLight">
         <item name="android:background">@color/colorAccent</item>
     </style>
@@ -75,7 +63,7 @@ https://stackoverflow.com/questions/30487616/android-overriding-a-style-per-them
         <item name="android:background">@color/slotAndDetailHeaderDark</item>
     </style>
 
-    <style name="setupButtons" parent="TextAppearance.AppCompat.Button">
+    <style name="setupButtons" parent="TextAppearance.MaterialComponents.Button">
         <item name="android:backgroundTint">@color/setupButton</item>
         <item name="android:textColor">@color/white</item>
     </style>
@@ -114,16 +102,15 @@ https://stackoverflow.com/questions/30487616/android-overriding-a-style-per-them
         <item name="label_color">@color/text_on_dark</item>
     </style>
 
-    <!--Necesar pentru a albi săgeata back a toolbarului -->
-    <style name="toolbar_theme" parent="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+    <style name="toolbar_theme" parent="@style/ThemeOverlay.Material3.Dark">
         <item name="colorControlNormal">@color/textOnDark</item>
     </style>
-    
-    <style name="toolbar_font" parent="@style/Base.TextAppearance.AppCompat.Title">
+
+    <style name="toolbar_font" parent="@style/TextAppearance.Material3.TitleLarge">
         <item name="android:textSize">15sp</item>
     </style>
 
-    <style name="toolbar_font_contacts" parent="@style/Base.TextAppearance.AppCompat.Title">
+    <style name="toolbar_font_contacts" parent="@style/TextAppearance.Material3.TitleLarge">
         <item name="android:textSize">13sp</item>
     </style>
 
@@ -145,7 +132,7 @@ https://stackoverflow.com/questions/30487616/android-overriding-a-style-per-them
         <item name="tabTextColor">@color/text_on_dark</item>
     </style>
 
-    <style name="SettingsButtonColorLight" parent="Widget.MaterialComponents.Button">
+    <style name="SettingsButtonColorLight" parent="Widget.Material3.Button">
         <item name="materialThemeOverlay">@style/ButtonStyleTextColorLight</item>
     </style>
 
@@ -154,7 +141,7 @@ https://stackoverflow.com/questions/30487616/android-overriding-a-style-per-them
         <item name="colorOnPrimary">@color/colorAccent</item>
     </style>
 
-    <style name="SettingsButtonColorDark" parent="Widget.MaterialComponents.Button">
+    <style name="SettingsButtonColorDark" parent="Widget.Material3.Button">
         <item name="materialThemeOverlay">@style/ButtonStyleTextColorDark</item>
     </style>
 

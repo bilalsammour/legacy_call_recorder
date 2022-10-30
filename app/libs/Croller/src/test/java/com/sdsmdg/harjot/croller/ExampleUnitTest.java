@@ -1,4 +1,4 @@
-package com.sdsmdg.harjot.crollerTest;
+package com.sdsmdg.harjot.croller;
 
 import org.junit.Test;
 

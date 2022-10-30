@@ -8,7 +8,7 @@
     <dimen name="recording_title_selected_margin_start">10dp</dimen>
     <dimen name="recording_title_unselected_margin_start">20dp</dimen>
     <dimen name="recording_adorn_side">60dp</dimen>
-    <dimen name="recording_type_side">20dp</dimen>
+    <dimen name="recording_type_side">32dp</dimen>
     <dimen name="recording_type_margin_end">25dp</dimen>
     <dimen name="recording_nonexistent">25dp</dimen>
     <dimen name="croller_width">150dp</dimen>

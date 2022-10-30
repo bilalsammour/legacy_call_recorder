@@ -31,7 +31,6 @@
         app:tabMode="scrollable"
         android:id="@+id/help_tab_layout"
         app:tabIndicatorColor="@color/colorAccent"
-        style="?helpTabStyle"
         />
 
 </androidx.viewpager.widget.ViewPager>

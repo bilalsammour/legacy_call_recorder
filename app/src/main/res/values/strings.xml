@@ -76,6 +76,7 @@
     <string name="info_storage_public">Public filesystem:&#160;</string>
     <string name="settings_name">Settings</string>
     <string name="about_name">About</string>
+    <string name="share">Share</string>
     <string name="edit_photo_remove">Remove photo</string>
     <string name="edit_photo_select_new">Select new photo</string>
     <string name="edit_photo_take">Take new photo</string>
@@ -151,6 +152,7 @@
     <string name="notification_success">The phone call was successfully recorded.</string>
     <string name="error_deleting_recordings">An error occurred while attempting to delete the selected recordings.</string>
     <string name="error_deleting_contact">An error occurred while attempting to delete the selected contact.</string>
-    <string name="accessibility_service_description">RECORDR details</string>
     <string name="accessibility_service_label">RECORDR</string>
+    <string name="accessibility_service_description">RECORDR details</string>
+
 </resources>
