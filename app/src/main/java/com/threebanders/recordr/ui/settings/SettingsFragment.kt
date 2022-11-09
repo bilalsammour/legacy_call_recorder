@@ -7,23 +7,38 @@
  */
 package com.threebanders.recordr.ui.settings
 
+import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.recyclerview.widget.DividerItemDecoration
 import com.codekidlabs.storagechooser.Content
 import com.codekidlabs.storagechooser.StorageChooser
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.common.Scopes
+import com.google.android.gms.common.api.Scope
+import com.google.api.client.extensions.android.http.AndroidHttp
+import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential
+import com.google.api.client.json.gson.GsonFactory
+import com.google.api.services.drive.Drive
+import com.google.api.services.drive.DriveScopes
 import com.threebanders.recordr.CrApp
 import com.threebanders.recordr.R
+import com.threebanders.recordr.sync.util.DriveServiceHelper
 import com.threebanders.recordr.ui.BaseActivity
+import java.util.*
 
 
 class SettingsFragment : PreferenceFragmentCompat() {
     private var parentActivity: BaseActivity? = null
     private var preferences: SharedPreferences? = null
+    private var mGoogleApiClient: GoogleSignInClient? = null
 
     override fun onResume() {
         super.onResume()
@@ -47,7 +62,6 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
     override fun onViewCreated(v: View, savedInstanceState: Bundle?) {
         super.onViewCreated(v, savedInstanceState)
-        //cu androidx este nevoie ca dividerul să fie setat explicit.
         val recycler = listView
         recycler.addItemDecoration(
             DividerItemDecoration(
@@ -69,6 +83,23 @@ class SettingsFragment : PreferenceFragmentCompat() {
         val storage = findPreference<Preference>(STORAGE)
         val storagePath = findPreference<Preference>(STORAGE_PATH)
         val source = findPreference<Preference>(SOURCE)
+        val googleDrive = findPreference<Preference>(GOOGLE_DRIVE)
+        googleDrive!!.onPreferenceChangeListener =
+            Preference.OnPreferenceChangeListener { _, newValue ->
+                if (newValue == true) {
+                    googleAuth()
+                } else {
+                    if (null != mGoogleApiClient)
+                        mGoogleApiClient!!.signOut()
+                }
+
+                val preferences = (requireActivity().application as CrApp).core.prefs
+                val editor = preferences.edit()
+                editor.putBoolean(GOOGLE_DRIVE, newValue as Boolean)
+                editor.apply()
+                true
+            }
+
         storagePath?.onPreferenceClickListener =
             Preference.OnPreferenceClickListener { preference ->
                 val content = Content()
@@ -105,6 +136,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
                 true
             }
 
+
         storage?.summaryProvider =
             Preference.SummaryProvider { preference: Preference -> (preference as ListPreference).entry }
         themeOption?.summaryProvider =
@@ -122,6 +154,19 @@ class SettingsFragment : PreferenceFragmentCompat() {
             Preference.SummaryProvider<ListPreference> { preference -> preference.entry }
     }
 
+
+    private fun googleAuth() {
+        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken(
+                requireContext().getString(R.string.web_client_id)
+            )
+            .requestEmail().build()
+        mGoogleApiClient = GoogleSignIn.getClient(requireContext(), gso)
+        startActivity(mGoogleApiClient!!.signInIntent)
+
+    }
+
+
     companion object {
         //aceste valori vor fi dublate în res/xml/preferences.xml
         const val APP_THEME = "theme"
@@ -130,5 +175,6 @@ class SettingsFragment : PreferenceFragmentCompat() {
         const val FORMAT = "format"
         const val MODE = "mode"
         const val SOURCE = "source"
+        const val GOOGLE_DRIVE = "put_on_drive"
     }
 }

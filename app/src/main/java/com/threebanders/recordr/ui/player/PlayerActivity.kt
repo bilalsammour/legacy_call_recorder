@@ -69,7 +69,8 @@ class PlayerActivity : BaseActivity() {
         visualizer?.setColor(resources.getColor(R.color.colorAccentLighter))
         visualizer?.setDensity(
             if (resources.configuration.orientation ==
-                Configuration.ORIENTATION_PORTRAIT) DENSITY_PORTRAIT else DENSITY_LANDSCAPE.toFloat()
+                Configuration.ORIENTATION_PORTRAIT
+            ) DENSITY_PORTRAIT else DENSITY_LANDSCAPE.toFloat()
         )
         //crash report nr. 886:
         try {
@@ -120,6 +121,8 @@ class PlayerActivity : BaseActivity() {
             }
         })
         gainControl = findViewById(R.id.gain_control)
+        player?.setGain(25.0F)
+        gainControl.progress = 25
         gainControl.setOnProgressChangedListener(
             onProgressChangedListener { progress: Int -> player!!.setGain(progress.toFloat()) }
         )

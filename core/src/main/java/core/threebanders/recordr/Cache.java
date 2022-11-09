@@ -6,9 +6,16 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
-/**
- * Created by emmanuel.tagoe on 18/06/2016
- */
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
+
+import core.threebanders.recordr.data.Recording;
+
+
 public class Cache {
 
     private static final String APP_CACHE_FILE = "cache_1";
@@ -21,6 +28,7 @@ public class Cache {
     public static final String MODE = "mode";
     public static final String STORAGE = "storage";
     public static final String STORAGE_PATH = "public_storage_path";
+    public static final String RECODINGS_LIST = "RECODINGS_LIST";
 
     Cache(Context context) {
         this.context = context;
@@ -87,4 +95,24 @@ public class Cache {
         return prefs.getString(SOURCE, String.valueOf(VOICE_RECOGNITION));
     }
 
+
+    public <T> void setRecodingsList(String key, List<T> list, SharedPreferences sharedPref) {
+        Gson gson = new Gson();
+        String json = gson.toJson(list);
+        sharedPref.edit().putString(key, json);
+        sharedPref.edit().commit();
+    }
+
+
+    public List<Recording> getRecodingsListList(SharedPreferences sharedPref) {
+        Gson gson = new Gson();
+        List<Recording> productFromShared = new ArrayList<>();
+        String jsonPreferences = sharedPref.getString(RECODINGS_LIST, "");
+
+        Type type = new TypeToken<List<Recording>>() {
+        }.getType();
+        productFromShared = gson.fromJson(jsonPreferences, type);
+
+        return productFromShared;
+    }
 }

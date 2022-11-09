@@ -134,7 +134,7 @@ public class Core {
         this.repository = repository;
     }
 
-    public SharedPreferences getPrefs(){
+    public SharedPreferences getPrefs() {
         return getCache().getPrefs();
     }
 

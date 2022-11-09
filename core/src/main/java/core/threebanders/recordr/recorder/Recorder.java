@@ -14,17 +14,20 @@ import static android.media.MediaRecorder.AudioSource.VOICE_COMMUNICATION;
 import static android.media.MediaRecorder.AudioSource.VOICE_RECOGNITION;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 
 import org.acra.ACRA;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 import core.threebanders.recordr.Cache;
 import core.threebanders.recordr.Core;
 import core.threebanders.recordr.CrLog;
+import core.threebanders.recordr.data.Recording;
 
 @SuppressWarnings("CatchMayIgnoreException")
 public class Recorder {
@@ -48,11 +51,11 @@ public class Recorder {
     private static final String ACRA_SAVE_PATH = "save_path";
 
 
-     public Recorder(Context context) {
-         this.context = context;
-         cache = Core.getInstance().getCache();
-         format = cache.format();
-         mode = cache.mode();
+    public Recorder(Context context) {
+        this.context = context;
+        cache = Core.getInstance().getCache();
+        format = cache.format();
+        mode = cache.mode();
     }
 
     public long getStartingTime() {
@@ -63,23 +66,31 @@ public class Recorder {
         return audioFile.getAbsolutePath();
     }
 
+    public void setRecordsCached(List<Recording> recordings,SharedPreferences sharedPref) {
+        cache.setRecodingsList(Cache.RECODINGS_LIST, recordings,sharedPref);
+    }
+
+    public List<Recording> getRecordsCached(SharedPreferences sharedPref) {
+        return cache.getRecodingsListList(sharedPref);
+    }
+
     public void startRecording(String phoneNumber) throws RecordingException {
-        if(phoneNumber == null)
+        if (phoneNumber == null)
             phoneNumber = "";
 
-        if(isRunning())
+        if (isRunning())
             stopRecording();
         String extension = format.equals(WAV_FORMAT) ? ".wav" : ".aac";
         File recordingsDir;
 
-        if(Core.getInstance().getCache().storage().equals("private"))
+        if (Core.getInstance().getCache().storage().equals("private"))
             recordingsDir = context.getFilesDir();
         else {
             String filePath = Core.getInstance().getCache().storagePath();
             recordingsDir = (filePath == null) ? context.getExternalFilesDir(null) : new File(filePath);
-            if(recordingsDir == null) //recordingsDir poate fi null în cazul în care getExternalFilesDir(null) returnează null, adică nu e montat (disponibil) un astfel de spațiu.
+            if (recordingsDir == null)
                 recordingsDir = context.getFilesDir();
-            }
+        }
 
         phoneNumber = phoneNumber.replaceAll("[()/.,* ;+]", "_");
         String fileName = "Recording" + phoneNumber + new SimpleDateFormat("-d-MMM-yyyy-HH-mm-ss", Locale.US).
@@ -92,11 +103,10 @@ public class Recorder {
             ACRA.getErrorReporter().putCustomData(ACRA_FORMAT, format);
             ACRA.getErrorReporter().putCustomData(ACRA_MODE, mode);
             ACRA.getErrorReporter().putCustomData(ACRA_SAVE_PATH, audioFile.getAbsolutePath());
-        }
-        catch (IllegalStateException exc) {
+        } catch (IllegalStateException exc) {
         }
 
-        if(format.equals(WAV_FORMAT))
+        if (format.equals(WAV_FORMAT))
             recordingThread = new Thread(new RecordingThreadWav(context, mode, this));
         else
             recordingThread = new Thread(new RecordingThreadAac(context, audioFile, format, mode, this));
@@ -106,11 +116,11 @@ public class Recorder {
     }
 
     public void stopRecording() {
-        if(recordingThread != null) {
+        if (recordingThread != null) {
             CrLog.log(CrLog.DEBUG, "Recording session ended.");
-                recordingThread.interrupt();
+            recordingThread.interrupt();
             recordingThread = null;
-            if(format.equals(WAV_FORMAT)) {
+            if (format.equals(WAV_FORMAT)) {
                 //în cazul în care a apărut o eroare în RecordingThreadWav și fișierul temporar nu există, această
                 //condiție va fi detectată în bucla try a CopyPcmToWav.run() și va fi raportată o eroare.
                 Thread copyPcmToWav = new Thread(new RecordingThreadWav.CopyPcmToWav(context, audioFile, mode, this));
@@ -133,17 +143,28 @@ public class Recorder {
 
     public String getSource() {
         switch (source) {
-            case VOICE_RECOGNITION: return "Voice recognition";
-            case VOICE_COMMUNICATION: return "Voice communication";
-            case VOICE_CALL: return "Voice call";
-            case MIC:return "Microphone";
-            default:return "Source unrecognized";
+            case VOICE_RECOGNITION:
+                return "Voice recognition";
+            case VOICE_COMMUNICATION:
+                return "Voice communication";
+            case VOICE_CALL:
+                return "Voice call";
+            case MIC:
+                return "Microphone";
+            default:
+                return "Source unrecognized";
         }
     }
 
-    public void setSource(int source) { this.source = source; }
+    public void setSource(int source) {
+        this.source = source;
+    }
 
-    public boolean hasError() { return hasError; }
+    public boolean hasError() {
+        return hasError;
+    }
 
-    void setHasError() { this.hasError = true; }
+    void setHasError() {
+        this.hasError = true;
+    }
 }

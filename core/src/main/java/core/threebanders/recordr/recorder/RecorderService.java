@@ -71,6 +71,7 @@ public class RecorderService extends Service {
         audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
         nm = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
         settings = Core.getInstance().getCache().getPrefs();
+
         self = this;
     }
 

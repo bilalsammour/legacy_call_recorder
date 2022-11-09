@@ -9,13 +9,13 @@ package com.threebanders.recordr.ui
 
 import android.content.SharedPreferences
 import android.view.View
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import com.threebanders.recordr.sync.util.RunTimePermission
 import com.threebanders.recordr.CrApp
 import com.threebanders.recordr.R
 import com.threebanders.recordr.ui.settings.SettingsFragment
 
-abstract class BaseActivity : AppCompatActivity() {
+abstract class BaseActivity : RunTimePermission() {
     var settedTheme: String? = null
         private set
 

@@ -16,8 +16,10 @@ class MainViewModel : ViewModel() {
     var contact = MutableLiveData<Contact?>()
     private var contactList: List<Contact> = ArrayList()
     var contacts = MutableLiveData(contactList)
+
     private val recordList: MutableList<Recording> = ArrayList()
     var records = MutableLiveData(recordList)
+
     var deletedRecording = MutableLiveData<Recording?>()
 
     init {

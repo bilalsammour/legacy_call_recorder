@@ -14,9 +14,6 @@ import android.graphics.Color
 import android.os.Bundle
 import android.provider.CallLog
 import android.text.InputType
-import android.text.Spannable
-import android.text.SpannableString
-import android.text.style.RelativeSizeSpan
 import android.util.Log
 import android.view.*
 import android.view.ContextMenu.ContextMenuInfo
@@ -31,15 +28,13 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.afollestad.materialdialogs.DialogAction
 import com.afollestad.materialdialogs.MaterialDialog
-import com.codekidlabs.storagechooser.Content
-import com.codekidlabs.storagechooser.StorageChooser
+import com.google.api.services.drive.Drive
 import com.threebanders.recordr.R
 import com.threebanders.recordr.ui.BaseActivity
 import com.threebanders.recordr.ui.BaseActivity.LayoutType
 import com.threebanders.recordr.ui.BaseFragment
 import com.threebanders.recordr.ui.MainViewModel
 import com.threebanders.recordr.ui.player.PlayerActivity
-import core.threebanders.recordr.Core
 import core.threebanders.recordr.CoreUtil
 import core.threebanders.recordr.CrLog
 import core.threebanders.recordr.data.Contact
@@ -56,6 +51,7 @@ open class ContactDetailFragment : BaseFragment() {
     protected var selectMode = false
     lateinit var mainViewModel: MainViewModel
     protected var selectedItems: MutableList<Int>? = ArrayList()
+    lateinit var mDrive: Drive
 
     /**
      * Dacă există cel puțin un recording lipsă pe disc printre cele selectate, butonul de move se dezactivează.
@@ -104,6 +100,7 @@ open class ContactDetailFragment : BaseFragment() {
             )
         )
         recordingsRecycler!!.setAdapter(adapter)
+
         return detailView
     }
 
@@ -179,6 +176,7 @@ open class ContactDetailFragment : BaseFragment() {
         toggleSelectModeActionBar(animate)
         redrawRecordings()
     }
+
 
     protected open fun toggleSelectModeActionBar(animate: Boolean) {
         val navigateBackBtn = mainActivity!!.findViewById<ImageButton>(R.id.navigate_back)
@@ -482,23 +480,6 @@ open class ContactDetailFragment : BaseFragment() {
         dialog.show()
     }
 
-    private fun onMoveSelectedRecordings(path: String) {
-        var totalSize = 0
-        val recordings = selectedRecordings
-        for (recording in recordings) {
-            if (File(recording!!.path).parent == path) {
-                MaterialDialog.Builder(mainActivity!!)
-                    .title(R.string.information_title)
-                    .content(R.string.move_destination_same)
-                    .positiveText("OK")
-                    .icon(resources.getDrawable(R.drawable.info))
-                    .show()
-                return
-            }
-            totalSize += File(recording.path).length().toInt()
-        }
-        Core.move(path, totalSize, mainActivity, recordings.toTypedArray())
-    }
 
     protected open fun setDetailsButtonsListeners() {
         val navigateBack = mainActivity!!.findViewById<ImageButton>(R.id.navigate_back)
@@ -561,7 +542,12 @@ open class ContactDetailFragment : BaseFragment() {
         deleteBtn.setOnClickListener { v: View? -> onDeleteSelectedRecordings() }
         val infoBtn = mainActivity!!.findViewById<ImageButton>(R.id.actionbar_info)
         infoBtn.setOnClickListener { view: View? -> onRecordingInfo() }
+
+
     }
+
+
+
 
     override fun onCreateContextMenu(menu: ContextMenu, v: View, menuInfo: ContextMenuInfo?) {
 
@@ -801,4 +787,5 @@ open class ContactDetailFragment : BaseFragment() {
             return fragment
         }
     }
+
 }

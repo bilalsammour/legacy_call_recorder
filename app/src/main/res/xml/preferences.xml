@@ -17,6 +17,11 @@
         android:key="put_on_speaker"
         android:summary="@string/prefs_speaker_sum"
         android:defaultValue="false"/>
+    <SwitchPreference
+        android:title="@string/prefs_google_drive"
+        android:key="put_on_drive"
+        android:summary="@string/prefs_google_drive_sum"
+        android:defaultValue="false"/>
 
     <ListPreference
         android:title="@string/pref_audio_src_title"
