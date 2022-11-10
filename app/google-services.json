@@ -41,6 +41,35 @@
           ]
         }
       }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:201643753885:android:7028b1d88b8ea286876f74",
+        "android_client_info": {
+          "package_name": "com.threebanders.recordr"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "201643753885-j2admm1sov6h8vpq7mjsuemmbijm295h.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCnwT8i3YJcDWJqcoQqEbc_sy1KvmESkL4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "201643753885-j2admm1sov6h8vpq7mjsuemmbijm295h.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
     }
   ],
   "configuration_version": "1"
