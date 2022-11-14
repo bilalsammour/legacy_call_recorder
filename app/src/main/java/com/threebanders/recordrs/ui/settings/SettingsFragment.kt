@@ -7,9 +7,11 @@
  */
 package com.threebanders.recordrs.ui.settings
 
+import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
@@ -19,11 +21,11 @@ import com.codekidlabs.storagechooser.StorageChooser
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.common.api.Scope
+import com.google.api.services.drive.DriveScopes
 import com.threebanders.recordrs.CrApp
 import com.threebanders.recordrs.R
 import com.threebanders.recordrs.ui.BaseActivity
-import java.util.*
-
 
 class SettingsFragment : PreferenceFragmentCompat() {
     private var parentActivity: BaseActivity? = null
@@ -32,6 +34,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
     override fun onResume() {
         super.onResume()
+        
         val storagePath = findPreference<Preference>(STORAGE_PATH)
         val storage = findPreference<ListPreference>(STORAGE)
         storagePath?.let { storage?.let { it1 -> manageStoragePathSummary(it1, it) } }
@@ -79,8 +82,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
                 if (newValue == true) {
                     googleAuth()
                 } else {
-                    if (null != mGoogleApiClient)
-                        mGoogleApiClient!!.signOut()
+                    signOut()
                 }
 
                 val preferences = (requireActivity().application as CrApp).core.prefs
@@ -97,7 +99,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
                     requireContext().resources.getString(R.string.choose_recordings_storage)
                 val theme = StorageChooser.Theme(activity)
                 theme.scheme =
-                    if (parentActivity?.settedTheme == BaseActivity.Companion.LIGHT_THEME) parentActivity!!.resources.getIntArray(
+                    if (parentActivity?.settedTheme == BaseActivity.LIGHT_THEME) parentActivity!!.resources.getIntArray(
                         R.array.storage_chooser_theme_light
                     ) else parentActivity!!.resources.getIntArray(R.array.storage_chooser_theme_dark)
                 val chooser = StorageChooser.Builder()
@@ -146,14 +148,46 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
 
     private fun googleAuth() {
-        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+        val gso = GoogleSignInOptions
+            .Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestIdToken(
                 requireContext().getString(R.string.web_client_id)
             )
-            .requestEmail().build()
-        mGoogleApiClient = GoogleSignIn.getClient(requireContext(), gso)
-        startActivity(mGoogleApiClient!!.signInIntent)
+            .requestEmail()
+            .requestProfile()
+            .requestScopes(Scope(DriveScopes.DRIVE))
+            .build()
 
+        mGoogleApiClient = GoogleSignIn.getClient(requireContext(), gso)
+
+        startActivityForResult(mGoogleApiClient!!.signInIntent, 100)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (requestCode == 100) {
+            handleSignData(data)
+        }
+    }
+
+    private fun handleSignData(data: Intent?) {
+        // The Task returned from this call is always completed, no need to attach
+        // a listener.
+        GoogleSignIn.getSignedInAccountFromIntent(data)
+            .addOnCompleteListener {
+                println("isSuccessful ${it.isSuccessful}")
+                if (it.isSuccessful){
+                    println("Email ${it.result?.email}")
+                } else {
+                    println("exception ${it.exception}")
+                }
+            }
+    }
+
+    fun signOut(){
+        mGoogleApiClient?.signOut()?.addOnCompleteListener(requireActivity()
+        ) { Toast.makeText(requireContext(), "Signed Out", Toast.LENGTH_SHORT).show() }
     }
 
 

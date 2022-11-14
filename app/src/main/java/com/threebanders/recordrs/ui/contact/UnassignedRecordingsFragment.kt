@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import android.widget.ImageButton
 import android.widget.TextView
@@ -15,15 +14,10 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInClient
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.google.android.gms.tasks.Task
-import com.google.android.gms.tasks.Tasks
 import com.google.api.client.extensions.android.http.AndroidHttp
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential
 import com.google.api.client.googleapis.extensions.android.gms.auth.UserRecoverableAuthIOException
 import com.google.api.client.http.FileContent
-import com.google.api.client.http.InputStreamContent
 import com.google.api.client.json.gson.GsonFactory
 import com.google.api.client.json.jackson2.JacksonFactory
 import com.google.api.services.drive.Drive
@@ -37,15 +31,12 @@ import com.threebanders.recordrs.ui.settings.SettingsFragment.Companion.GOOGLE_D
 import core.threebanders.recordr.Cache
 import core.threebanders.recordr.data.Recording
 import core.threebanders.recordr.recorder.Recorder
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import java.io.File
-import java.io.FileInputStream
-import java.io.IOException
-import java.io.InputStream
 import java.lang.reflect.Type
 import java.util.*
-import java.util.concurrent.Executor
-import java.util.concurrent.Executors
 import kotlin.coroutines.CoroutineContext
 
 class UnassignedRecordingsFragment : ContactDetailFragment() {
@@ -55,16 +46,14 @@ class UnassignedRecordingsFragment : ContactDetailFragment() {
     var editor: SharedPreferences.Editor?? = null
     private var mDriveServiceHelper: DriveServiceHelper? = null
     private var lastUploadFileId: String? = null
-    private var mGoogleApiClient: GoogleSignInClient? = null
     private val RQ_GOOGLE_SIGN_IN = 210
     private var file: File? = null
     private var fileName: String = ""
-    private val mExecutor: Executor = Executors.newSingleThreadExecutor()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         rootView = inflater.inflate(R.layout.unassigned_recordings_fragment, container, false)
         recordingsRecycler = rootView.findViewById(R.id.unassigned_recordings)
         recordingsRecycler!!.layoutManager = LinearLayoutManager(
@@ -80,7 +69,7 @@ class UnassignedRecordingsFragment : ContactDetailFragment() {
         record = Recorder(context)
         sharedPref = context?.getSharedPreferences(Cache.RECODINGS_LIST, Context.MODE_PRIVATE)
         editor = sharedPref?.edit()
-        mDrive = getDriveService(requireContext())
+
         lifecycleScope.launch {
             mainViewModel.loadRecordings()
 
@@ -92,13 +81,17 @@ class UnassignedRecordingsFragment : ContactDetailFragment() {
                         list = arrayListOf()
                     val settings = baseActivity?.prefs
                     val isGoogleDriveSynced = settings?.getBoolean(GOOGLE_DRIVE, false)
-                    if (isGoogleDriveSynced!! && list != null && list.size != recordings?.size) {
+
+                    if (isGoogleDriveSynced!! && list.size != recordings?.size) {
                         file = File(recordings?.get(0)?.path.toString())
                         fileName = recordings?.get(0)?.getDateRecord().toString()
-                        uploadFileToGDrive(requireContext())
-                    }
-                    setDataFromSharedPreferences(recordings as List<Recording>)
 
+                        syncGoogle(File(recordings?.get(0)?.path.toString()))
+                    } else {
+                        Toast.makeText(requireContext(), "Not logged in", Toast.LENGTH_LONG).show()
+                    }
+
+                    setDataFromSharedPreferences(recordings as List<Recording?>)
                 }
             }
         }
@@ -106,23 +99,38 @@ class UnassignedRecordingsFragment : ContactDetailFragment() {
         mainViewModel.deletedRecording.observe(viewLifecycleOwner) { r: Recording? -> removeRecording() }
         removeRecording()
 
-
-
         return rootView
     }
 
-    fun getDispatcherFromCurrentThread(scope: CoroutineScope): CoroutineContext {
+    private fun getDispatcherFromCurrentThread(scope: CoroutineScope): CoroutineContext {
         return scope.coroutineContext
     }
 
-    fun getDriveService(context: Context): Drive {
-        googleAuth()
-        GoogleSignIn.getLastSignedInAccount(context).let { googleAccount ->
+    private fun syncGoogle(file: File) {
+        uploadFileToGDrive(file)
+    }
+
+    private fun uploadFileToGDrive(file: File) {
+        getDriveService()?.let { googleDriveService ->
+            try {
+                val gFile = com.google.api.services.drive.model.File()
+                gFile.name = file.name
+
+                val fileContent = FileContent("audio/wav", file)
+
+                googleDriveService.Files().create(gFile, fileContent).execute()
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        } ?: print("Signin error - not logged in")
+    }
+
+    private fun getDriveService(): Drive? {
+        GoogleSignIn.getLastSignedInAccount(requireContext())?.let { googleAccount ->
             val credential = GoogleAccountCredential.usingOAuth2(
                 requireContext(), listOf(DriveScopes.DRIVE_FILE)
             )
-            if (googleAccount != null)
-                credential.selectedAccount = googleAccount!!.account!!
+            credential.selectedAccount = googleAccount.account!!
             return Drive.Builder(
                 AndroidHttp.newCompatibleTransport(),
                 JacksonFactory.getDefaultInstance(),
@@ -131,127 +139,14 @@ class UnassignedRecordingsFragment : ContactDetailFragment() {
                 .setApplicationName(getString(R.string.app_name))
                 .build()
         }
-        var tempDrive: Drive
-        return tempDrive
-    }
-
-//    private fun requestToUpload() {
-//        try {
-//            baseActivity?.requestPermission(arrayOf(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)) { isGranted ->
-//                if (isGranted) {
-//                    if (mDriveServiceHelper == null)
-//                        googleAuth()
-//                    else {
-//                        val uploadTask = mDriveServiceHelper?.uploadFile(fileName, file)
-//                        uploadTask?.addOnCompleteListener {
-//                            lastUploadFileId = uploadTask.result
-//                            println("lastUploadFileId==>$lastUploadFileId")
-//                            Toast.makeText(
-//                                context,
-//                                getString(R.string.google_drive_successfully),
-//                                Toast.LENGTH_LONG
-//                            ).show()
-//                        }
-//                    }
-//                }
-//            }
-//        } catch (userAuthEx: UserRecoverableAuthIOException) {
-//            startActivity(
-//                userAuthEx.intent
-//            )
-//        } catch (e: Exception) {
-//            e.printStackTrace()
-//            Log.d("asdf", e.toString())
-//            Toast.makeText(
-//                context,
-//                "Some Error Occured in Uploading Files" + e.toString(),
-//                Toast.LENGTH_LONG
-//            ).show()
-//        }
-//
-//    }
-
-    private fun googleAuth() {
-        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken(
-                requireContext().getString(R.string.web_client_id)
-            )
-            .requestEmail().build()
-        mGoogleApiClient = GoogleSignIn.getClient(requireContext(), gso)
-        //  startActivityForResult(mGoogleApiClient!!.signInIntent, RQ_GOOGLE_SIGN_IN)
-
-    }
-
-    fun uploadFileToGDrive(context: Context) {
-        mDrive.let { googleDriveService ->
-            lifecycleScope.launch {
-                try {
-
-                    val gfile = com.google.api.services.drive.model.File()
-                    gfile.name = fileName
-                    val mimetype = "audio/wav"
-                    val fileContent = FileContent(mimetype, file)
-
-                    withContext(Dispatchers.Main) {
-
-                        withContext(Dispatchers.IO) {
-                            launch {
-                                val uploadTask = uploadFile(fileName, file!!, googleDriveService)
-                                uploadTask?.addOnCompleteListener {
-                                    Toast.makeText(
-                                        requireContext(),
-                                        "Backup upload successfully",
-                                        Toast.LENGTH_LONG
-                                    ).show()
-                                }
-                            }
-                        }
-                    }
-
-
-                } catch (userAuthEx: UserRecoverableAuthIOException) {
-                    startActivity(
-                        userAuthEx.intent
-                    )
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                    Log.d("asdf", e.toString())
-                    Toast.makeText(
-                        context,
-                        "Some Error Occured in Uploading Files" + e.toString(),
-                        Toast.LENGTH_LONG
-                    ).show()
-                }
-            }
-        }
-
-    }
-
-    private fun uploadFile(
-        name: String?,
-        fileTest: File,
-        googleDriveService: Drive
-    ): Task<String>? {
-        return Tasks.call(mExecutor) {
-            val metadata =
-                com.google.api.services.drive.model.File()
-                    .setParents(listOf("root"))
-                    .setMimeType("audio/wav")
-                    .setName(name)
-            val targetStream: InputStream = FileInputStream(fileTest.toString())
-            val inputStreamContent = InputStreamContent("audio/wav", targetStream)
-            val googleFile: com.google.api.services.drive.model.File =
-                googleDriveService.files().create(metadata, inputStreamContent).execute()
-                    ?: throw IOException("Null result when requesting file creation.")
-            googleFile.id
-        }
+        return null
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
+
         if (requestCode == RQ_GOOGLE_SIGN_IN) {
             try {
-
                 GlobalScope.launch {
                     val dispatcher = getDispatcherFromCurrentThread(this)
                     CoroutineScope(dispatcher).launch {
@@ -273,7 +168,6 @@ class UnassignedRecordingsFragment : ContactDetailFragment() {
                             uploadTask?.addOnCompleteListener {
                                 lastUploadFileId = uploadTask.result
                                 println("lastUploadFileId==>$lastUploadFileId")
-                                launch { makeRequest() }
                             }
                         }
                     }
@@ -284,20 +178,15 @@ class UnassignedRecordingsFragment : ContactDetailFragment() {
                 )
             } catch (e: Exception) {
                 e.printStackTrace()
-                Log.d("asdf", e.toString())
+
                 Toast.makeText(
                     context,
-                    "Some Error Occured in Uploading Files" + e.toString(),
+                    "Some Error Occured in Uploading Files$e",
                     Toast.LENGTH_LONG
                 ).show()
             }
         }
     }
-
-    suspend fun makeRequest() {
-
-    }
-
 
     private fun getDataFromSharedPreferences(): List<Recording?>? {
         val gson = Gson()
@@ -317,7 +206,7 @@ class UnassignedRecordingsFragment : ContactDetailFragment() {
             context?.getSharedPreferences("PREFS_TAG", Context.MODE_PRIVATE)
         val editor = sharedPref?.edit()
         editor?.putString("PRODUCT_TAG", jsonCurProduct)
-        editor?.commit()
+        editor?.apply()
     }
 
     override fun toggleTitle() {
