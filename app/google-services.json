@@ -1,70 +1,41 @@
 {
   "project_info": {
-    "project_number": "201643753885",
-    "project_id": "caller-8c516",
-    "storage_bucket": "caller-8c516.appspot.com"
+    "project_number": "327732595875",
+    "project_id": "callerv2",
+    "storage_bucket": "callerv2.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:201643753885:android:cd85995c67297c8a876f74",
+        "mobilesdk_app_id": "1:327732595875:android:2d75909a069879935a8316",
         "android_client_info": {
-          "package_name": "com.devop.recordr"
+          "package_name": "com.threebanders.recordrs"
         }
       },
       "oauth_client": [
         {
-          "client_id": "201643753885-gfa8ck1eluk3fgddlac1cobfp30l5nnl.apps.googleusercontent.com",
+          "client_id": "327732595875-46qhsdqi07jkttruvgasju4m81kouph3.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.devop.recordr",
+            "package_name": "com.threebanders.recordrs",
             "certificate_hash": "ec431a7ae9a95293c09ae920a7a2829d8624079f"
           }
         },
         {
-          "client_id": "201643753885-j2admm1sov6h8vpq7mjsuemmbijm295h.apps.googleusercontent.com",
+          "client_id": "327732595875-4t0vptuakbl0o50ife4agndh6uhh59ko.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyCnwT8i3YJcDWJqcoQqEbc_sy1KvmESkL4"
+          "current_key": "AIzaSyBNvlIFXOU5K1YCNpsrpUBWGMtkvuOxx7E"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "201643753885-j2admm1sov6h8vpq7mjsuemmbijm295h.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:201643753885:android:7028b1d88b8ea286876f74",
-        "android_client_info": {
-          "package_name": "com.threebanders.recordr"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "201643753885-j2admm1sov6h8vpq7mjsuemmbijm295h.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyCnwT8i3YJcDWJqcoQqEbc_sy1KvmESkL4"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "201643753885-j2admm1sov6h8vpq7mjsuemmbijm295h.apps.googleusercontent.com",
+              "client_id": "327732595875-4t0vptuakbl0o50ife4agndh6uhh59ko.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

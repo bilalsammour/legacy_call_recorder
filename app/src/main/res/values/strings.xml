@@ -154,7 +154,7 @@
     <string name="error_deleting_contact">An error occurred while attempting to delete the selected contact.</string>
     <string name="accessibility_service_label">RECORDR</string>
     <string name="accessibility_service_description">RECORDR details</string>
-    <string name="web_client_id">201643753885-mbl0jm1lbkpl4ksoj1qcj2bmkkemmjfg.apps.googleusercontent.com</string>
+    <string name="web_client_id">327732595875-4t0vptuakbl0o50ife4agndh6uhh59ko.apps.googleusercontent.com</string>
     <string name="prefs_google_drive">Google drive use</string>
     <string name="prefs_google_drive_sum">Put Sync on Google drive</string>
     <string name="google_drive_successfully">Backup upload successfully</string>

@@ -5,12 +5,12 @@ plugins {
 }
 
 android {
-    namespace 'com.threebanders.recordr'
+    namespace 'com.threebanders.recordrs'
 
     compileSdkVersion 33
     buildToolsVersion "33.0.0"
     defaultConfig {
-        applicationId "com.devop.recordr"
+        applicationId "com.threebanders.recordrs"
         minSdkVersion 21
         targetSdkVersion 33
         versionCode 1
@@ -18,7 +18,18 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    signingConfigs {
+        release {
+            storeFile file(RELEASE_STORE_FILE)
+            storePassword RELEASE_STORE_PASSWORD
+            keyAlias RELEASE_KEY_ALIAS
+            keyPassword RELEASE_KEY_PASSWORD
 
+            // Optional, specify signing versions used
+            v1SigningEnabled true
+            v2SigningEnabled true
+        }
+    }
     buildTypes {
         debug {
             minifyEnabled false
@@ -27,6 +38,8 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
+
         }
     }
     compileOptions {
@@ -42,6 +55,12 @@ android {
         exclude 'META-INF/NOTICE.txt'
         exclude 'META-INF/notice.txt'
         exclude 'META-INF/ASL2.0'
+    }
+    lintOptions {
+        checkReleaseBuilds false
+        // Or, if you prefer, you can continue to check for errors in release builds,
+        // but continue the build even when errors are found:
+        abortOnError false
     }
 }
 
