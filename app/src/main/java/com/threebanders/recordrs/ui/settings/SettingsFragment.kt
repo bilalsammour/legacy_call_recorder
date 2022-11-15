@@ -34,7 +34,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
     override fun onResume() {
         super.onResume()
-        
+
         val storagePath = findPreference<Preference>(STORAGE_PATH)
         val storage = findPreference<ListPreference>(STORAGE)
         storagePath?.let { storage?.let { it1 -> manageStoragePathSummary(it1, it) } }
@@ -85,10 +85,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
                     signOut()
                 }
 
-                val preferences = (requireActivity().application as CrApp).core.prefs
-                val editor = preferences.edit()
-                editor.putBoolean(GOOGLE_DRIVE, newValue as Boolean)
-                editor.apply()
+
                 true
             }
 
@@ -155,7 +152,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
             )
             .requestEmail()
             .requestProfile()
-            .requestScopes(Scope(DriveScopes.DRIVE))
+            .requestScopes(Scope(DriveScopes.DRIVE_FILE))
             .build()
 
         mGoogleApiClient = GoogleSignIn.getClient(requireContext(), gso)
@@ -171,13 +168,23 @@ class SettingsFragment : PreferenceFragmentCompat() {
         }
     }
 
+    private fun updateGoogleDriveToggle(newValue: Boolean) {
+        val preferences = (requireActivity().application as CrApp).core.prefs
+        val editor = preferences.edit()
+        editor.putBoolean(GOOGLE_DRIVE, newValue)
+        editor.apply()
+    }
+
     private fun handleSignData(data: Intent?) {
         // The Task returned from this call is always completed, no need to attach
         // a listener.
         GoogleSignIn.getSignedInAccountFromIntent(data)
             .addOnCompleteListener {
                 println("isSuccessful ${it.isSuccessful}")
-                if (it.isSuccessful){
+                updateGoogleDriveToggle(it.isSuccessful)
+
+                if (it.isSuccessful) {
+                    updateGoogleDriveToggle(true)
                     println("Email ${it.result?.email}")
                 } else {
                     println("exception ${it.exception}")
@@ -185,8 +192,9 @@ class SettingsFragment : PreferenceFragmentCompat() {
             }
     }
 
-    fun signOut(){
-        mGoogleApiClient?.signOut()?.addOnCompleteListener(requireActivity()
+    fun signOut() {
+        mGoogleApiClient?.signOut()?.addOnCompleteListener(
+            requireActivity()
         ) { Toast.makeText(requireContext(), "Signed Out", Toast.LENGTH_SHORT).show() }
     }
 

@@ -31,9 +31,7 @@ import com.threebanders.recordrs.ui.settings.SettingsFragment.Companion.GOOGLE_D
 import core.threebanders.recordr.Cache
 import core.threebanders.recordr.data.Recording
 import core.threebanders.recordr.recorder.Recorder
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import java.io.File
 import java.lang.reflect.Type
 import java.util.*
@@ -82,11 +80,11 @@ class UnassignedRecordingsFragment : ContactDetailFragment() {
                     val settings = baseActivity?.prefs
                     val isGoogleDriveSynced = settings?.getBoolean(GOOGLE_DRIVE, false)
 
-                    if (isGoogleDriveSynced!! && list.size != recordings?.size) {
+                    if (isGoogleDriveSynced == true) {
                         file = File(recordings?.get(0)?.path.toString())
                         fileName = recordings?.get(0)?.getDateRecord().toString()
 
-                        syncGoogle(File(recordings?.get(0)?.path.toString()))
+                        uploadFileToGDrive(File(recordings?.get(0)?.path.toString()))
                     } else {
                         Toast.makeText(requireContext(), "Not logged in", Toast.LENGTH_LONG).show()
                     }
@@ -106,23 +104,30 @@ class UnassignedRecordingsFragment : ContactDetailFragment() {
         return scope.coroutineContext
     }
 
-    private fun syncGoogle(file: File) {
-        uploadFileToGDrive(file)
-    }
 
     private fun uploadFileToGDrive(file: File) {
-        getDriveService()?.let { googleDriveService ->
+        lifecycleScope.launch {
+
             try {
                 val gFile = com.google.api.services.drive.model.File()
                 gFile.name = file.name
 
                 val fileContent = FileContent("audio/wav", file)
 
-                googleDriveService.Files().create(gFile, fileContent).execute()
+                withContext(Dispatchers.IO) {
+                    launch {
+                        getDriveService()?.Files()?.create(gFile, fileContent)?.execute()
+                    }
+                }
+            } catch (userAuthEx: UserRecoverableAuthIOException) {
+                startActivity(
+                    userAuthEx.intent
+                )
             } catch (e: Exception) {
                 e.printStackTrace()
             }
-        } ?: print("Signin error - not logged in")
+        }
+
     }
 
     private fun getDriveService(): Drive? {
@@ -142,51 +147,6 @@ class UnassignedRecordingsFragment : ContactDetailFragment() {
         return null
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-
-        if (requestCode == RQ_GOOGLE_SIGN_IN) {
-            try {
-                GlobalScope.launch {
-                    val dispatcher = getDispatcherFromCurrentThread(this)
-                    CoroutineScope(dispatcher).launch {
-
-                        val task = GoogleSignIn.getSignedInAccountFromIntent(data)
-                        task.addOnSuccessListener {
-                            val credential = GoogleAccountCredential.usingOAuth2(
-                                context,
-                                Collections.singleton(DriveScopes.DRIVE_FILE)
-                            )
-                            credential.selectedAccount = it.account
-                            val googleDriveService = Drive.Builder(
-                                AndroidHttp.newCompatibleTransport(), GsonFactory(),
-                                credential
-                            ).setApplicationName(getString(R.string.app_name)).build()
-
-                            mDriveServiceHelper = DriveServiceHelper(googleDriveService)
-                            val uploadTask = mDriveServiceHelper?.uploadFile(fileName, file)
-                            uploadTask?.addOnCompleteListener {
-                                lastUploadFileId = uploadTask.result
-                                println("lastUploadFileId==>$lastUploadFileId")
-                            }
-                        }
-                    }
-                }
-            } catch (userAuthEx: UserRecoverableAuthIOException) {
-                startActivity(
-                    userAuthEx.intent
-                )
-            } catch (e: Exception) {
-                e.printStackTrace()
-
-                Toast.makeText(
-                    context,
-                    "Some Error Occured in Uploading Files$e",
-                    Toast.LENGTH_LONG
-                ).show()
-            }
-        }
-    }
 
     private fun getDataFromSharedPreferences(): List<Recording?>? {
         val gson = Gson()

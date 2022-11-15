@@ -22,6 +22,14 @@
           }
         },
         {
+          "client_id": "272663684320-tvg9q53ancme8inpqd2r34j18k7j8jpf.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.three.calltest",
+            "certificate_hash": "e363d0e3a05aa295381ea2d2a993149655ad9201"
+          }
+        },
+        {
           "client_id": "272663684320-uavjb1d6k4ute8b33lsp1oeei151ofp5.apps.googleusercontent.com",
           "client_type": 3
         }
@@ -35,7 +43,7 @@
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "272663684320-uavjb1d6k4ute8b33lsp1oeei151ofp5.apps.googleusercontent.com",
+              "client_id": "272663684320-14ckrunr2ak8g4j3k7pq65psl44nlnia.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
