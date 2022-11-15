@@ -1,13 +1,11 @@
 package com.threebanders.recordrs.ui.contact
 
 import android.content.Context
-import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.*
 import android.widget.ImageButton
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.widget.PopupMenu
 import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.lifecycleScope
@@ -18,33 +16,28 @@ import com.google.api.client.extensions.android.http.AndroidHttp
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential
 import com.google.api.client.googleapis.extensions.android.gms.auth.UserRecoverableAuthIOException
 import com.google.api.client.http.FileContent
-import com.google.api.client.json.gson.GsonFactory
 import com.google.api.client.json.jackson2.JacksonFactory
 import com.google.api.services.drive.Drive
 import com.google.api.services.drive.DriveScopes
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.threebanders.recordrs.R
-import com.threebanders.recordrs.sync.util.DriveServiceHelper
 import com.threebanders.recordrs.ui.BaseActivity.LayoutType
 import com.threebanders.recordrs.ui.settings.SettingsFragment.Companion.GOOGLE_DRIVE
 import core.threebanders.recordr.Cache
 import core.threebanders.recordr.data.Recording
 import core.threebanders.recordr.recorder.Recorder
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.File
 import java.lang.reflect.Type
-import java.util.*
-import kotlin.coroutines.CoroutineContext
 
 class UnassignedRecordingsFragment : ContactDetailFragment() {
-    lateinit var rootView: View
-    var record: Recorder? = null
-    var sharedPref: SharedPreferences? = null
-    var editor: SharedPreferences.Editor?? = null
-    private var mDriveServiceHelper: DriveServiceHelper? = null
-    private var lastUploadFileId: String? = null
-    private val RQ_GOOGLE_SIGN_IN = 210
+    private lateinit var rootView: View
+    private var record: Recorder? = null
+    private var sharedPref: SharedPreferences? = null
+    private var editor: SharedPreferences.Editor? = null
     private var file: File? = null
     private var fileName: String = ""
 
@@ -74,19 +67,16 @@ class UnassignedRecordingsFragment : ContactDetailFragment() {
             mainViewModel.records.observe(viewLifecycleOwner) { recordings: List<Recording?>? ->
                 paintViews()
                 if (recordings?.size != 0) {
-                    var list = getDataFromSharedPreferences()
-                    if (list == null)
-                        list = arrayListOf()
+                    getDataFromSharedPreferences()
+
                     val settings = baseActivity?.prefs
                     val isGoogleDriveSynced = settings?.getBoolean(GOOGLE_DRIVE, false)
 
                     if (isGoogleDriveSynced == true) {
                         file = File(recordings?.get(0)?.path.toString())
-                        fileName = recordings?.get(0)?.getDateRecord().toString()
+                        fileName = recordings?.get(0)?.dateRecord.toString()
 
                         uploadFileToGDrive(File(recordings?.get(0)?.path.toString()))
-                    } else {
-                        Toast.makeText(requireContext(), "Not logged in", Toast.LENGTH_LONG).show()
                     }
 
                     setDataFromSharedPreferences(recordings as List<Recording?>)
@@ -94,16 +84,11 @@ class UnassignedRecordingsFragment : ContactDetailFragment() {
             }
         }
         paintViews()
-        mainViewModel.deletedRecording.observe(viewLifecycleOwner) { r: Recording? -> removeRecording() }
+        mainViewModel.deletedRecording.observe(viewLifecycleOwner) { removeRecording() }
         removeRecording()
 
         return rootView
     }
-
-    private fun getDispatcherFromCurrentThread(scope: CoroutineScope): CoroutineContext {
-        return scope.coroutineContext
-    }
-
 
     private fun uploadFileToGDrive(file: File) {
         lifecycleScope.launch {
@@ -147,10 +132,9 @@ class UnassignedRecordingsFragment : ContactDetailFragment() {
         return null
     }
 
-
     private fun getDataFromSharedPreferences(): List<Recording?>? {
         val gson = Gson()
-        var productFromShared: List<Recording?>? = ArrayList()
+        val productFromShared: List<Recording?>?
         val sharedPref: SharedPreferences? =
             context?.getSharedPreferences("PREFS_TAG", Context.MODE_PRIVATE)
         val jsonPreferences = sharedPref?.getString("PRODUCT_TAG", "")
@@ -218,7 +202,7 @@ class UnassignedRecordingsFragment : ContactDetailFragment() {
 
     override fun setDetailsButtonsListeners() {
         val closeBtn = baseActivity?.findViewById<ImageButton>(R.id.close_select_mode)
-        closeBtn!!.setOnClickListener { v: View? -> clearSelectMode() }
+        closeBtn!!.setOnClickListener { clearSelectMode() }
         val menuButtonSelected =
             baseActivity?.findViewById<ImageButton>(R.id.contact_detail_selected_menu)
         menuButtonSelected!!.setOnClickListener { view: View ->
@@ -250,12 +234,12 @@ class UnassignedRecordingsFragment : ContactDetailFragment() {
         }
         val moveBtn = baseActivity!!.findViewById<ImageButton>(R.id.actionbar_select_move)
         registerForContextMenu(moveBtn)
-        //foarte necesar. Altfel meniul contextual va fi arătat numai la long click.
+
         moveBtn.setOnClickListener { obj: View -> obj.showContextMenu() }
         val selectAllBtn =
             baseActivity?.findViewById<ImageButton>(R.id.actionbar_select_all)
-        selectAllBtn!!.setOnClickListener { v: View? -> onSelectAll() }
+        selectAllBtn!!.setOnClickListener { onSelectAll() }
         val infoBtn = baseActivity?.findViewById<ImageButton>(R.id.actionbar_info)
-        infoBtn!!.setOnClickListener { view: View? -> onRecordingInfo() }
+        infoBtn!!.setOnClickListener { onRecordingInfo() }
     }
 }
