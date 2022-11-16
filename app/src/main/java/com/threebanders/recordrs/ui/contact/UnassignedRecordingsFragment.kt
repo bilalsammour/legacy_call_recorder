@@ -70,7 +70,7 @@ class UnassignedRecordingsFragment : ContactDetailFragment() {
 
             mainViewModel.records.observe(viewLifecycleOwner) { recordings: List<Recording?>? ->
                 paintViews()
-                
+
                 if (recordings?.size != 0) {
                     var list = getDataFromSharedPreferences()
                     if (list == null)

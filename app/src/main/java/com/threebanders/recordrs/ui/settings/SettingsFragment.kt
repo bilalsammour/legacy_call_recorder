@@ -141,7 +141,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
         val gso = GoogleSignInOptions
             .Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestIdToken(
-                requireContext().getString(R.string.web_client_id)
+                requireContext().getString(R.string.google_id)
             )
             .requestEmail()
             .requestProfile()
