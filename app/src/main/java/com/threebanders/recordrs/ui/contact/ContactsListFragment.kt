@@ -96,7 +96,7 @@ class ContactsListFragment : BaseFragment() {
         if (contactSlot != null) {
             contactSlot.findViewById<View>(R.id.tablet_current_selection).visibility =
                 View.VISIBLE
-            if (parentActivity!!.settedTheme == BaseActivity.Companion.LIGHT_THEME) contactSlot.setBackgroundColor(
+            if (parentActivity!!.settledTheme == BaseActivity.Companion.LIGHT_THEME) contactSlot.setBackgroundColor(
                 resources.getColor(R.color.slotLightSelected)
             ) else contactSlot.setBackgroundColor(
                 resources.getColor(R.color.slotDarkSelected)
@@ -123,7 +123,7 @@ class ContactsListFragment : BaseFragment() {
         val contactSlot = contactsRecycler!!.layoutManager!!.findViewByPosition(position)
         if (contactSlot != null) {
             contactSlot.findViewById<View>(R.id.tablet_current_selection).visibility = View.GONE
-            if (parentActivity!!.settedTheme == BaseActivity.Companion.LIGHT_THEME) contactSlot.setBackgroundColor(
+            if (parentActivity!!.settledTheme == BaseActivity.Companion.LIGHT_THEME) contactSlot.setBackgroundColor(
                 resources.getColor(R.color.slotLight)
             ) else contactSlot.setBackgroundColor(resources.getColor(R.color.slotAndDetailHeaderDark))
         }

@@ -637,10 +637,10 @@ open class ContactDetailFragment : BaseFragment() {
             val recording = recordings!![position]
             val adornRes: Int
             adornRes = when (recording!!.format) {
-                Recorder.WAV_FORMAT -> if (mainActivity!!.settedTheme == BaseActivity.Companion.LIGHT_THEME) R.drawable.sound_symbol_wav_light else R.drawable.sound_symbol_wav_dark
-                Recorder.AAC_HIGH_FORMAT -> if (mainActivity!!.settedTheme == BaseActivity.Companion.LIGHT_THEME) R.drawable.sound_symbol_aac128_light else R.drawable.sound_symbol_aac128_dark
-                Recorder.AAC_BASIC_FORMAT -> if (mainActivity!!.settedTheme == BaseActivity.Companion.LIGHT_THEME) R.drawable.sound_symbol_aac32_light else R.drawable.sound_symbol_aac32_dark
-                else -> if (mainActivity!!.settedTheme == BaseActivity.Companion.LIGHT_THEME) R.drawable.sound_symbol_aac64_light else R.drawable.sound_symbol_aac64_dark
+                Recorder.WAV_FORMAT -> if (mainActivity!!.settledTheme == BaseActivity.Companion.LIGHT_THEME) R.drawable.sound_symbol_wav_light else R.drawable.sound_symbol_wav_dark
+                Recorder.AAC_HIGH_FORMAT -> if (mainActivity!!.settledTheme == BaseActivity.Companion.LIGHT_THEME) R.drawable.sound_symbol_aac128_light else R.drawable.sound_symbol_aac128_dark
+                Recorder.AAC_BASIC_FORMAT -> if (mainActivity!!.settledTheme == BaseActivity.Companion.LIGHT_THEME) R.drawable.sound_symbol_aac32_light else R.drawable.sound_symbol_aac32_dark
+                else -> if (mainActivity!!.settledTheme == BaseActivity.Companion.LIGHT_THEME) R.drawable.sound_symbol_aac64_light else R.drawable.sound_symbol_aac64_dark
             }
             for (i in contactList!!.indices) {
                 if (contactList!![i]!!
@@ -655,7 +655,7 @@ open class ContactDetailFragment : BaseFragment() {
             }
             if (mainViewModel!!.contact.value == null || !mainViewModel!!.contact.value!!
                     .isPrivateNumber
-            ) holder.recordingType.setImageResource(if (recording.isIncoming) R.drawable.incoming else if (mainActivity!!.settedTheme == BaseActivity.Companion.LIGHT_THEME) R.drawable.outgoing_light else R.drawable.outgoing_dark)
+            ) holder.recordingType.setImageResource(if (recording.isIncoming) R.drawable.incoming else if (mainActivity!!.settledTheme == BaseActivity.Companion.LIGHT_THEME) R.drawable.outgoing_light else R.drawable.outgoing_dark)
             holder.recordingAdorn.setImageResource(adornRes)
             holder.checkBox.setOnClickListener { view: View ->
                 manageSelectRecording(
@@ -681,7 +681,7 @@ open class ContactDetailFragment : BaseFragment() {
         private fun markNonexistent(holder: RecordingHolder) {
             holder.exclamation.visibility = View.VISIBLE
             val filter =
-                if (mainActivity!!.settedTheme == BaseActivity.Companion.LIGHT_THEME) Color.argb(
+                if (mainActivity!!.settledTheme == BaseActivity.Companion.LIGHT_THEME) Color.argb(
                     255,
                     0,
                     0,

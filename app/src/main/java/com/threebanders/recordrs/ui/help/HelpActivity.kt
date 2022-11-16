@@ -54,7 +54,7 @@ class HelpActivity : BaseActivity() {
         content[5] = CoreUtil.rawHtmlToString(R.raw.help_licences, this)
         for (i in content.indices) content[i] =
             content[i]?.replace(APP_NAME_PLACEHOLDER, res.getString(R.string.app_name))
-        if (settedTheme == BaseActivity.Companion.DARK_THEME) {
+        if (settledTheme == BaseActivity.Companion.DARK_THEME) {
             for (i in content.indices) content[i] = content[i]?.replace("light", "dark")
         }
         contentTitles[0] = res.getString(R.string.help_title2)

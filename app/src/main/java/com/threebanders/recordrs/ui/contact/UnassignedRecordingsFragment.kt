@@ -45,7 +45,11 @@ class UnassignedRecordingsFragment : ContactDetailFragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        rootView = inflater.inflate(R.layout.unassigned_recordings_fragment, container, false)
+        rootView = inflater.inflate(
+            R.layout.unassigned_recordings_fragment,
+            container, false
+        )
+
         recordingsRecycler = rootView.findViewById(R.id.unassigned_recordings)
         recordingsRecycler!!.layoutManager = LinearLayoutManager(
             baseActivity

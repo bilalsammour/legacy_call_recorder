@@ -1,10 +1,3 @@
-/*
- * Copyright (C) 2019 Eugen Rădulescu <synapticwebb@gmail.com> - All rights reserved.
- *
- * You may use, distribute and modify this code only under the conditions
- * stated in the SW Call Recorder license. You should have received a copy of the
- * SW Call Recorder license along with this file. If not, please write to <synapticwebb@gmail.com>.
- */
 package com.threebanders.recordrs.ui.settings
 
 import android.content.Intent
@@ -37,10 +30,10 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
         val storagePath = findPreference<Preference>(STORAGE_PATH)
         val storage = findPreference<ListPreference>(STORAGE)
-        storagePath?.let { storage?.let { it1 -> manageStoragePathSummary(it1, it) } }
+        storagePath?.let { storage?.let { manageStoragePathSummary(it) } }
     }
 
-    private fun manageStoragePathSummary(storage: ListPreference, storagePath: Preference) {
+    private fun manageStoragePathSummary(storagePath: Preference) {
         storagePath.isEnabled = true
         var path = preferences!!.getString(STORAGE_PATH, null)
         if (path == null) {
@@ -96,7 +89,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
                     requireContext().resources.getString(R.string.choose_recordings_storage)
                 val theme = StorageChooser.Theme(activity)
                 theme.scheme =
-                    if (parentActivity?.settedTheme == BaseActivity.LIGHT_THEME) parentActivity!!.resources.getIntArray(
+                    if (parentActivity?.settledTheme == BaseActivity.LIGHT_THEME) parentActivity!!.resources.getIntArray(
                         R.array.storage_chooser_theme_light
                     ) else parentActivity!!.resources.getIntArray(R.array.storage_chooser_theme_dark)
                 val chooser = StorageChooser.Builder()
@@ -131,7 +124,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
         themeOption?.summaryProvider =
             Preference.SummaryProvider<ListPreference> { preference -> preference.entry }
         themeOption?.onPreferenceChangeListener =
-            Preference.OnPreferenceChangeListener { preference, newValue ->
+            Preference.OnPreferenceChangeListener { _, _ ->
                 requireActivity().recreate()
                 true
             }
@@ -192,7 +185,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
             }
     }
 
-    fun signOut() {
+    private fun signOut() {
         mGoogleApiClient?.signOut()?.addOnCompleteListener(
             requireActivity()
         ) { Toast.makeText(requireContext(), "Signed Out", Toast.LENGTH_SHORT).show() }
