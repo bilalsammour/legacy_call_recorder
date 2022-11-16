@@ -3,9 +3,9 @@ package com.threebanders.recordrs.ui
 import android.content.SharedPreferences
 import android.view.View
 import androidx.fragment.app.Fragment
-import com.threebanders.recordrs.sync.util.RunTimePermission
 import com.threebanders.recordrs.CrApp
 import com.threebanders.recordrs.R
+import com.threebanders.recordrs.sync.util.RunTimePermission
 import com.threebanders.recordrs.ui.settings.SettingsFragment
 
 abstract class BaseActivity : RunTimePermission() {

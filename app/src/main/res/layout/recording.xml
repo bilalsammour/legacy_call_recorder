@@ -55,8 +55,8 @@
         android:layout_height="@dimen/recording_type_side"
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
-        android:src="@drawable/share"
         android:layout_marginEnd="@dimen/recording_type_margin_end"
-        android:contentDescription="@string/share" />
+        android:contentDescription="@string/share"
+        android:src="@drawable/share" />
 
 </RelativeLayout>

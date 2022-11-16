@@ -18,73 +18,45 @@ import com.sdsmdg.harjot.crollerTest.utilities.Utils;
 
 public class Croller extends View {
 
+    RectF oval;
     private float midx, midy;
     private Paint textPaint, circlePaint, circlePaint2, linePaint;
     private float currdeg = 0, deg = 3, downdeg = 0;
-
     private boolean isContinuous = false;
-
     private int backCircleColor = Color.parseColor("#222222");
     private int mainCircleColor = Color.parseColor("#000000");
     private int indicatorColor = Color.parseColor("#FFA036");
     private int progressPrimaryColor = Color.parseColor("#FFA036");
     private int progressSecondaryColor = Color.parseColor("#111111");
-
     private int backCircleDisabledColor = Color.parseColor("#82222222");
     private int mainCircleDisabledColor = Color.parseColor("#82000000");
     private int indicatorDisabledColor = Color.parseColor("#82FFA036");
     private int progressPrimaryDisabledColor = Color.parseColor("#82FFA036");
     private int progressSecondaryDisabledColor = Color.parseColor("#82111111");
-
     private float progressPrimaryCircleSize = -1;
     private float progressSecondaryCircleSize = -1;
-
     private float progressPrimaryStrokeWidth = 25;
     private float progressSecondaryStrokeWidth = 10;
-
     private float mainCircleRadius = -1;
     private float backCircleRadius = -1;
     private float progressRadius = -1;
-
     private int max = 25;
     private int min = 1;
-
     private float indicatorWidth = 7;
-
     private String label = "Label";
     private String labelFont;
     private int labelStyle = 0;
     private float labelSize = 14;
     private int labelColor = Color.WHITE;
-
     private int labelDisabledColor = Color.BLACK;
-
     private int startOffset = 30;
     private int startOffset2 = 0;
     private int sweepAngle = -1;
-
     private boolean isEnabled = true;
-
     private boolean isAntiClockwise = false;
-
     private boolean startEventSent = false;
-
-    RectF oval;
-
     private onProgressChangedListener mProgressChangeListener;
     private OnCrollerChangeListener mCrollerChangeListener;
-
-    public interface onProgressChangedListener {
-        void onProgressChanged(int progress);
-    }
-
-    public void setOnProgressChangedListener(onProgressChangedListener mProgressChangeListener) {
-        this.mProgressChangeListener = mProgressChangeListener;
-    }
-
-    public void setOnCrollerChangeListener(OnCrollerChangeListener mCrollerChangeListener) {
-        this.mCrollerChangeListener = mCrollerChangeListener;
-    }
 
     public Croller(Context context) {
         super(context);
@@ -101,6 +73,14 @@ public class Croller extends View {
         super(context, attrs, defStyleAttr);
         initXMLAttrs(context, attrs);
         init();
+    }
+
+    public void setOnProgressChangedListener(onProgressChangedListener mProgressChangeListener) {
+        this.mProgressChangeListener = mProgressChangeListener;
+    }
+
+    public void setOnCrollerChangeListener(OnCrollerChangeListener mCrollerChangeListener) {
+        this.mCrollerChangeListener = mCrollerChangeListener;
     }
 
     private void init() {
@@ -359,7 +339,7 @@ public class Croller extends View {
             else
                 circlePaint.setColor(mainCircleDisabledColor);
             canvas.drawCircle(midx, midy, mainCircleRadius, circlePaint);
-            canvas.drawText(label, midx, midy + (float) (radius * 1.1)-textPaint.getFontMetrics().descent, textPaint);
+            canvas.drawText(label, midx, midy + (float) (radius * 1.1) - textPaint.getFontMetrics().descent, textPaint);
             canvas.drawLine(x1, y1, x2, y2, linePaint);
 
         } else {
@@ -421,7 +401,7 @@ public class Croller extends View {
             else
                 circlePaint.setColor(mainCircleDisabledColor);
             canvas.drawCircle(midx, midy, mainCircleRadius, circlePaint);
-            canvas.drawText(label, midx, midy + (float) (radius * 1.1)-textPaint.getFontMetrics().descent, textPaint);
+            canvas.drawText(label, midx, midy + (float) (radius * 1.1) - textPaint.getFontMetrics().descent, textPaint);
             canvas.drawLine(x1, y1, x2, y2, linePaint);
         }
     }
@@ -828,5 +808,9 @@ public class Croller extends View {
     public void setAntiClockwise(boolean antiClockwise) {
         isAntiClockwise = antiClockwise;
         invalidate();
+    }
+
+    public interface onProgressChangedListener {
+        void onProgressChanged(int progress);
     }
 }

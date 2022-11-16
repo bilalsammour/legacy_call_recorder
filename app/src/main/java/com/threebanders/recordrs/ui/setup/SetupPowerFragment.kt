@@ -1,10 +1,3 @@
-/*
- * Copyright (C) 2019 Eugen Rădulescu <synapticwebb@gmail.com> - All rights reserved.
- *
- * You may use, distribute and modify this code only under the conditions
- * stated in the SW Call Recorder license. You should have received a copy of the
- * SW Call Recorder license along with this file. If not, please write to <synapticwebb@gmail.com>.
- */
 package com.threebanders.recordrs.ui.setup
 
 import android.annotation.SuppressLint
@@ -25,7 +18,6 @@ import com.afollestad.materialdialogs.MaterialDialog
 import com.threebanders.recordrs.R
 import com.threebanders.recordrs.ui.contact.ContactsListActivityMain
 
-
 class SetupPowerFragment : Fragment() {
     private var parentActivity: SetupActivity? = null
     override fun onCreateView(
@@ -36,10 +28,7 @@ class SetupPowerFragment : Fragment() {
         return inflater.inflate(R.layout.setup_power_fragment, container, false)
     }
 
-
-
-    @SuppressLint("NewApi") //pentru a suprima avertismentul aferent pornirii activității de oprire a optimizării.
-    //Dar turnOffDoze primește clicklistener doar dacă android >= 6.
+    @SuppressLint("NewApi")
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         parentActivity = activity as SetupActivity?

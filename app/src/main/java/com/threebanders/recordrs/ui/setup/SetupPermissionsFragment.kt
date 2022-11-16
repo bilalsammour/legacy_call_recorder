@@ -1,10 +1,3 @@
-/*
- * Copyright (C) 2019 Eugen Rădulescu <synapticwebb@gmail.com> - All rights reserved.
- *
- * You may use, distribute and modify this code only under the conditions
- * stated in the SW Call Recorder license. You should have received a copy of the
- * SW Call Recorder license along with this file. If not, please write to <synapticwebb@gmail.com>.
- */
 package com.threebanders.recordrs.ui.setup
 
 import android.Manifest
@@ -38,7 +31,7 @@ class SetupPermissionsFragment : Fragment() {
         permsIntro.text =
             String.format(res.getString(R.string.perms_intro), res.getString(R.string.app_name))
         val nextButton = parentActivity!!.findViewById<Button>(R.id.setup_perms_next)
-        //în Android 6 dacă o singură permisiune este revocată le cere din nou pe toate. Nu pare suficient de sever pentru reparație.
+
         nextButton.setOnClickListener {
             requestPermissions(
                 arrayOf(

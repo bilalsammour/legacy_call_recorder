@@ -1,11 +1,3 @@
-/*
- * Copyright (C) 2019 Eugen Rădulescu <synapticwebb@gmail.com> - All rights reserved.
- *
- * You may use, distribute and modify this code only under the conditions
- * stated in the SW Call Recorder license. You should have received a copy of the
- * SW Call Recorder license along with this file. If not, please write to <synapticwebb@gmail.com>.
- */
-
 package core.threebanders.recordr;
 
 import android.app.Activity;
@@ -23,11 +15,11 @@ import core.threebanders.recordr.data.Repository;
 
 public class MoveAsyncTask extends AsyncTask<Recording, Integer, Boolean> {
     public long alreadyCopied = 0;
-    private String path;
-    private long totalSize;
+    private final String path;
+    private final long totalSize;
     private MaterialDialog dialog;
-    private Repository repository;
-    private WeakReference<Activity> activityRef; //http://sohailaziz05.blogspot.com/2014/10/asynctask-and-context-leaking.html
+    private final Repository repository;
+    private final WeakReference<Activity> activityRef;
 
     MoveAsyncTask(Repository repository, String folderPath, long totalSize, Activity activity) {
         this.path = folderPath;

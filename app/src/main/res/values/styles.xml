@@ -1,4 +1,5 @@
 <resources>
+
     <style name="AppThemeLight" parent="Theme.Material3.Light.NoActionBar">
         <item name="colorPrimary">@color/primaryColor</item>
         <item name="colorPrimaryDark">@color/primaryDarkColor</item>
@@ -10,7 +11,7 @@
         <item name="tabletCurrentSelectionStyle">@style/tabletCurrentSelectionLight</item>
         <item name="playerControlStyle">@style/playerControlStyleLight</item>
         <item name="helpTabStyle">@style/helpTabStyleLight</item>
-       <item name="materialButtonStyle">@style/SettingsButtonColorLight</item>
+        <item name="materialButtonStyle">@style/SettingsButtonColorLight</item>
     </style>
 
     <style name="AppThemeDark" parent="Theme.Material3.Dark.NoActionBar">
@@ -85,8 +86,11 @@
         <item name="progress_primary_color">@color/colorAccent</item>
         <item name="android:layout_width">@dimen/croller_width</item>
         <item name="android:layout_height">@dimen/croller_height</item>
-        <item name="progress_primary_stroke_width">@dimen/croller_progress_primary_stroke_width</item>
-        <item name="progress_secondary_stroke_width">@dimen/croller_progress_secondary_stroke_width</item>
+        <item name="progress_primary_stroke_width">@dimen/croller_progress_primary_stroke_width
+        </item>
+        <item name="progress_secondary_stroke_width">
+            @dimen/croller_progress_secondary_stroke_width
+        </item>
     </style>
 
     <style name="playerControlStyleLight" parent="playerControlStyleParent">
@@ -149,9 +153,9 @@
         <item name="colorPrimary">@color/colorAccentLight</item>
         <item name="colorOnPrimary">@color/colorAccentLight</item>
     </style>
-<!-- Pentru background-ul alb: https://stackoverflow.com/questions/22320663/change-background-popupmenu-in-android -->
-<!--Ca să poată fi folosit cu android:theme, pentru a fi aplicat tuturor copiilor unui View trebuie să moștenească
- dintr-o temă: parent="Theme.AppCompat.Light"-->
+    <!-- Pentru background-ul alb: https://stackoverflow.com/questions/22320663/change-background-popupmenu-in-android -->
+    <!--Ca să poată fi folosit cu android:theme, pentru a fi aplicat tuturor copiilor unui View trebuie să moștenească
+     dintr-o temă: parent="Theme.AppCompat.Light"-->
 
     <!-- Pentru butoanele din activitatea edit
     https://www.androiddesignpatterns.com/2016/08/coloring-buttons-with-themeoverlays-background-tints.html-->

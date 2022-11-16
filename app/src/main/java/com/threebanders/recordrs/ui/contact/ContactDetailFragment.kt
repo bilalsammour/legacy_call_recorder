@@ -547,8 +547,6 @@ open class ContactDetailFragment : BaseFragment() {
     }
 
 
-
-
     override fun onCreateContextMenu(menu: ContextMenu, v: View, menuInfo: ContextMenuInfo?) {
 
     }

@@ -1,11 +1,3 @@
-/*
- * Copyright (C) 2019 Eugen Rădulescu <synapticwebb@gmail.com> - All rights reserved.
- *
- * You may use, distribute and modify this code only under the conditions
- * stated in the SW Call Recorder license. You should have received a copy of the
- * SW Call Recorder license along with this file. If not, please write to <synapticwebb@gmail.com>.
- */
-
 package core.threebanders.recordr.recorder;
 
 import android.app.Notification;
@@ -51,7 +43,7 @@ public class RecorderService extends Service {
 
     public static final int NOTIFICATION_ID = 1;
     private static final String CHANNEL_ID = "call_recorder_channel";
-    public static final int RECORD_AUTOMMATICALLY = 1;
+    public static final int RECORD_AUTOMATICALLY = 1;
     public static final int RECORD_ERROR = 4;
     public static final int RECORD_SUCCESS = 5;
     static final String ACTION_STOP_SPEAKER = "net.synapticweb.callrecorder.STOP_SPEAKER";
@@ -119,7 +111,7 @@ public class RecorderService extends Service {
                 //Acum nu se mai bazează pe speakerOn, recunoaște dacă difuzorul era deja pornit. speakerOn
                 //a fost menținut deoarece în unele situații notificarea porneste prea devreme și isSpeakerphoneOn()
                 //returnează false.
-                case RECORD_AUTOMMATICALLY:
+                case RECORD_AUTOMATICALLY:
                     if (audioManager.isSpeakerphoneOn() || speakerOn) {
                         sendBroadcast.setAction(ACTION_STOP_SPEAKER);
                         PendingIntent stopSpeakerPi = PendingIntent.getBroadcast(Core.getContext(), 0, sendBroadcast, 0);
@@ -205,7 +197,7 @@ public class RecorderService extends Service {
             recorder.startRecording(receivedNumPhone);
             if (settings.getBoolean(Const.SPEAKER_USE, false))
                 putSpeakerOn();
-            Notification notification = buildNotification(RECORD_AUTOMMATICALLY, "");
+            Notification notification = buildNotification(RECORD_AUTOMATICALLY, "");
             if (notification != null) startForeground(NOTIFICATION_ID, notification);
         } catch (RecordingException e) {
             CrLog.log(CrLog.ERROR, "onStartCommand: unable to start recorder: " + e.getMessage() + " Stoping the service...");

@@ -1,10 +1,3 @@
-/*
- * Copyright (C) 2019 Eugen Rădulescu <synapticwebb@gmail.com> - All rights reserved.
- *
- * You may use, distribute and modify this code only under the conditions
- * stated in the SW Call Recorder license. You should have received a copy of the
- * SW Call Recorder license along with this file. If not, please write to <synapticwebb@gmail.com>.
- */
 package com.threebanders.recordrs.ui.setup
 
 import android.content.Intent
@@ -55,15 +48,14 @@ class SetupEulaFragment : Fragment() {
             if (!hasAccepted.isChecked || activity == null) return@OnClickListener
             val settings = (requireActivity().application as CrApp).core.prefs
             val editor = settings.edit()
-            editor.putBoolean(ContactsListActivityMain.Companion.HAS_ACCEPTED_EULA, true)
+            editor.putBoolean(ContactsListActivityMain.HAS_ACCEPTED_EULA, true)
             editor.apply()
-            if (checkResult and ContactsListActivityMain.Companion.PERMS_NOT_GRANTED != 0) {
+            if (checkResult and ContactsListActivityMain.PERMS_NOT_GRANTED != 0) {
                 val permissionsFragment = SetupPermissionsFragment()
                 parentActivity.supportFragmentManager.beginTransaction()
                     .replace(R.id.setup_fragment_container, permissionsFragment)
                     .commitAllowingStateLoss()
-            } //dacă suntem în această metodă înseamnă că ne aflăm la prima rulare. Deci, trebuie să
-            else {
+            } else {
                 val powerFragment = SetupPowerFragment()
                 parentActivity.supportFragmentManager.beginTransaction()
                     .replace(R.id.setup_fragment_container, powerFragment)

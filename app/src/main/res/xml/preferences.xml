@@ -1,58 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.preference.PreferenceScreen xmlns:app="http://schemas.app.com/apk/res/app"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+<androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.app.com/apk/res/app">
 
     <SwitchPreference
+        android:defaultValue="true"
         android:key="enabled"
-        android:title="@string/enabled_title"
         android:summary="@string/enabled_sum"
-        android:defaultValue="true"/>
+        android:title="@string/enabled_title" />
 
     <Preference
         android:key="public_storage_path"
         android:title="@string/prefs_storage_path_title" />
 
     <SwitchPreference
-        android:title="@string/prefs_speaker_title"
+        android:defaultValue="false"
         android:key="put_on_speaker"
         android:summary="@string/prefs_speaker_sum"
-        android:defaultValue="false"/>
+        android:title="@string/prefs_speaker_title" />
     <SwitchPreference
-        android:title="@string/prefs_google_drive"
+        android:defaultValue="false"
         android:key="put_on_drive"
         android:summary="@string/prefs_google_drive_sum"
-        android:defaultValue="false"/>
+        android:title="@string/prefs_google_drive" />
 
     <ListPreference
-        android:title="@string/pref_audio_src_title"
-        android:key="source"
-        app:useSimpleSummaryProvider="true"
         android:defaultValue="6"
         android:entries="@array/source_names"
         android:entryValues="@array/source_values"
-        />
+        android:key="source"
+        android:title="@string/pref_audio_src_title"
+        app:useSimpleSummaryProvider="true" />
 
     <ListPreference
-        android:title="@string/prefs_format_title"
-        android:key="format"
+        android:defaultValue="wav"
         android:entries="@array/format_names"
         android:entryValues="@array/format_values"
-        app:useSimpleSummaryProvider="true"
-        android:defaultValue="wav"/>
+        android:key="format"
+        android:title="@string/prefs_format_title"
+        app:useSimpleSummaryProvider="true" />
 
     <ListPreference
-       android:title="@string/prefs_mode_title"
-        android:key="mode"
+        android:defaultValue="mono"
         android:entries="@array/mode_names"
         android:entryValues="@array/mode_values"
-        android:defaultValue="mono" />
+        android:key="mode"
+        android:title="@string/prefs_mode_title" />
 
 
     <ListPreference
-        android:title="@string/prefs_theme_title"
-        android:key="theme"
-        app:useSimpleSummaryProvider="true"
+        android:defaultValue="light_theme"
         android:entries="@array/theme_options_names"
         android:entryValues="@array/theme_options_values"
-        android:defaultValue="light_theme" />
+        android:key="theme"
+        android:title="@string/prefs_theme_title"
+        app:useSimpleSummaryProvider="true" />
 </androidx.preference.PreferenceScreen>

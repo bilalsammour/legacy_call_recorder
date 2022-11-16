@@ -1,134 +1,131 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    >
+    android:orientation="vertical">
 
     <androidx.appcompat.widget.Toolbar
-        android:layout_height="?attr/actionBarSize"
-        android:layout_width="match_parent"
-        android:background="?attr/colorPrimary"
         android:id="@+id/toolbar_detail"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
         android:elevation="2dp"
-        android:theme="@style/toolbar_theme"
-        >
+        android:theme="@style/toolbar_theme">
 
         <ImageButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/back"
-            android:layout_marginEnd="20dp"
             android:id="@+id/navigate_back"
-            android:layout_gravity="start"
-            android:background="@android:color/transparent"
-            android:contentDescription="TODO" />
-
-        <ImageButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/close"
-            android:layout_marginEnd="20dp"
-            android:id="@+id/close_select_mode"
             android:layout_gravity="start"
+            android:layout_marginEnd="20dp"
             android:background="@android:color/transparent"
-            android:visibility="gone"
+            android:contentDescription="@string/app_name"
+            android:src="@drawable/back" />
+
+        <ImageButton
+            android:id="@+id/close_select_mode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            android:layout_marginEnd="20dp"
             android:alpha="0"
-            android:contentDescription="TODO" />
+            android:background="@android:color/transparent"
+            android:contentDescription="@string/app_name"
+            android:src="@drawable/close"
+            android:visibility="gone" />
 
         <TextView
             android:id="@+id/actionbar_title"
             style="@style/toolbar_font"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:maxLength="20"
-            />
+            android:maxLength="20" />
 
 
         <ImageButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/baseline_more_vert_white_24"
-            android:layout_marginEnd="10dp"
-            android:background="@android:color/transparent"
             android:id="@+id/contact_detail_selected_menu"
-            android:layout_gravity="end"
-            android:visibility="gone"
-            android:contentDescription="TODO" />
-
-
-        <ImageButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/select_export"
-            android:background="@android:color/transparent"
-            android:id="@+id/actionbar_select_move"
             android:layout_gravity="end"
-            android:layout_marginEnd="15dp"
-            android:visibility="gone"
-            android:alpha="0"
-            android:contentDescription="TODO" />
-
-        <ImageButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/select_all"
-            android:background="@android:color/transparent"
-            android:id="@+id/actionbar_select_all"
-            android:layout_gravity="end"
-            android:layout_marginEnd="15dp"
-            android:visibility="gone"
-            android:alpha="0"
-            android:contentDescription="TODO" />
-
-        <ImageButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/info"
-            android:background="@android:color/transparent"
-            android:id="@+id/actionbar_info"
-            android:layout_gravity="end"
-            android:layout_marginEnd="15dp"
-            android:visibility="gone"
-            android:alpha="0"
-            android:contentDescription="TODO" />
-        <ImageButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/close"
-            android:background="@android:color/transparent"
-            android:id="@+id/delete_recording"
-            android:layout_gravity="end"
-            android:layout_marginEnd="15dp"
-            android:alpha="0"
-            android:contentDescription="TODO" />
-
-
-        <ImageButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/baseline_more_vert_white_24"
             android:layout_marginEnd="10dp"
-            android:visibility="gone"
             android:background="@android:color/transparent"
-            android:id="@+id/contact_detail_menu"
+            android:contentDescription="@string/app_name"
+            android:src="@drawable/baseline_more_vert_white_24"
+            android:visibility="gone" />
+
+
+        <ImageButton
+            android:id="@+id/actionbar_select_move"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_gravity="end"
-            android:contentDescription="TODO" />
+            android:layout_marginEnd="15dp"
+            android:alpha="0"
+            android:background="@android:color/transparent"
+            android:contentDescription="@string/app_name"
+            android:src="@drawable/select_export"
+            android:visibility="gone" />
+
+        <ImageButton
+            android:id="@+id/actionbar_select_all"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_marginEnd="15dp"
+            android:alpha="0"
+            android:background="@android:color/transparent"
+            android:contentDescription="@string/app_name"
+            android:src="@drawable/select_all"
+            android:visibility="gone" />
+
+        <ImageButton
+            android:id="@+id/actionbar_info"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_marginEnd="15dp"
+            android:alpha="0"
+            android:background="@android:color/transparent"
+            android:contentDescription="@string/app_name"
+            android:src="@drawable/info"
+            android:visibility="gone" />
+
+        <ImageButton
+            android:id="@+id/delete_recording"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_marginEnd="15dp"
+            android:alpha="0"
+            android:background="@android:color/transparent"
+            android:contentDescription="@string/app_name"
+            android:src="@drawable/close" />
+
+
+        <ImageButton
+            android:id="@+id/contact_detail_menu"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_marginEnd="10dp"
+            android:background="@android:color/transparent"
+            android:contentDescription="@string/app_name"
+            android:src="@drawable/baseline_more_vert_white_24"
+            android:visibility="gone" />
 
 
     </androidx.appcompat.widget.Toolbar>
 
     <TextView
+        android:id="@+id/filler"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:id="@+id/filler">
-    </TextView>
+        android:layout_height="?attr/actionBarSize" />
 
     <FrameLayout
+        android:id="@+id/contact_detail_fragment_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/filler"
-        android:id="@+id/contact_detail_fragment_container">
+        android:layout_below="@id/filler">
 
     </FrameLayout>
 

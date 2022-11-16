@@ -7,13 +7,13 @@
  */
 package com.threebanders.recordrs.ui.contact
 
-import com.threebanders.recordrs.ui.BaseActivity
 import android.os.Bundle
-import com.threebanders.recordrs.R
 import android.widget.TextView
-import core.threebanders.recordr.data.Contact
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
+import com.threebanders.recordrs.R
+import com.threebanders.recordrs.ui.BaseActivity
+import core.threebanders.recordr.data.Contact
 
 class ContactDetailActivity : BaseActivity() {
     var contact: Contact? = null

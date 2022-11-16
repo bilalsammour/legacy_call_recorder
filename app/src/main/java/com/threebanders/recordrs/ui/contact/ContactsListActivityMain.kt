@@ -177,7 +177,8 @@ class ContactsListActivityMain : BaseActivity() {
                         if (oldListcontacts != null) fm!!.beginTransaction().remove(oldListcontacts)
                             .commit()
                         if (oldDetail != null) fm!!.beginTransaction().remove(oldDetail).commit()
-                        fm!!.beginTransaction().add(R.id.tab_fragment_container, unassignedToInsert!!)
+                        fm!!.beginTransaction()
+                            .add(R.id.tab_fragment_container, unassignedToInsert!!)
                             .commit()
                     }
                 }

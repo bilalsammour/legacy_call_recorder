@@ -1,11 +1,3 @@
-/*
- * Copyright (C) 2019 Eugen Rădulescu <synapticwebb@gmail.com> - All rights reserved.
- *
- * You may use, distribute and modify this code only under the conditions
- * stated in the SW Call Recorder license. You should have received a copy of the
- * SW Call Recorder license along with this file. If not, please write to <synapticwebb@gmail.com>.
- */
-
 package core.threebanders.recordr.recorder;
 
 import android.content.Context;
@@ -17,46 +9,38 @@ import java.io.IOException;
 
 import core.threebanders.recordr.CrLog;
 
-
-//bazat pe codul de aici: http://selvaline.blogspot.com/2016/04/record-audio-wav-format-android-how-to.html
-//Conține multe greșeli, în special la producerea headerului. Am reparat codul pe baza info de aici:
-//http://soundfile.sapp.org/doc/WaveFormat/
-//De văzut și https://stackoverflow.com/questions/4440015/java-pcm-to-wav
 class RecordingThreadWav extends RecordingThread implements Runnable {
     private static final int BITS_PER_SAMPLE = 16;
-    private static final int HEADER_REMAINING = 36; //headerul riff are 44 de octeți. După ce se scrie RIFF se scrie
-    //nr de octeți care au mai rămas din tot fișierul, adică totalAudio + 44 - 4(riff) - 4(acest număr) =
-    // totalAudio + 36.
-    private static final String TMP_FILE_NAME = "recordingtmp.raw";
-    private File tmpFile;
+    private static final int HEADER_REMAINING = 36;
+    private static final String TMP_FILE_NAME = "recording_tmp.raw";
+    private final File tmpFile;
 
     RecordingThreadWav(Context context, String mode, Recorder recorder) throws RecordingException {
-        super(context, mode, recorder); //throws exception
+        super(context, mode, recorder);
         tmpFile = new File(context.getFilesDir(), TMP_FILE_NAME);
     }
 
     @Override
     public void run() {
         try (FileOutputStream outputStream = new
-                FileOutputStream(tmpFile)){
+                FileOutputStream(tmpFile)) {
             while (!Thread.interrupted()) {
                 byte[] data = new byte[bufferSize];
                 int length = audioRecord.read(data, 0, bufferSize);
-                if (length < 0)  //ERROR_INVALID_OPERATION, ERROR_BAD_VALUE, ERROR_DEAD_OBJECT și ERROR,
-                    //toate sunt < 0. Ar trebui poate length != bufferSize?
+
+                if (length < 0) {
                     throw new RecordingException("Recorder failed. Aborting...");
+                }
 
                 outputStream.write(data);
             }
-        }
-        catch (RecordingException | IOException e) {
-            CrLog.log(CrLog.ERROR, "Error while writing temp pcm file: " + e.getMessage());
-            if(!tmpFile.delete())
+        } catch (RecordingException | IOException e) {
+            if (!tmpFile.delete()) {
                 CrLog.log(CrLog.ERROR, "Cannot delete incomplete temp pcm file.");
+            }
             recorder.setHasError();
             notifyOnError(context);
-        }
-        finally {
+        } finally {
             disposeAudioRecord();
         }
     }
@@ -64,8 +48,8 @@ class RecordingThreadWav extends RecordingThread implements Runnable {
     static class CopyPcmToWav implements Runnable {
         private final File wavFile;
         private final int channels;
-        private Recorder recorder;
-        private Context context;
+        private final Recorder recorder;
+        private final Context context;
 
         CopyPcmToWav(Context context, File wavFile, String mode, Recorder recorder) {
             this.wavFile = wavFile;
@@ -77,7 +61,7 @@ class RecordingThreadWav extends RecordingThread implements Runnable {
         @Override
         public void run() {
             long totalAudioLen, totalDataLen;
-            long byteRate = SAMPLE_RATE * channels * BITS_PER_SAMPLE / 8;
+            long byteRate = (long) SAMPLE_RATE * channels * BITS_PER_SAMPLE / 8;
             byte[] buffer = new byte[1048576];
             File tmpFile = new File(context.getFilesDir(), TMP_FILE_NAME);
 
@@ -93,22 +77,21 @@ class RecordingThreadWav extends RecordingThread implements Runnable {
                 }
 
             } catch (IOException e) {
-                CrLog.log(CrLog.ERROR, "Error while copying temp pcm to wav file: " + e.getMessage());
-                if(!tmpFile.delete() )
+                if (!tmpFile.delete())
                     CrLog.log(CrLog.ERROR, "Error while deleting temp pcm file on exception.");
-                if(!wavFile.delete())
+                if (!wavFile.delete())
                     CrLog.log(CrLog.ERROR, "Error while deleting wav file on exception.");
                 recorder.setHasError();
                 notifyOnError(context);
-            }
-            finally {
-                if(!tmpFile.delete())
+            } finally {
+                if (!tmpFile.delete())
                     CrLog.log(CrLog.ERROR, "Error while deleting temp pcm file on normal exit.");
             }
         }
 
-        private void writeWaveFileHeader(FileOutputStream out, long totalAudioLen,
-                                                long totalDataLen, long byteRate) throws IOException {
+        private void writeWaveFileHeader
+                (FileOutputStream out, long totalAudioLen,
+                 long totalDataLen, long byteRate) throws IOException {
             byte[] header = new byte[44];
 
             header[0] = 'R'; // RIFF/WAVE header
@@ -137,15 +120,15 @@ class RecordingThreadWav extends RecordingThread implements Runnable {
             header[23] = 0;
             header[24] = (byte) (SAMPLE_RATE & 0xff);
             header[25] = (byte) ((SAMPLE_RATE >> 8) & 0xff);
-            header[26] = (byte) (( SAMPLE_RATE >> 16) & 0xff);
-            header[27] = (byte) (( SAMPLE_RATE >> 24) & 0xff);
-            header[28] = (byte) (byteRate & 0xff); //problemă de calcul
+            header[26] = (byte) ((SAMPLE_RATE >> 16) & 0xff);
+            header[27] = (byte) ((SAMPLE_RATE >> 24) & 0xff);
+            header[28] = (byte) (byteRate & 0xff);
             header[29] = (byte) ((byteRate >> 8) & 0xff);
             header[30] = (byte) ((byteRate >> 16) & 0xff);
             header[31] = (byte) ((byteRate >> 24) & 0xff);
-            header[32] = (byte) (channels * BITS_PER_SAMPLE / 8); // block align
+            header[32] = (byte) (channels * BITS_PER_SAMPLE / 8);
             header[33] = 0;
-            header[34] = BITS_PER_SAMPLE; // bits per sample
+            header[34] = BITS_PER_SAMPLE;
             header[35] = 0;
             header[36] = 'd';
             header[37] = 'a';
@@ -158,7 +141,6 @@ class RecordingThreadWav extends RecordingThread implements Runnable {
 
             out.write(header, 0, 44);
         }
-        }
-
+    }
 }
 

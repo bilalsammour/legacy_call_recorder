@@ -1,11 +1,3 @@
-/*
- * Copyright (C) 2019 Eugen Rădulescu <synapticwebb@gmail.com> - All rights reserved.
- *
- * You may use, distribute and modify this code only under the conditions
- * stated in the SW Call Recorder license. You should have received a copy of the
- * SW Call Recorder license along with this file. If not, please write to <synapticwebb@gmail.com>.
- */
-
 package core.threebanders.recordr.recorder;
 
 import android.content.Context;
@@ -22,30 +14,33 @@ import java.nio.ByteBuffer;
 
 import core.threebanders.recordr.CrLog;
 
-//Bazat pe codul de aici: https://gist.github.com/nieldeokar/fbfcae08e5612bd7cc36a30254694ee3
-//Pornind de aici: https://stackoverflow.com/questions/8499042/android-audiorecord-example
-//și aici: https://stackoverflow.com/questions/32218360/android-audio-record-to-wav
-//https://www.androidcookbook.info/android-media/raw-audio-recording-with-audiorecord.html
 class RecordingThreadAac extends RecordingThread implements Runnable {
     private static final int SAMPLE_RATE_INDEX = 4;
     private final int bitRate;
     private final MediaCodec mediaCodec;
-    private File outputFile;
+    private final File outputFile;
 
-    RecordingThreadAac(Context context, File audioFile, String format, String mode, Recorder recorder) throws RecordingException {
-        super(context, mode, recorder); //trows exception dacă nu poate inițializa AudioRecord
+    RecordingThreadAac(Context context, File audioFile, String format, String mode,
+                       Recorder recorder) throws RecordingException {
+        super(context, mode, recorder);
+
         outputFile = audioFile;
+
         switch (format) {
-            case Recorder.AAC_HIGH_FORMAT: bitRate = 128000;
+            case Recorder.AAC_HIGH_FORMAT:
+                bitRate = 128000;
                 break;
-            case Recorder.AAC_MEDIUM_FORMAT: bitRate = 64000;
+            case Recorder.AAC_MEDIUM_FORMAT:
+                bitRate = 64000;
                 break;
-            case Recorder.AAC_BASIC_FORMAT: bitRate = 32000;
+            case Recorder.AAC_BASIC_FORMAT:
+                bitRate = 32000;
                 break;
-            default:bitRate = 64000;
+            default:
+                bitRate = 0;
         }
 
-        mediaCodec = createMediaCodec(bufferSize); //throws exception
+        mediaCodec = createMediaCodec(bufferSize);
         mediaCodec.start();
     }
 
@@ -55,38 +50,33 @@ class RecordingThreadAac extends RecordingThread implements Runnable {
         ByteBuffer[] codecInputBuffers = mediaCodec.getInputBuffers();
         ByteBuffer[] codecOutputBuffers = mediaCodec.getOutputBuffers();
 
-        try (FileOutputStream outputStream = new FileOutputStream(outputFile)){
+        try (FileOutputStream outputStream = new FileOutputStream(outputFile)) {
             while (!Thread.interrupted()) {
-                boolean success = handleCodecInput(audioRecord, mediaCodec, codecInputBuffers, Thread.currentThread().isAlive());
-                if(success)
+                boolean success = handleCodecInput(audioRecord, mediaCodec, codecInputBuffers,
+                        Thread.currentThread().isAlive());
+                if (success)
                     handleCodecOutput(mediaCodec, codecOutputBuffers, bufferInfo, outputStream);
                 else
                     throw new RecordingException("Recorder failed. Aborting...");
             }
-        }
-        // De văzut dacă trebuie listener. Singurul avantaj pe care îl văd acum ar fi că apelul stopRecording
-        //ar nulifica obiectul threadului. E necesar?
-        catch (RecordingException | IOException e) {
-            CrLog.log(CrLog.ERROR, "Error while writing aac file: " + e.getMessage());
+        } catch (RecordingException | IOException e) {
             if (!outputFile.delete())
                 CrLog.log(CrLog.ERROR, "Cannot delete incomplete aac file");
             recorder.setHasError();
             notifyOnError(context);
-        }
-        finally {
+        } finally {
             disposeAudioRecord();
-            //în unele situații după o eroare codecul se duce (din motive pe care nu le știu) direct în
-            // starea "released". Dacă apelez stop() îmi dă un IllegalStateException.
+
             try {
                 mediaCodec.stop();
+            } catch (IllegalStateException ignored) {
             }
-            catch (IllegalStateException ignored) {}
             mediaCodec.release();
         }
     }
 
 
-    private MediaCodec createMediaCodec(int bufferSize) throws RecordingException  {
+    private MediaCodec createMediaCodec(int bufferSize) throws RecordingException {
         MediaCodec mediaCodec;
         MediaFormat mediaFormat = new MediaFormat();
 
@@ -99,7 +89,8 @@ class RecordingThreadAac extends RecordingThread implements Runnable {
 
         try {
             mediaCodec = MediaCodec.createEncoderByType("audio/mp4a-latm");
-            mediaCodec.configure(mediaFormat, null, null, MediaCodec.CONFIGURE_FLAG_ENCODE);
+            mediaCodec.configure(mediaFormat, null, null,
+                    MediaCodec.CONFIGURE_FLAG_ENCODE);
         } catch (IOException e) {
             throw new RecordingException("Cannot create mediacodec: " + e.getMessage());
         }
@@ -113,9 +104,9 @@ class RecordingThreadAac extends RecordingThread implements Runnable {
         byte[] audioRecordData = new byte[bufferSize];
         int length = audioRecord.read(audioRecordData, 0, audioRecordData.length);
 
-        if (length < 0)  //ERROR_INVALID_OPERATION, ERROR_BAD_VALUE, ERROR_DEAD_OBJECT și ERROR,
-            //toate sunt < 0. Ar trebui poate length != bufferSize?
-           return false;
+        if (length < 0) {
+            return false;
+        }
 
         int codecInputBufferIndex = mediaCodec.dequeueInputBuffer(10 * 1000);
 
@@ -123,7 +114,8 @@ class RecordingThreadAac extends RecordingThread implements Runnable {
             ByteBuffer codecBuffer = codecInputBuffers[codecInputBufferIndex];
             codecBuffer.clear();
             codecBuffer.put(audioRecordData);
-            mediaCodec.queueInputBuffer(codecInputBufferIndex, 0, length, 0, running ? 0 : MediaCodec.BUFFER_FLAG_END_OF_STREAM);
+            mediaCodec.queueInputBuffer(codecInputBufferIndex, 0, length,
+                    0, running ? 0 : MediaCodec.BUFFER_FLAG_END_OF_STREAM);
         }
         return true;
     }
@@ -131,18 +123,18 @@ class RecordingThreadAac extends RecordingThread implements Runnable {
     private void handleCodecOutput(MediaCodec mediaCodec,
                                    ByteBuffer[] codecOutputBuffers,
                                    MediaCodec.BufferInfo bufferInfo,
-                                   OutputStream outputStream) throws IOException
-             {
+                                   OutputStream outputStream) throws IOException {
         int codecOutputBufferIndex = mediaCodec.dequeueOutputBuffer(bufferInfo, 0);
 
-        while (codecOutputBufferIndex != MediaCodec.INFO_TRY_AGAIN_LATER) { //de văzut dacă e nevoie de asta.
+        while (codecOutputBufferIndex != MediaCodec.INFO_TRY_AGAIN_LATER) {
             if (codecOutputBufferIndex >= 0) {
-                ByteBuffer encoderOutputBuffer = codecOutputBuffers[codecOutputBufferIndex]; //de schimbat în fcție de versiune
+                ByteBuffer encoderOutputBuffer = codecOutputBuffers[codecOutputBufferIndex];
 
                 encoderOutputBuffer.position(bufferInfo.offset);
                 encoderOutputBuffer.limit(bufferInfo.offset + bufferInfo.size);
 
-                if ((bufferInfo.flags & MediaCodec.BUFFER_FLAG_CODEC_CONFIG) != MediaCodec.BUFFER_FLAG_CODEC_CONFIG) {
+                if ((bufferInfo.flags & MediaCodec.BUFFER_FLAG_CODEC_CONFIG)
+                        != MediaCodec.BUFFER_FLAG_CODEC_CONFIG) {
                     byte[] header = createAdtsHeader(bufferInfo.size - bufferInfo.offset);
                     outputStream.write(header);
                     byte[] data = new byte[encoderOutputBuffer.remaining()];
@@ -176,5 +168,4 @@ class RecordingThreadAac extends RecordingThread implements Runnable {
 
         return adtsHeader;
     }
-
 }

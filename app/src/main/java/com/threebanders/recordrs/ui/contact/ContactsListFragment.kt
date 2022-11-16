@@ -30,6 +30,7 @@ class ContactsListFragment : BaseFragment() {
     private var adapter: ContactsAdapter? = null
     private var contactsRecycler: RecyclerView? = null
     lateinit var mainViewModel: MainViewModel
+
     /**
      * Poziția curentă în adapter. Necesară doar în DOUBLE_PANE. Este setată din
      * ViewHolder.getAdapterPosition() cînd se clichează și e folosită la setarea detaliului curent și la
