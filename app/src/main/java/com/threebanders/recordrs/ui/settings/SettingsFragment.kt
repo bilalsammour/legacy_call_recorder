@@ -108,6 +108,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
                     if (activity == null) {
                         return@OnSelectListener
                     }
+                    
                     val preferences =
                         (requireActivity().application as CrApp).core.prefs
                     val editor = preferences.edit()
@@ -150,13 +151,13 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
         mGoogleApiClient = GoogleSignIn.getClient(requireContext(), gso)
 
-        startActivityForResult(mGoogleApiClient!!.signInIntent, 100)
+        startActivityForResult(mGoogleApiClient!!.signInIntent, GOOGLE_AUTH)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        if (requestCode == 100) {
+        if (requestCode == GOOGLE_AUTH) {
             handleSignData(data)
         }
     }
@@ -193,7 +194,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
 
     companion object {
-        //aceste valori vor fi dublate în res/xml/preferences.xml
+        private const val GOOGLE_AUTH = 1001
         const val APP_THEME = "theme"
         const val STORAGE = "storage"
         const val STORAGE_PATH = "public_storage_path"
