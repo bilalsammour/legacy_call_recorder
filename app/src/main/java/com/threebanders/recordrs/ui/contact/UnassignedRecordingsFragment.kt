@@ -22,6 +22,7 @@ import com.google.api.services.drive.DriveScopes
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.threebanders.recordrs.R
+import com.threebanders.recordrs.common.Constants
 import com.threebanders.recordrs.ui.BaseActivity.LayoutType
 import com.threebanders.recordrs.ui.settings.SettingsFragment.Companion.GOOGLE_DRIVE
 import core.threebanders.recordr.Cache
@@ -40,7 +41,6 @@ class UnassignedRecordingsFragment : ContactDetailFragment() {
     private var editor: SharedPreferences.Editor? = null
     private var file: File? = null
     private var fileName: String = ""
-    private val FOLDER_NAME = "Recorder"
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -105,20 +105,18 @@ class UnassignedRecordingsFragment : ContactDetailFragment() {
 
     private fun uploadFileToGDrive(file: File) {
         lifecycleScope.launch {
-
             try {
-
                 val drive = getDriveService()
 
                 var folderId = ""
                 withContext(Dispatchers.IO) {
                     val gFolder = com.google.api.services.drive.model.File()
-                    gFolder.name = FOLDER_NAME
+                    gFolder.name = Constants.APP_NAME
                     gFolder.mimeType = "application/vnd.google-apps.folder"
 
                     launch {
                         val fileList = drive?.Files()?.list()
-                            ?.setQ("mimeType='application/vnd.google-apps.folder' and trashed=false and name='$FOLDER_NAME'")
+                            ?.setQ("mimeType='application/vnd.google-apps.folder' and trashed=false and name='$Constants.APP_NAME'")
                             ?.execute()
 
                         folderId = if (fileList?.files?.isEmpty() == true) {
