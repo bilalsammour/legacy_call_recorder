@@ -77,8 +77,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
                 } else {
                     signOut()
                 }
-
-
+                
                 true
             }
 
