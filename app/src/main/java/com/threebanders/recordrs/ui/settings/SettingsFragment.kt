@@ -108,7 +108,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
                     if (activity == null) {
                         return@OnSelectListener
                     }
-                    
+
                     val preferences =
                         (requireActivity().application as CrApp).core.prefs
                     val editor = preferences.edit()
