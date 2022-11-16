@@ -17,10 +17,6 @@ import java.util.Collections;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
-/**
- * A utility for performing read/write operations on Drive files via the REST API and opening a
- * file picker UI via Storage Access Framework.
- */
 public class DriveServiceHelper {
     private final Executor mExecutor = Executors.newSingleThreadExecutor();
     private final Drive mDriveService;
@@ -48,11 +44,6 @@ public class DriveServiceHelper {
         });
     }
 
-
-    /**
-     * Opens the file identified by {@code fileId} and returns a {@link Pair} of its name and
-     * contents.
-     */
     public Task<Pair<String, String>> readFile(String fileId) {
         return Tasks.call(mExecutor, () -> {
             // Retrieve the metadata as a File object.

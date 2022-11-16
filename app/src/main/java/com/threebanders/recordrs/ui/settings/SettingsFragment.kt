@@ -77,7 +77,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
                 } else {
                     signOut()
                 }
-                
+
                 true
             }
 
@@ -169,18 +169,12 @@ class SettingsFragment : PreferenceFragmentCompat() {
     }
 
     private fun handleSignData(data: Intent?) {
-        // The Task returned from this call is always completed, no need to attach
-        // a listener.
         GoogleSignIn.getSignedInAccountFromIntent(data)
             .addOnCompleteListener {
-                println("isSuccessful ${it.isSuccessful}")
                 updateGoogleDriveToggle(it.isSuccessful)
 
                 if (it.isSuccessful) {
                     updateGoogleDriveToggle(true)
-                    println("Email ${it.result?.email}")
-                } else {
-                    println("exception ${it.exception}")
                 }
             }
     }
@@ -188,7 +182,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
     private fun signOut() {
         mGoogleApiClient?.signOut()?.addOnCompleteListener(
             requireActivity()
-        ) { Toast.makeText(requireContext(), "Signed Out", Toast.LENGTH_SHORT).show() }
+        ) { Toast.makeText(requireContext(), R.string.signed_out, Toast.LENGTH_SHORT).show() }
     }
 
 

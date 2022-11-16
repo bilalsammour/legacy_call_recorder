@@ -157,5 +157,6 @@
     <string name="prefs_google_drive">Google drive use</string>
     <string name="prefs_google_drive_sum">Put Sync on Google drive</string>
     <string name="google_drive_successfully">Backup upload successfully</string>
+    <string name="signed_out">Signed Out</string>
 
 </resources>
