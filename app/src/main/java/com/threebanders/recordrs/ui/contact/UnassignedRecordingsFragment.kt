@@ -70,13 +70,18 @@ class UnassignedRecordingsFragment : ContactDetailFragment() {
 
             mainViewModel.records.observe(viewLifecycleOwner) { recordings: List<Recording?>? ->
                 paintViews()
+                
                 if (recordings?.size != 0) {
+                    var list = getDataFromSharedPreferences()
+                    if (list == null)
+                        list = arrayListOf()
+
                     getDataFromSharedPreferences()
 
                     val settings = baseActivity?.prefs
                     val isGoogleDriveSynced = settings?.getBoolean(GOOGLE_DRIVE, false)
 
-                    if (isGoogleDriveSynced == true) {
+                    if (isGoogleDriveSynced!! && list.size != recordings?.size) {
                         file = File(recordings?.get(0)?.path.toString())
                         fileName = recordings?.get(0)?.dateRecord.toString()
 
