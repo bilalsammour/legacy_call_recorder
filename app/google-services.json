@@ -1,49 +1,49 @@
 {
   "project_info": {
-    "project_number": "272663684320",
-    "project_id": "calltest-65128",
-    "storage_bucket": "calltest-65128.appspot.com"
+    "project_number": "719170211909",
+    "project_id": "recordr-f2608",
+    "storage_bucket": "recordr-f2608.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:272663684320:android:f517b15389913eff49dc85",
+        "mobilesdk_app_id": "1:719170211909:android:b76c0261fded8f49f1932c",
         "android_client_info": {
-          "package_name": "com.three.calltest"
+          "package_name": "com.threebanders.recordr"
         }
       },
       "oauth_client": [
         {
-          "client_id": "272663684320-p4mq97m52dq8n63i0hfkk13sge9evtuo.apps.googleusercontent.com",
+          "client_id": "719170211909-be795n3kdsd3g9k2pjocksen12aimtbs.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.three.calltest",
-            "certificate_hash": "058ec66bcd7c2f696c9852a3febc0581b1c8e334"
-          }
-        },
-        {
-          "client_id": "272663684320-tvg9q53ancme8inpqd2r34j18k7j8jpf.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.three.calltest",
+            "package_name": "com.threebanders.recordr",
             "certificate_hash": "e363d0e3a05aa295381ea2d2a993149655ad9201"
           }
         },
         {
-          "client_id": "272663684320-uavjb1d6k4ute8b33lsp1oeei151ofp5.apps.googleusercontent.com",
+          "client_id": "719170211909-jrgn0g01i4kchs5ltmbbrsude6cmorug.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.threebanders.recordr",
+            "certificate_hash": "058ec66bcd7c2f696c9852a3febc0581b1c8e334"
+          }
+        },
+        {
+          "client_id": "719170211909-23adcofih13f6p14o37rpiv4jk0lsr0n.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyD7NpSujekquwKQZP3DGHG5YUdDO-qBZpY"
+          "current_key": "AIzaSyCQL5SHAqPT0YxkIo3SBJ05I6GFWGT4_k0"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "272663684320-14ckrunr2ak8g4j3k7pq65psl44nlnia.apps.googleusercontent.com",
+              "client_id": "719170211909-23adcofih13f6p14o37rpiv4jk0lsr0n.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
