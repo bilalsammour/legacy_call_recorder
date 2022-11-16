@@ -83,7 +83,7 @@
                         android:layout_height="wrap_content"
                         android:text="@string/show_eula_text"
                         android:textColor="@color/colorAccent"
-                        android:textSize="120sp"
+                        android:textSize="12sp"
                         app:cornerRadius="8dp"
                         app:strokeColor="@color/colorAccent"
                         app:strokeWidth="2dp" />
