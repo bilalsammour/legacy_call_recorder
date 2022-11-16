@@ -19,6 +19,7 @@ import com.google.api.client.http.FileContent
 import com.google.api.client.json.jackson2.JacksonFactory
 import com.google.api.services.drive.Drive
 import com.google.api.services.drive.DriveScopes
+import com.google.api.services.drive.model.FileList
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.threebanders.recordrs.R
@@ -33,6 +34,7 @@ import kotlinx.coroutines.withContext
 import java.io.File
 import java.lang.reflect.Type
 
+
 class UnassignedRecordingsFragment : ContactDetailFragment() {
     private lateinit var rootView: View
     private var record: Recorder? = null
@@ -40,6 +42,7 @@ class UnassignedRecordingsFragment : ContactDetailFragment() {
     private var editor: SharedPreferences.Editor? = null
     private var file: File? = null
     private var fileName: String = ""
+    private val FOLDER_NAME = "Recorder"
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -65,13 +68,16 @@ class UnassignedRecordingsFragment : ContactDetailFragment() {
         sharedPref = context?.getSharedPreferences(Cache.RECODINGS_LIST, Context.MODE_PRIVATE)
         editor = sharedPref?.edit()
 
+
         lifecycleScope.launch {
+
             mainViewModel.loadRecordings()
 
             mainViewModel.records.observe(viewLifecycleOwner) { recordings: List<Recording?>? ->
                 paintViews()
 
                 if (recordings?.size != 0) {
+
                     var list = getDataFromSharedPreferences()
                     if (list == null)
                         list = arrayListOf()
@@ -103,16 +109,40 @@ class UnassignedRecordingsFragment : ContactDetailFragment() {
         lifecycleScope.launch {
 
             try {
-                val gFile = com.google.api.services.drive.model.File()
-                gFile.name = file.name
 
-                val fileContent = FileContent("audio/wav", file)
+                val drive = getDriveService()
+
+                var folderId = ""
+                withContext(Dispatchers.IO) {
+                    val gFolder = com.google.api.services.drive.model.File()
+                    gFolder.name = FOLDER_NAME
+                    gFolder.mimeType = "application/vnd.google-apps.folder"
+
+                    launch {
+                        val fileList = drive?.Files()?.list()
+                            ?.setQ("mimeType='application/vnd.google-apps.folder' and trashed=false and name='$FOLDER_NAME'")
+                            ?.execute()
+
+                        folderId = if (fileList?.files?.isEmpty() == true) {
+                            val folder = drive.Files().create(gFolder)?.setFields("id")?.execute()
+                            folder?.id ?: ""
+                        } else {
+                            fileList?.files?.get(0)?.id ?: ""
+                        }
+                    }
+                }.join()
 
                 withContext(Dispatchers.IO) {
                     launch {
-                        getDriveService()?.Files()?.create(gFile, fileContent)?.execute()
+                        val gFile = com.google.api.services.drive.model.File()
+                        gFile.name = file.name
+                        gFile.parents = mutableListOf(folderId)
+                        val fileContent = FileContent("audio/wav", file)
+                        drive?.Files()?.create(gFile, fileContent)?.setFields("id, parents")
+                            ?.execute()
                     }
-                }
+                }.key
+
             } catch (userAuthEx: UserRecoverableAuthIOException) {
                 startActivity(
                     userAuthEx.intent
@@ -123,6 +153,7 @@ class UnassignedRecordingsFragment : ContactDetailFragment() {
         }
 
     }
+
 
     private fun getDriveService(): Drive? {
         GoogleSignIn.getLastSignedInAccount(requireContext())?.let { googleAccount ->
