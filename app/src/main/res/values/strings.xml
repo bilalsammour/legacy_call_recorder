@@ -158,5 +158,6 @@
     <string name="google_drive_successfully">Backup upload successfully</string>
     <string name="signed_out">Signed Out</string>
     <string name="recordings_associated">The recordings associated with this contact consume storage as follows:</string>
+    <string name="missed_by">Missed by</string>
 
 </resources>

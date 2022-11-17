@@ -1,20 +1,11 @@
-/*
- * Copyright (C) 2019 Eugen Rădulescu <synapticwebb@gmail.com> - All rights reserved.
- *
- * You may use, distribute and modify this code only under the conditions
- * stated in the SW Call Recorder license. You should have received a copy of the
- * SW Call Recorder license along with this file. If not, please write to <synapticwebb@gmail.com>.
- */
 package com.threebanders.recordrs.ui.contact
 
 import android.animation.Animator
-import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.provider.CallLog
 import android.text.InputType
-import android.util.Log
 import android.view.*
 import android.view.ContextMenu.ContextMenuInfo
 import android.view.View.OnLongClickListener
@@ -28,7 +19,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.afollestad.materialdialogs.DialogAction
 import com.afollestad.materialdialogs.MaterialDialog
-import com.google.api.services.drive.Drive
 import com.threebanders.recordrs.R
 import com.threebanders.recordrs.ui.BaseActivity
 import com.threebanders.recordrs.ui.BaseActivity.LayoutType
@@ -51,29 +41,17 @@ open class ContactDetailFragment : BaseFragment() {
     protected var selectMode = false
     lateinit var mainViewModel: MainViewModel
     protected var selectedItems: MutableList<Int>? = ArrayList()
-    lateinit var mDrive: Drive
 
-    /**
-     * Dacă există cel puțin un recording lipsă pe disc printre cele selectate, butonul de move se dezactivează.
-     * Cind sunt 0 recorduri lispă se reactivează.
-     */
     private var selectedItemsDeleted = 0
-
-    /**
-     * Un flag care este setat cînd un recording este șters. Semnifică faptul că fragmentul detaliu curent
-     * nu mai este valabil și trebuie înlocuit.TODO: de testat ce se întîmplă cînd se adaugă recording.
-     */
-    private val invalid = false
-    override fun getContext(): Context? {
-        return super.getContext()
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         adapter = RecordingAdapter(ArrayList(0))
         mainViewModel = ViewModelProvider(mainActivity!!).get(
             MainViewModel::class.java
         )
+
         if (savedInstanceState != null) {
             selectMode = savedInstanceState.getBoolean(SELECT_MODE_KEY)
             selectedItems = savedInstanceState.getIntegerArrayList(SELECTED_ITEMS_KEY)
@@ -86,7 +64,10 @@ open class ContactDetailFragment : BaseFragment() {
         savedInstanceState: Bundle?
     ): View? {
         detailView =
-            inflater.inflate(R.layout.contact_detail_fragment, container, false) as RelativeLayout
+            inflater.inflate(
+                R.layout.contact_detail_fragment, container,
+                false
+            ) as RelativeLayout
         recordingsRecycler = detailView!!.findViewById(R.id.recordings)
         recordingsRecycler!!.setLayoutManager(
             LinearLayoutManager(
@@ -99,13 +80,14 @@ open class ContactDetailFragment : BaseFragment() {
                 DividerItemDecoration.VERTICAL
             )
         )
-        recordingsRecycler!!.setAdapter(adapter)
+        recordingsRecycler!!.adapter = adapter
 
         return detailView
     }
 
     override fun onResume() {
         super.onResume()
+
         val mainViewModel = ViewModelProvider(mainActivity!!).get(
             MainViewModel::class.java
         )
@@ -126,7 +108,7 @@ open class ContactDetailFragment : BaseFragment() {
             .positiveText(android.R.string.ok)
             .negativeText(android.R.string.cancel)
             .icon(mainActivity!!.resources.getDrawable(R.drawable.warning))
-            .onPositive { dialog: MaterialDialog, which: DialogAction ->
+            .onPositive { dialog: MaterialDialog, _: DialogAction ->
                 val result = mainViewModel!!.deleteRecordings(
                     selectedRecordings
                 )
@@ -148,6 +130,7 @@ open class ContactDetailFragment : BaseFragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+
         setDetailsButtonsListeners()
     }
 
@@ -157,18 +140,15 @@ open class ContactDetailFragment : BaseFragment() {
     }
 
     open fun paintViews() {
-        adapter!!.replaceData(mainViewModel!!.records.value!!, callDetails)
+        adapter!!.replaceData(mainViewModel.records.value!!, callDetails)
         if (selectMode) putInSelectMode(false) else toggleSelectModeActionBar(false)
         val noContent = detailView!!.findViewById<TextView>(R.id.no_content_detail)
-        if (mainViewModel!!.records.value!!.size > 0) noContent.visibility =
+        if (mainViewModel.records.value!!.size > 0) noContent.visibility =
             View.GONE else noContent.visibility = View.VISIBLE
     }
 
-    //    public boolean isInvalid() {
-    //        return invalid;
-    //    }
     fun removeRecording() {
-        adapter!!.removeItem(mainViewModel!!.deletedRecording.value)
+        adapter!!.removeItem(mainViewModel.deletedRecording.value)
     }
 
     protected fun putInSelectMode(animate: Boolean) {
@@ -176,7 +156,6 @@ open class ContactDetailFragment : BaseFragment() {
         toggleSelectModeActionBar(animate)
         redrawRecordings()
     }
-
 
     protected open fun toggleSelectModeActionBar(animate: Boolean) {
         val navigateBackBtn = mainActivity!!.findViewById<ImageButton>(R.id.navigate_back)
@@ -212,7 +191,7 @@ open class ContactDetailFragment : BaseFragment() {
 
     protected open fun shareRecorde(path: String?) {
         try {
-            val f = File(path)
+            val f = File(path!!)
             val uri = context?.let {
                 FileProvider.getUriForFile(
                     it,
@@ -239,7 +218,7 @@ open class ContactDetailFragment : BaseFragment() {
         }
         if (selectMode) title.text = selectedItems!!.size.toString() else {
             if (mainActivity!!.layoutType == LayoutType.SINGLE_PANE) title.text =
-                mainViewModel!!.contact.value!!.contactName else title.setText(R.string.app_name)
+                mainViewModel.contact.value!!.contactName else title.setText(R.string.app_name)
         }
     }
 
@@ -261,7 +240,7 @@ open class ContactDetailFragment : BaseFragment() {
     protected fun hideView(v: View?, animate: Boolean) {
         if (animate) fadeEffect(v!!, 0.0f, View.GONE) else {
             v!!.alpha = 0.0f //poate lipsi?
-            v!!.visibility = View.GONE
+            v.visibility = View.GONE
         }
     }
 
@@ -347,7 +326,7 @@ open class ContactDetailFragment : BaseFragment() {
     }
 
     private val selectedRecordings: List<Recording?>
-        private get() {
+        get() {
             val list: MutableList<Recording?> = ArrayList()
             for (adapterPosition in selectedItems!!) list.add(adapter!!.getItem(adapterPosition))
             return list
@@ -617,7 +596,7 @@ open class ContactDetailFragment : BaseFragment() {
 
         fun removeItem(recording: Recording?) {
             val position = recordings!!.indexOf(recording)
-            recordings!!.remove(recording)
+            recordings.remove(recording)
             notifyItemRemoved(position)
         }
 
@@ -628,17 +607,17 @@ open class ContactDetailFragment : BaseFragment() {
 
         //A devenit public pentru a funcționa UnassignedRecordingsFragment
         fun getItem(position: Int): Recording? {
-            return recordings!![position]
+            return recordings[position]
         }
 
         override fun onBindViewHolder(holder: RecordingHolder, position: Int) {
-            val recording = recordings!![position]
+            val recording = recordings[position]
             val adornRes: Int
-            adornRes = when (recording!!.format) {
-                Recorder.WAV_FORMAT -> if (mainActivity!!.settledTheme == BaseActivity.Companion.LIGHT_THEME) R.drawable.sound_symbol_wav_light else R.drawable.sound_symbol_wav_dark
-                Recorder.AAC_HIGH_FORMAT -> if (mainActivity!!.settledTheme == BaseActivity.Companion.LIGHT_THEME) R.drawable.sound_symbol_aac128_light else R.drawable.sound_symbol_aac128_dark
-                Recorder.AAC_BASIC_FORMAT -> if (mainActivity!!.settledTheme == BaseActivity.Companion.LIGHT_THEME) R.drawable.sound_symbol_aac32_light else R.drawable.sound_symbol_aac32_dark
-                else -> if (mainActivity!!.settledTheme == BaseActivity.Companion.LIGHT_THEME) R.drawable.sound_symbol_aac64_light else R.drawable.sound_symbol_aac64_dark
+            adornRes = when (recording.format) {
+                Recorder.WAV_FORMAT -> if (mainActivity!!.settledTheme == BaseActivity.LIGHT_THEME) R.drawable.sound_symbol_wav_light else R.drawable.sound_symbol_wav_dark
+                Recorder.AAC_HIGH_FORMAT -> if (mainActivity!!.settledTheme == BaseActivity.LIGHT_THEME) R.drawable.sound_symbol_aac128_light else R.drawable.sound_symbol_aac128_dark
+                Recorder.AAC_BASIC_FORMAT -> if (mainActivity!!.settledTheme == BaseActivity.LIGHT_THEME) R.drawable.sound_symbol_aac32_light else R.drawable.sound_symbol_aac32_dark
+                else -> if (mainActivity!!.settledTheme == BaseActivity.LIGHT_THEME) R.drawable.sound_symbol_aac64_light else R.drawable.sound_symbol_aac64_dark
             }
             for (i in contactList!!.indices) {
                 if (contactList!![i]!!
@@ -647,11 +626,11 @@ open class ContactDetailFragment : BaseFragment() {
                     if (contactList!![i]!!
                             .isMissed
                     ) holder.title.text =
-                        "missed by" + contactList!![i]!!.phoneNumber else holder.title.text =
+                        getString(R.string.missed_by) + " " + contactList!![i]!!.phoneNumber else holder.title.text =
                         contactList!![i]!!.phoneNumber
                 }
             }
-            if (mainViewModel!!.contact.value == null || !mainViewModel!!.contact.value!!
+            if (mainViewModel.contact.value == null || !mainViewModel.contact.value!!
                     .isPrivateNumber
             ) holder.recordingType.setImageResource(if (recording.isIncoming) R.drawable.incoming else if (mainActivity!!.settledTheme == BaseActivity.Companion.LIGHT_THEME) R.drawable.outgoing_light else R.drawable.outgoing_dark)
             holder.recordingAdorn.setImageResource(adornRes)
@@ -707,17 +686,13 @@ open class ContactDetailFragment : BaseFragment() {
         }
 
         override fun getItemCount(): Int {
-            return recordings!!.size
+            return recordings.size
         }
-    }// call date
+    }
 
-    //        miss_cal.setText(sb);
-// call type// name
-    // mobile number
     protected val callDetails: List<Contact>
-        protected get() = try {
+        get() = try {
             val contactList: MutableList<Contact> = ArrayList()
-            val sb = StringBuffer()
             val managedCursor =
                 requireContext().contentResolver.query(
                     CallLog.Calls.CONTENT_URI,
@@ -731,7 +706,7 @@ open class ContactDetailFragment : BaseFragment() {
             val type = managedCursor.getColumnIndex(CallLog.Calls.TYPE)
             val date = managedCursor.getColumnIndex(CallLog.Calls.DATE)
             val duration = managedCursor.getColumnIndex(CallLog.Calls.DURATION)
-            sb.append("Call Details :")
+
             while (managedCursor.moveToNext()) {
                 val phNumber = managedCursor.getString(number) // mobile number
                 val phName = managedCursor.getString(name) // name
@@ -740,14 +715,13 @@ open class ContactDetailFragment : BaseFragment() {
                 val callDayTime = Date(java.lang.Long.valueOf(callDate))
                 val callDuration = managedCursor.getString(duration)
                 var dir: String? = null
-                val dircode = callType.toInt()
-                when (dircode) {
+
+                when (callType.toInt()) {
                     CallLog.Calls.OUTGOING_TYPE -> dir = "OUTGOING"
                     CallLog.Calls.INCOMING_TYPE -> dir = "INCOMING"
                     CallLog.Calls.MISSED_TYPE -> dir = "MISSED"
                 }
-                sb.append("\nPhone Number:--- $phNumber \nCall Type:--- $dir \nCall Date:--- $callDayTime \nCall duration in sec :--- $callDuration")
-                sb.append("\n----------------------------------")
+
                 var value: String? = ""
                 value = phName
                 if (phName == null || phName.isEmpty())
@@ -761,8 +735,7 @@ open class ContactDetailFragment : BaseFragment() {
                 contactList.add(contact)
             }
             managedCursor.close()
-            //        miss_cal.setText(sb);
-            Log.e("Agil value --- ", sb.toString())
+
             contactList
         } catch (ex: Exception) {
             ex.printStackTrace()
@@ -772,18 +745,16 @@ open class ContactDetailFragment : BaseFragment() {
     companion object {
         private const val SELECT_MODE_KEY = "select_mode_key"
         private const val SELECTED_ITEMS_KEY = "selected_items_key"
-        protected const val REQUEST_PICK_NUMBER = 2
         private const val EFFECT_TIME = 250
-        const val EDIT_EXTRA_CONTACT = "edit_extra_contact"
-        private const val REQUEST_EDIT = 1
         const val RECORDING_EXTRA = "recording_extra"
+
         fun newInstance(contact: Contact?): ContactDetailFragment {
             val args = Bundle()
             args.putParcelable(ContactsListFragment.Companion.ARG_CONTACT, contact)
             val fragment = ContactDetailFragment()
             fragment.arguments = args
+
             return fragment
         }
     }
-
 }
