@@ -1,10 +1,3 @@
-/*
- * Copyright (C) 2019 Eugen Rădulescu <synapticwebb@gmail.com> - All rights reserved.
- *
- * You may use, distribute and modify this code only under the conditions
- * stated in the SW Call Recorder license. You should have received a copy of the
- * SW Call Recorder license along with this file. If not, please write to <synapticwebb@gmail.com>.
- */
 package com.threebanders.recordrs.ui.contact
 
 import android.Manifest
@@ -46,12 +39,14 @@ class ContactsListActivityMain : BaseActivity() {
     private var fm: FragmentManager? = null
     var unassignedToInsert: Fragment? = null
     var viewModel: MainViewModel? = null
+
     override fun createFragment(): Fragment? {
         return UnassignedRecordingsFragment()
     }
 
     override fun onResume() {
         super.onResume()
+
         checkIfThemeChanged()
     }
 
@@ -59,8 +54,10 @@ class ContactsListActivityMain : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme()
         super.onCreate(savedInstanceState)
+
         setContentView(R.layout.activity_masterdetail)
-        viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
+
+        viewModel = ViewModelProvider(this)[MainViewModel::class.java]
 
         if (!isMyServiceRunning(MyService::class.java)) {
             val intent = Intent("android.settings.ACCESSIBILITY_SETTINGS")
@@ -77,12 +74,12 @@ class ContactsListActivityMain : BaseActivity() {
         val settings = prefs
         val pm = getSystemService(POWER_SERVICE) as PowerManager
         val eulaNotAccepted =
-            if (settings!!.getBoolean(HAS_ACCEPTED_EULA, false)) 0 else EULA_NOT_ACCEPTED
+            if (settings.getBoolean(HAS_ACCEPTED_EULA, false)) 0 else EULA_NOT_ACCEPTED
         var permsNotGranted = 0
         var powerOptimized = 0
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             permsNotGranted = if (checkPermissions()) 0 else PERMS_NOT_GRANTED
-            if (pm != null) powerOptimized =
+            powerOptimized =
                 if (pm.isIgnoringBatteryOptimizations(packageName)) 0 else POWER_OPTIMIZED
         }
         val checkResult = eulaNotAccepted or permsNotGranted or powerOptimized
@@ -92,11 +89,6 @@ class ContactsListActivityMain : BaseActivity() {
             startActivityForResult(setupIntent, SETUP_ACTIVITY)
         } else setupRecorderFragment()
 
-        //În tablet view, unassigned tab, dacă erau recordinguri selectate și se răsturna ecranul în actionbar
-        //apăreau butoanele din tabul Contacts. Se întîmpla asta pentru că metoda toggleSelectModeActionBar
-        //era apelată de 2 ori: prima dată din UnassignedRecordingsFragment, a doua oară din
-        //ContactDetailFragment. Problema este că la restartarea activității se apelează totdeauna insertFragment
-        //Condiția de mai jos repară (cumva) acest bug.
         if (savedInstanceState == null) insertFragment(R.id.contacts_list_fragment_container)
         @SuppressLint("MissingInflatedId", "LocalSuppress") val hamburger =
             findViewById<ImageButton>(R.id.hamburger)
@@ -108,11 +100,12 @@ class ContactsListActivityMain : BaseActivity() {
         val pixelsDp =
             (resources.displayMetrics.widthPixels / resources.displayMetrics.density).toInt()
         navWidth =
-            if (pixelsDp >= 480) (resources.displayMetrics.widthPixels * 0.4).toInt() else (resources.displayMetrics.widthPixels * 0.8).toInt()
+            if (pixelsDp >= 480) (resources.displayMetrics.widthPixels * 0.4).toInt()
+            else (resources.displayMetrics.widthPixels * 0.8).toInt()
         val params = navigationView.layoutParams as DrawerLayout.LayoutParams
         params.width = navWidth
         navigationView.layoutParams = params
-        hamburger.setOnClickListener { v: View? -> drawer.openDrawer(GravityCompat.START) }
+        hamburger.setOnClickListener { drawer.openDrawer(GravityCompat.START) }
         navigationView.setNavigationItemSelectedListener { item: MenuItem ->
             when (item.itemId) {
                 R.id.settings -> startActivity(
@@ -158,8 +151,6 @@ class ContactsListActivityMain : BaseActivity() {
         unassignedToInsert = UnassignedRecordingsFragment()
         fm = supportFragmentManager
 
-        //https://www.truiton.com/2017/01/android-bottom-navigation-bar-example/
-        //https://guides.codepath.com/android/Bottom-Navigation-Views
         val bottomNav = findViewById<BottomNavigationView>(R.id.bottom_tab_nav)
         bottomNav.setOnNavigationItemSelectedListener { item: MenuItem ->
             when (item.itemId) {
@@ -225,11 +216,11 @@ class ContactsListActivityMain : BaseActivity() {
             requestCode,
             resultCode,
             data
-        ) //necesar pentru că altfel nu apelează onActivityResult din fragmente:
-        // https://stackoverflow.com/questions/6147884/onactivityresult-is-not-being-called-in-fragment
+        )
+
         if (resultCode == RESULT_OK && requestCode == SETUP_ACTIVITY) {
             setupRecorderFragment()
-            if (data!!.getBooleanExtra(SetupActivity.Companion.EXIT_APP, true)) finish()
+            if (data!!.getBooleanExtra(SetupActivity.EXIT_APP, true)) finish()
         }
     }
 
@@ -250,7 +241,9 @@ class ContactsListActivityMain : BaseActivity() {
             .content(R.string.exit_app_message)
             .positiveText(android.R.string.ok)
             .negativeText(android.R.string.cancel)
-            .onPositive { dialog: MaterialDialog, which: DialogAction -> super@ContactsListActivityMain.onBackPressed() }
+            .onPositive { dialog: MaterialDialog, _: DialogAction ->
+                super@ContactsListActivityMain.onBackPressed()
+            }
             .show()
     }
 
