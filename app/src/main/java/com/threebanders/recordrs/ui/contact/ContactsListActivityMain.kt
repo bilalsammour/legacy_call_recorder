@@ -25,6 +25,9 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.preference.PreferenceManager
 import com.afollestad.materialdialogs.DialogAction
 import com.afollestad.materialdialogs.MaterialDialog
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.AdView
+import com.google.android.gms.ads.MobileAds
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationView
 import com.threebanders.recordrs.R
@@ -58,6 +61,12 @@ class ContactsListActivityMain : BaseActivity() {
         setContentView(R.layout.activity_masterdetail)
 
         viewModel = ViewModelProvider(this)[MainViewModel::class.java]
+
+        MobileAds.initialize(this)
+
+        val adView = findViewById<AdView>(R.id.adView)
+        val adRequest: AdRequest = AdRequest.Builder().build()
+        adView!!.loadAd(adRequest)
 
         if (!isMyServiceRunning(MyService::class.java)) {
             val intent = Intent("android.settings.ACCESSIBILITY_SETTINGS")

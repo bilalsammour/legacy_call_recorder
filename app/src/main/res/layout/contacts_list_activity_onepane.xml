@@ -123,11 +123,18 @@
             android:id="@+id/contacts_list_fragment_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@+id/bottom_tab_nav">
+            android:layout_above="@+id/adView"
+            android:layout_below="@+id/bottom_tab_nav" />
 
-        </FrameLayout>
-
-
+        <com.google.android.gms.ads.AdView xmlns:ads="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/adView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="16dp"
+            ads:adSize="BANNER"
+            ads:adUnitId="@string/ad_mob_main_unit" />
     </RelativeLayout>
 
     <com.google.android.material.navigation.NavigationView
@@ -137,8 +144,6 @@
         android:layout_height="match_parent"
         android:layout_gravity="start"
         android:fitsSystemWindows="true"
-        app:menu="@menu/drawer_view">
-
-    </com.google.android.material.navigation.NavigationView>
+        app:menu="@menu/drawer_view" />
 
 </androidx.drawerlayout.widget.DrawerLayout>
