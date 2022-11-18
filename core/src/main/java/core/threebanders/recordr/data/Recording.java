@@ -23,7 +23,6 @@ import java.util.regex.Pattern;
 
 import core.threebanders.recordr.MoveAsyncTask;
 
-
 public class Recording implements Parcelable {
     public static final Creator<Recording> CREATOR = new Creator<Recording>() {
         @Override
