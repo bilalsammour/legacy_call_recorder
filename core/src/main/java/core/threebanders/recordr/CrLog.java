@@ -2,7 +2,6 @@ package core.threebanders.recordr;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Build;
 import android.util.Log;
@@ -37,7 +36,7 @@ public class CrLog {
     private final static int MAX_FILE_COUNT = 5;
     private final static String LOG_FILE_NAME = "log";
     private final static File LOG_FOLDER = Core.getContext().getFilesDir();
-    private static File logFile = new File(LOG_FOLDER, LOG_FILE_NAME + ".txt");
+    private static final File logFile = new File(LOG_FOLDER, LOG_FILE_NAME + ".txt");
 
     private static void backupLogFiles() throws LoggerException {
         File backup = null;
@@ -141,16 +140,12 @@ public class CrLog {
     }
 
     static public void sendLogs(final AppCompatActivity activity, String dev, String appName) {
-        new Thread(new SendLogs(new SendLogs.AfterZip() {
-            @Override
-            public void doTheRest(File zipFile) {
-                Resources res = Core.getContext().getResources();
-                Intent intent = new Intent(Intent.ACTION_SENDTO);
-                intent.setData(Uri.parse("mailto:" + dev));
-                intent.putExtra(Intent.EXTRA_SUBJECT, appName + " logs");
-                intent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(zipFile));
-                activity.startActivity(Intent.createChooser(intent, "Send email..."));
-            }
+        new Thread(new SendLogs(zipFile -> {
+            Intent intent = new Intent(Intent.ACTION_SENDTO);
+            intent.setData(Uri.parse("mailto:" + dev));
+            intent.putExtra(Intent.EXTRA_SUBJECT, appName + " logs");
+            intent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(zipFile));
+            activity.startActivity(Intent.createChooser(intent, "Send email..."));
         })).start();
     }
 
