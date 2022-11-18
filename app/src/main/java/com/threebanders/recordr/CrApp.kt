@@ -34,13 +34,6 @@ class CrApp : Application() {
         core = Core.Builder.newInstance()
             .setContext(applicationContext)
             .setNotifyGoToActivity(ContactsListActivityMain::class.java)
-            .setNotificationIcon(R.drawable.notification_icon)
-            .setIconSpeakerOff(R.drawable.speaker_phone_off)
-            .setIconSuccess(R.drawable.speaker_phone_on)
-            .setIconFailure(R.drawable.notification_icon_error)
-            .setIconSpeakerOn(R.drawable.speaker_phone_on)
-            .setVersionCode(BuildConfig.VERSION_CODE)
-            .setVersionName(BuildConfig.VERSION_NAME)
             .build()
     }
 
