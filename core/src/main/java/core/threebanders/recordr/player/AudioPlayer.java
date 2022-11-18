@@ -1,11 +1,3 @@
-/*
- * Copyright (C) 2019 Eugen Rădulescu <synapticwebb@gmail.com> - All rights reserved.
- *
- * You may use, distribute and modify this code only under the conditions
- * stated in the SW Call Recorder license. You should have received a copy of the
- * SW Call Recorder license along with this file. If not, please write to <synapticwebb@gmail.com>.
- */
-
 package core.threebanders.recordr.player;
 
 import android.annotation.SuppressLint;
@@ -37,32 +29,31 @@ import core.threebanders.recordr.CrLog;
 //https://medium.com/google-developers/building-a-simple-audio-app-in-android-part-2-3-a514f6224b83
 @SuppressWarnings("CatchMayIgnoreException")
 public class AudioPlayer extends Thread implements PlayerAdapter {
+    private static final int PLAYBACK_POSITION_REFRESH_INTERVAL_MS = 500;
+    private static final int SAMPLE_RATE = 44100;
+    private static final String WAV_FORMAT = "wav";
+    private static final String AAC_FORMAT = "aac";
+    private static final int WAV_BUFFER_SIZE = 8092;
+    private final static String ACRA_MODE = "mode";
+    private final static String ACRA_SIZE = "file_size";
+    private final static String ACRA_FORMAT = "format";
     private int state;
     private String mediaPath;
     private PlaybackListenerInterface playbackListener;
     private ScheduledExecutorService executor;
     private Runnable seekbarPositionUpdateTask;
-    private static final int PLAYBACK_POSITION_REFRESH_INTERVAL_MS = 500;
     private MediaCodec decoder;
     private MediaExtractor extractor;
     private AudioTrack audioTrack;
     private boolean stop = false;
     private boolean paused = false;
-    private static final int SAMPLE_RATE = 44100;
     private String formatName;
-    private static final String WAV_FORMAT = "wav";
-    private static final String AAC_FORMAT = "aac";
     private int channelCount;
     private RandomAccessFile inputWav; //folosesc RandomAccessFile deoarece, spre deosebire de InputStream,
     //permite operațiuni seek
     private long wavBufferCount = 0;
-    private static final int WAV_BUFFER_SIZE = 8092;
     private int maxWavBuffers;
     private float gainDb = 0;
-
-    private final static String ACRA_MODE = "mode";
-    private final static String ACRA_SIZE = "file_size";
-    private final static String ACRA_FORMAT = "format";
 
 
     public AudioPlayer(PlaybackListenerInterface listener) {
@@ -92,15 +83,13 @@ public class AudioPlayer extends Thread implements PlayerAdapter {
             if (sample >= 32767f) {
                 audioData[i] = (byte) 0xff;
                 audioData[i + 1] = 0x7f;
-            }
-            else if ( sample <= -32768f ) {
+            } else if (sample <= -32768f) {
                 audioData[i] = 0x0;
                 audioData[i + 1] = (byte) 0x80;
-            }
-            else {
+            } else {
                 int s = (int) (0.5f + sample);
-                audioData[i] = (byte)(s & 0xFF);
-                audioData[i + 1] = (byte)(s >> 8 & 0xFF);
+                audioData[i] = (byte) (s & 0xFF);
+                audioData[i + 1] = (byte) (s >> 8 & 0xFF);
             }
         }
     }
@@ -108,10 +97,10 @@ public class AudioPlayer extends Thread implements PlayerAdapter {
     @Override
     public boolean setMediaPosition(int position) {
         //nu văd probleme cu apelul în INITIALIZED. Există use-case pentru apelul în PLAYING sau în PAUSE: întoarcerea ecranului.
-        if(state == PlayerAdapter.State.UNINITIALIZED)
+        if (state == PlayerAdapter.State.UNINITIALIZED)
             CrLog.log(CrLog.WARN, "Invoked setMediaPosition() while in UNINITIALIZED state");
 
-        if(seekTo(position)) {
+        if (seekTo(position)) {
             playbackListener.onPositionChanged(position);
             return true;
         }
@@ -129,9 +118,9 @@ public class AudioPlayer extends Thread implements PlayerAdapter {
     @Override
     public int getCurrentPosition() {
         //nu văd probleme cu apelul în INITIALIZED
-        if(state == PlayerAdapter.State.UNINITIALIZED)
-           CrLog.log(CrLog.WARN, "Attempt to invoke getCurrentPosition while in UNINITIALIZED state");
-        if(formatName.equals(AAC_FORMAT))
+        if (state == PlayerAdapter.State.UNINITIALIZED)
+            CrLog.log(CrLog.WARN, "Attempt to invoke getCurrentPosition while in UNINITIALIZED state");
+        if (formatName.equals(AAC_FORMAT))
             return (int) extractor.getSampleTime() / 1000;
 
         long bytesRead = WAV_BUFFER_SIZE * wavBufferCount;
@@ -144,9 +133,9 @@ public class AudioPlayer extends Thread implements PlayerAdapter {
     @Override
     public boolean seekTo(int position) {
         //nu văd probleme cu apelul în INITIALIZED
-        if(state == PlayerAdapter.State.UNINITIALIZED)
+        if (state == PlayerAdapter.State.UNINITIALIZED)
             CrLog.log(CrLog.WARN, "Attempt to invoke seekTo() while in UNINITIALIZED state");
-        if(formatName.equals(AAC_FORMAT))
+        if (formatName.equals(AAC_FORMAT))
             extractor.seekTo((long) position * 1000, MediaExtractor.SEEK_TO_CLOSEST_SYNC); //MediaExtractor folosește microsecunde, nu milisecunde
         else {
             //44100 samples * 2 channels * 2 bytes per sample = number of bytes per second;
@@ -155,11 +144,10 @@ public class AudioPlayer extends Thread implements PlayerAdapter {
             long newposition = ((SAMPLE_RATE * channelCount * 2) / 1000) * position;
             try {
                 inputWav.seek(newposition);
-            }
-            catch (IOException e) {
+            } catch (IOException e) {
                 CrLog.log(CrLog.ERROR, "Error while seeking: " + e.getMessage() + " Aborting...");
                 playbackListener.onError();
-                if(isAlive())
+                if (isAlive())
                     interrupt();
                 return false;
             }
@@ -172,13 +160,12 @@ public class AudioPlayer extends Thread implements PlayerAdapter {
     public boolean loadMedia(String mediaPath) {
         //se apelează în mod obișnuit după construcție, în UNINITIALIZED. Apelarea în INITIALIZED deși inutilă
         //este inofensivă. Apelul în PLAYING sau PAUSE poate crea probleme, de aceea am interzis.
-        if(state == PlayerAdapter.State.PLAYING || state == PlayerAdapter.State.PAUSED)
+        if (state == PlayerAdapter.State.PLAYING || state == PlayerAdapter.State.PAUSED)
             CrLog.log(CrLog.WARN, "Attempt to invoke loadMedia() while in PLAYING or PAUSED state");
         this.mediaPath = mediaPath;
         try {
             initialize();
-        }
-        catch (PlayerException e) {
+        } catch (PlayerException e) {
             CrLog.log(CrLog.ERROR, "Error while initializing: " + e.getMessage() + " Aborting...");
             playbackListener.onError();
             return false;
@@ -189,9 +176,9 @@ public class AudioPlayer extends Thread implements PlayerAdapter {
         return true;
     }
 
-   private void initialize() throws PlayerException {
+    private void initialize() throws PlayerException {
         formatName = mediaPath.endsWith(".wav") ? WAV_FORMAT : AAC_FORMAT;
-        if(formatName.equals(AAC_FORMAT))
+        if (formatName.equals(AAC_FORMAT))
             initializeForAac(mediaPath); //exception
         else
             initializeForWav(mediaPath); //exception
@@ -204,14 +191,13 @@ public class AudioPlayer extends Thread implements PlayerAdapter {
         audioTrack.play();
         File audioFile = new File(mediaPath);
 
-       //noinspection CatchMayIgnoreException
-       try {
-           ACRA.getErrorReporter().putCustomData(ACRA_FORMAT, formatName);
-           ACRA.getErrorReporter().putCustomData(ACRA_MODE, channelCount == 1 ? "mono" : "stereo");
-           ACRA.getErrorReporter().putCustomData(ACRA_SIZE, (audioFile.length() / 1024) + "KB");
-       }
-       catch (IllegalStateException exc) {
-       }
+        //noinspection CatchMayIgnoreException
+        try {
+            ACRA.getErrorReporter().putCustomData(ACRA_FORMAT, formatName);
+            ACRA.getErrorReporter().putCustomData(ACRA_MODE, channelCount == 1 ? "mono" : "stereo");
+            ACRA.getErrorReporter().putCustomData(ACRA_SIZE, (audioFile.length() / 1024) + "KB");
+        } catch (IllegalStateException exc) {
+        }
         state = PlayerAdapter.State.INITIALIZED;
     }
 
@@ -233,10 +219,9 @@ public class AudioPlayer extends Thread implements PlayerAdapter {
             inputWav.seek(CHANNEL_COUNT_ADDRESS);
             channelCount = (int) inputWav.readByte();
             inputWav.seek(0);
-            if(inputWav.skipBytes(WAV_HEADER_SIZE) < WAV_HEADER_SIZE)
+            if (inputWav.skipBytes(WAV_HEADER_SIZE) < WAV_HEADER_SIZE)
                 throw new PlayerException("Initialization error: Wav file corrupted");
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             throw new PlayerException("Initialization error: " + e.getMessage());
         }
 
@@ -266,8 +251,7 @@ public class AudioPlayer extends Thread implements PlayerAdapter {
             channelCount = format.getInteger(MediaFormat.KEY_CHANNEL_COUNT);
             extractor.selectTrack(0);
             decoder.start();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             throw new PlayerException("Initialization error: " + e.getMessage());
         }
     }
@@ -282,17 +266,12 @@ public class AudioPlayer extends Thread implements PlayerAdapter {
     }
 
     @Override
-    public void setPlayerState(int state) {
-        this.state = state;
-    }
-
-    @Override
     //nu trebuie apelat în UNINITIALIZED din motive evidente. În INITIALIZED sau în PAUSED este apelarea
     //normală; în PLAYING nu are niciun efect.
     public void play() {
-        if(state == PlayerAdapter.State.UNINITIALIZED)
+        if (state == PlayerAdapter.State.UNINITIALIZED)
             CrLog.log(CrLog.WARN, "Attempt to invoke play while in UNINITIALIZED state");
-        if(!isAlive())
+        if (!isAlive())
             start();
         else
             resumeIfPaused();
@@ -311,13 +290,12 @@ public class AudioPlayer extends Thread implements PlayerAdapter {
     public void pause() {
         //pause() nu trebuie chemat în stările UNINITIALIZED sau INITIALIZED pentru că va seta în mod greșit
         //și inutil flagul pause. Apelarea în timpul PAUSED nu are niciun efect.
-        if(state == PlayerAdapter.State.UNINITIALIZED || state == PlayerAdapter.State.INITIALIZED)
+        if (state == PlayerAdapter.State.UNINITIALIZED || state == PlayerAdapter.State.INITIALIZED)
             CrLog.log(CrLog.WARN, "Attempt to invoke pause() while in UNINITIALIZED state or INITIALIZED state");
         pauseIfRunning();
         stopUpdatingPosition(false);
         state = PlayerAdapter.State.PAUSED;
     }
-
 
     @Override
     public int getPlayerState() {
@@ -325,9 +303,14 @@ public class AudioPlayer extends Thread implements PlayerAdapter {
     }
 
     @Override
+    public void setPlayerState(int state) {
+        this.state = state;
+    }
+
+    @Override
     public int getTotalDuration() { //in milliseconds
         //doar UNINITIALIZED e interzis
-        if(state == PlayerAdapter.State.UNINITIALIZED)
+        if (state == PlayerAdapter.State.UNINITIALIZED)
             CrLog.log(CrLog.WARN, "Attempt to invoke getTotalDuration() while in UNINITIALIZED state");
         MediaMetadataRetriever retriever = new MediaMetadataRetriever();
         retriever.setDataSource(mediaPath);
@@ -336,15 +319,15 @@ public class AudioPlayer extends Thread implements PlayerAdapter {
     }
 
     private void startUpdatingPosition() {
-        if(executor == null)
+        if (executor == null)
             executor = Executors.newSingleThreadScheduledExecutor();
-        if(seekbarPositionUpdateTask == null)
+        if (seekbarPositionUpdateTask == null)
             seekbarPositionUpdateTask = new Runnable() {
                 @Override
                 public void run() {
-                    if(state == PlayerAdapter.State.PLAYING) {
+                    if (state == PlayerAdapter.State.PLAYING) {
                         int currentPosition = getCurrentPosition();
-                        if(playbackListener != null)
+                        if (playbackListener != null)
                             playbackListener.onPositionChanged(currentPosition);
                     }
                 }
@@ -355,25 +338,25 @@ public class AudioPlayer extends Thread implements PlayerAdapter {
     }
 
     private void stopUpdatingPosition(boolean resetPosition) {
-        if(executor != null) {
+        if (executor != null) {
             executor.shutdownNow();
             executor = null;
             seekbarPositionUpdateTask = null;
-            if(resetPosition && playbackListener != null)
+            if (resetPosition && playbackListener != null)
                 playbackListener.onPositionChanged(0);
         }
     }
 
     private synchronized void resumeIfPaused() {
         //https://docs.oracle.com/javase/8/docs%2Ftechnotes%2Fguides%2Fconcurrency%2FthreadPrimitiveDeprecation.html
-        if(paused){
+        if (paused) {
             paused = false;
             notify();
         }
     }
 
     private synchronized void pauseIfRunning() {
-        if(!paused)
+        if (!paused)
             paused = true;
     }
 
@@ -394,29 +377,28 @@ public class AudioPlayer extends Thread implements PlayerAdapter {
         int inputBufId;
         int outputBufId;
 
-        while(!sawOutputEOS && !stop) {
+        while (!sawOutputEOS && !stop) {
             //https://docs.oracle.com/javase/8/docs%2Ftechnotes%2Fguides%2Fconcurrency%2FthreadPrimitiveDeprecation.html
-            if(paused) {
+            if (paused) {
                 try {
-                    synchronized(this) {
-                        while(paused)
+                    synchronized (this) {
+                        while (paused)
                             wait();
                     }
-                }
-                catch (InterruptedException exc) {
+                } catch (InterruptedException exc) {
                     CrLog.log(CrLog.WARN, "Synchronization error: " + exc.getMessage()); //trebuie gestionată eroarea?
                 }
             }
 
-            if(!sawInputEOS){
+            if (!sawInputEOS) {
                 inputBufId = decoder.dequeueInputBuffer(timeOutUs);
                 if (inputBufId >= 0) {
                     ByteBuffer inputBuffer;
-                    if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
                         inputBuffer = decoder.getInputBuffer(inputBufId);
                     else
                         inputBuffer = decoderInputBuffers[inputBufId];
-                    if(inputBuffer == null)
+                    if (inputBuffer == null)
                         throw new PlayerException("Codec returned null input buffer");
                     int sampleSize = extractor.readSampleData(inputBuffer, 0 /* offset */);
                     long presentationTimeUs = 0;
@@ -435,20 +417,20 @@ public class AudioPlayer extends Thread implements PlayerAdapter {
                 }
             }
             outputBufId = decoder.dequeueOutputBuffer(bufInfo, timeOutUs);
-            if(outputBufId >= 0) {
+            if (outputBufId >= 0) {
                 ByteBuffer outputBuffer;
-                if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
                     outputBuffer = decoder.getOutputBuffer(outputBufId);
                 else
                     outputBuffer = decoderOutputBuffers[outputBufId];
-                if(outputBuffer == null)
+                if (outputBuffer == null)
                     throw new PlayerException("Codec returned null output buffer.");
                 byte[] audioData = new byte[bufInfo.size];
                 outputBuffer.get(audioData);
                 outputBuffer.clear();
 
                 if (audioData.length > 0) {
-                    if(gainDb > 0)
+                    if (gainDb > 0)
                         addGain(audioData);
                     audioTrack.write(audioData, 0, audioData.length); //play
                 }
@@ -456,12 +438,11 @@ public class AudioPlayer extends Thread implements PlayerAdapter {
                 decoder.releaseOutputBuffer(outputBufId, false);
                 if ((bufInfo.flags & MediaCodec.BUFFER_FLAG_END_OF_STREAM) != 0)
                     sawOutputEOS = true;
-            }
-            else if(outputBufId == MediaCodec.INFO_OUTPUT_BUFFERS_CHANGED)
+            } else if (outputBufId == MediaCodec.INFO_OUTPUT_BUFFERS_CHANGED)
                 decoderOutputBuffers = decoder.getOutputBuffers();
         }
 
-        if(sawOutputEOS)
+        if (sawOutputEOS)
             playbackListener.onPlaybackCompleted();
 
         decoder.stop();
@@ -474,32 +455,30 @@ public class AudioPlayer extends Thread implements PlayerAdapter {
     private void playWav() throws PlayerException {
         int bytesRead;
         byte[] audioBuffer = new byte[WAV_BUFFER_SIZE];
-        while(wavBufferCount <= maxWavBuffers && !stop) {
-            if(paused) {
+        while (wavBufferCount <= maxWavBuffers && !stop) {
+            if (paused) {
                 try {
                     synchronized (this) {
                         while (paused)
                             wait();
                     }
-                }
-                catch (InterruptedException e) {
+                } catch (InterruptedException e) {
                     CrLog.log(CrLog.WARN, "Synchronization error: " + e.getMessage());
                 }
             }
             try {
                 bytesRead = inputWav.read(audioBuffer);
-            }
-            catch (IOException e) {
+            } catch (IOException e) {
                 throw new PlayerException("Error reading from the wav file");
             }
             ++wavBufferCount;
 
-            if(gainDb > 0)
+            if (gainDb > 0)
                 addGain(audioBuffer);
             audioTrack.write(audioBuffer, 0, bytesRead);
         }
 
-        if(wavBufferCount >= maxWavBuffers)
+        if (wavBufferCount >= maxWavBuffers)
             playbackListener.onPlaybackCompleted();
 
         audioTrack.stop();
@@ -513,15 +492,14 @@ public class AudioPlayer extends Thread implements PlayerAdapter {
                 playAac();
             else
                 playWav();
-        }
-        catch (PlayerException e) {
+        } catch (PlayerException e) {
             playbackListener.onError();
         }
         stopUpdatingPosition(true);
-       try {
-           ACRA.getErrorReporter().clearCustomData();
-       }
-       catch (IllegalStateException ignored) {}
+        try {
+            ACRA.getErrorReporter().clearCustomData();
+        } catch (IllegalStateException ignored) {
+        }
     }
 
 }

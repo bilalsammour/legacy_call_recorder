@@ -4,11 +4,6 @@ package core.threebanders.recordr.data;
 import java.util.List;
 
 public interface Repository {
-    //Contacts:
-    interface LoadContactsCallback {
-        void onContactsLoaded(List<Contact> contacts);
-    }
-
     List<Contact> getAllContacts();
 
     void getAllContacts(LoadContactsCallback callback);
@@ -21,11 +16,6 @@ public interface Repository {
 
     void deleteContact(Contact contact);
 
-    //Recordings:
-    interface LoadRecordingsCallback {
-        void onRecordingsLoaded(List<Recording> recordings);
-    }
-
     void getRecordings(Contact contact, LoadRecordingsCallback callback);
 
     List<Recording> getRecordings(Contact contact);
@@ -35,4 +25,14 @@ public interface Repository {
     void updateRecording(Recording recording);
 
     void deleteRecording(Recording recording);
+
+    //Contacts:
+    interface LoadContactsCallback {
+        void onContactsLoaded(List<Contact> contacts);
+    }
+
+    //Recordings:
+    interface LoadRecordingsCallback {
+        void onRecordingsLoaded(List<Recording> recordings);
+    }
 }

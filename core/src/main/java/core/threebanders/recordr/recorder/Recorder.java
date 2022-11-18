@@ -18,23 +18,22 @@ import core.threebanders.recordr.Cache;
 import core.threebanders.recordr.Core;
 
 public class Recorder {
-    private File audioFile;
-    private Thread recordingThread;
-    private long startingTime;
-    private final String format;
-    private final String mode;
     public static final String WAV_FORMAT = "wav";
     public static final String AAC_HIGH_FORMAT = "aac_hi";
     public static final String AAC_MEDIUM_FORMAT = "aac_med";
     public static final String AAC_BASIC_FORMAT = "aac_bas";
     static final String MONO = "mono";
-    private int source;
-    private boolean hasError = false;
-    private final Context context;
-
     private static final String ACRA_FORMAT = "format";
     private static final String ACRA_MODE = "mode";
     private static final String ACRA_SAVE_PATH = "save_path";
+    private final String format;
+    private final String mode;
+    private final Context context;
+    private File audioFile;
+    private Thread recordingThread;
+    private long startingTime;
+    private int source;
+    private boolean hasError = false;
 
     public Recorder(Context context) {
         this.context = context;

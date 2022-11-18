@@ -13,9 +13,9 @@ import core.threebanders.recordr.Core;
 
 
 public class CallReceiver extends BroadcastReceiver {
-    private static final String TAG = "CallRecorder";
     public static final String ARG_NUM_PHONE = "arg_num_phone";
     public static final String ARG_INCOMING = "arg_incoming";
+    private static final String TAG = "CallRecorder";
     private static boolean serviceStarted = false; //Fiind statică, dacă se fac 2 apeluri simultan numai primul poate porni
     //serviciul de recording. Dacă nu ar fi statică s-ar putea porni simultan mai multe servicii. Asta e un lucru rău, pentru
     //că de ex. dacă se sună de pe un nr în timp ce se vorbește cu un altul, dacă userul răspunde la al doilea apel primul e pus
@@ -34,20 +34,20 @@ public class CallReceiver extends BroadcastReceiver {
         String incomingNumber;
         String action = intent.getAction();
 
-        if(action != null && action.equals(TelephonyManager.ACTION_PHONE_STATE_CHANGED) ) {
+        if (action != null && action.equals(TelephonyManager.ACTION_PHONE_STATE_CHANGED)) {
 
-            if((bundle = intent.getExtras()) != null) {
+            if ((bundle = intent.getExtras()) != null) {
                 state = bundle.getString(TelephonyManager.EXTRA_STATE);
                 Log.d(TAG, intent.getAction() + " " + state);
 
                 //acum serviciul este pornit totdeauna în extra_state_ringing (pentru ca userul să aibă posibilitatea
                 // în cazul nr necunoscute să pornească înregistrarea înainte de începerea convorbirii),
-                if(state != null && state.equals(TelephonyManager.EXTRA_STATE_RINGING)) {
+                if (state != null && state.equals(TelephonyManager.EXTRA_STATE_RINGING)) {
                     //în pie+ va fi întotdeauna null. În celelalte versiuni va conține nr, null însemnănd nr privat.
                     incomingNumber = bundle.getString(TelephonyManager.EXTRA_INCOMING_NUMBER);
                     boolean isEnabled = Core.getInstance().getCache().enabled();
                     Log.d(TAG, "Incoming number: " + incomingNumber);
-                    if(!serviceStarted && isEnabled) {
+                    if (!serviceStarted && isEnabled) {
                         Intent intentService = new Intent(context, RecorderService.class);
                         serviceName = intentService.getComponent();
                         intentService.putExtra(ARG_NUM_PHONE, incomingNumber);
@@ -60,12 +60,10 @@ public class CallReceiver extends BroadcastReceiver {
                             context.startService(intentService);
                         serviceStarted = true;
                     }
-                }
-
-                else if(state != null && state.equals(TelephonyManager.EXTRA_STATE_OFFHOOK)) {
+                } else if (state != null && state.equals(TelephonyManager.EXTRA_STATE_OFFHOOK)) {
                     boolean isEnabled = Core.getInstance().getCache().enabled();
                     //dacă serviciul nu e pornit înseamnă că e un apel outgoing.
-                    if(!serviceStarted && isEnabled) { //outgoing
+                    if (!serviceStarted && isEnabled) { //outgoing
                         Intent intentService = new Intent(context, RecorderService.class);
                         serviceName = intentService.getComponent();
                         intentService.putExtra(ARG_INCOMING, false);
@@ -75,10 +73,8 @@ public class CallReceiver extends BroadcastReceiver {
                             context.startService(intentService);
                         serviceStarted = true;
                     }
-                }
-
-                else if(state != null && state.equals(TelephonyManager.EXTRA_STATE_IDLE)) {
-                    if(serviceStarted) {
+                } else if (state != null && state.equals(TelephonyManager.EXTRA_STATE_IDLE)) {
+                    if (serviceStarted) {
                         Intent stopIntent = new Intent(context, RecorderService.class);
                         stopIntent.setComponent(serviceName);
                         context.stopService(stopIntent);

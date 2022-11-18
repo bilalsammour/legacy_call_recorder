@@ -1,11 +1,3 @@
-/*
- * Copyright (C) 2019 Eugen Rădulescu <synapticwebb@gmail.com> - All rights reserved.
- *
- * You may use, distribute and modify this code only under the conditions
- * stated in the SW Call Recorder license. You should have received a copy of the
- * SW Call Recorder license along with this file. If not, please write to <synapticwebb@gmail.com>.
- */
-
 package core.threebanders.recordr.data;
 
 import android.content.Context;
@@ -55,14 +47,14 @@ public class CallRecorderDbHelper extends SQLiteOpenHelper {
         String version3b = "INSERT INTO " + ContactsContractLocal.Contacts.TABLE_NAME + "(_id, phone_number, contact_name, photo_uri, phone_type) SELECT _id, phone_number, contact_name, photo_uri, phone_type FROM "
                 + ContactsContractLocal.Contacts.TABLE_NAME + "_old";
         String version3c = "DROP TABLE " + ContactsContractLocal.Contacts.TABLE_NAME + "_old";
-        if(oldVersion == 1) {
+        if (oldVersion == 1) {
             db.execSQL(version2);
             db.execSQL(version3a);
             db.execSQL(SQL_CREATE_CONTACTS);
             db.execSQL(version3b);
             db.execSQL(version3c);
         }
-        if(oldVersion == 2) {
+        if (oldVersion == 2) {
             db.execSQL(version3a);
             db.execSQL(SQL_CREATE_CONTACTS);
             db.execSQL(version3b);

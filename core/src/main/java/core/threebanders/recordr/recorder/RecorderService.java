@@ -28,6 +28,16 @@ import core.threebanders.recordr.data.Contact;
 import core.threebanders.recordr.data.Recording;
 
 public class RecorderService extends Service {
+    public static final int NOTIFICATION_ID = 1;
+    public static final int RECORD_AUTOMATICALLY = 1;
+    public static final int RECORD_ERROR = 4;
+    public static final int RECORD_SUCCESS = 5;
+    static final String ACTION_STOP_SPEAKER = "net.synapticweb.callrecorder.STOP_SPEAKER";
+    static final String ACTION_START_SPEAKER = "net.synapticweb.callrecorder.START_SPEAKER";
+    static final String ACRA_PHONE_NUMBER = "phone_number";
+    static final String ACRA_INCOMING = "incoming";
+    private static final String CHANNEL_ID = "call_recorder_channel";
+    private static RecorderService self;
     private String receivedNumPhone = null;
     private boolean privateCall = false;
     private Boolean incoming = null;
@@ -35,22 +45,14 @@ public class RecorderService extends Service {
     private Thread speakerOnThread;
     private AudioManager audioManager;
     private NotificationManager nm;
-    private static RecorderService self;
     private boolean speakerOn = false;
     private Contact contact = null;
     private String callIdentifier;
     private SharedPreferences settings;
 
-    public static final int NOTIFICATION_ID = 1;
-    private static final String CHANNEL_ID = "call_recorder_channel";
-    public static final int RECORD_AUTOMATICALLY = 1;
-    public static final int RECORD_ERROR = 4;
-    public static final int RECORD_SUCCESS = 5;
-    static final String ACTION_STOP_SPEAKER = "net.synapticweb.callrecorder.STOP_SPEAKER";
-    static final String ACTION_START_SPEAKER = "net.synapticweb.callrecorder.START_SPEAKER";
-
-    static final String ACRA_PHONE_NUMBER = "phone_number";
-    static final String ACRA_INCOMING = "incoming";
+    public static RecorderService getService() {
+        return self;
+    }
 
     @Override
     public IBinder onBind(Intent i) {
@@ -65,10 +67,6 @@ public class RecorderService extends Service {
         settings = Core.getInstance().getCache().getPrefs();
 
         self = this;
-    }
-
-    public static RecorderService getService() {
-        return self;
     }
 
     public Recorder getRecorder() {

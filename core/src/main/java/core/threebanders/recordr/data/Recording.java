@@ -1,11 +1,3 @@
-/*
- * Copyright (C) 2019 Eugen Rădulescu <synapticwebb@gmail.com> - All rights reserved.
- *
- * You may use, distribute and modify this code only under the conditions
- * stated in the SW Call Recorder license. You should have received a copy of the
- * SW Call Recorder license along with this file. If not, please write to <synapticwebb@gmail.com>.
- */
-
 package core.threebanders.recordr.data;
 
 import android.content.Context;
@@ -33,6 +25,17 @@ import core.threebanders.recordr.MoveAsyncTask;
 
 
 public class Recording implements Parcelable {
+    public static final Creator<Recording> CREATOR = new Creator<Recording>() {
+        @Override
+        public Recording createFromParcel(Parcel source) {
+            return new Recording(source);
+        }
+
+        @Override
+        public Recording[] newArray(int size) {
+            return new Recording[size];
+        }
+    };
     private Long id = 0L;
     private Long contactId;
     private String path;
@@ -58,6 +61,25 @@ public class Recording implements Parcelable {
         if (format != null) this.format = format;
         if (mode != null) this.mode = mode;
         if (source != null) this.source = source;
+    }
+
+    protected Recording(Parcel in) {
+        this.id = (Long) in.readValue(Long.class.getClassLoader());
+        this.contactId = (Long) in.readValue(Long.class.getClassLoader());
+        this.path = in.readString();
+        this.incoming = (Boolean) in.readValue(Boolean.class.getClassLoader());
+        this.startTimestamp = (Long) in.readValue(Long.class.getClassLoader());
+        this.endTimestamp = (Long) in.readValue(Long.class.getClassLoader());
+        this.isNameSet = (Boolean) in.readValue(Boolean.class.getClassLoader());
+        this.format = in.readString();
+        this.mode = in.readString();
+        this.source = in.readString();
+    }
+
+    public static boolean hasIllegalChar(CharSequence fileName) {
+        Pattern pattern = Pattern.compile("[^a-zA-Z0-9.\\- ]");
+        Matcher matcher = pattern.matcher(fileName);
+        return matcher.find();
     }
 
     public boolean exists() {
@@ -88,16 +110,9 @@ public class Recording implements Parcelable {
         return fileName.substring(0, fileName.length() - 4);
     }
 
-    public static boolean hasIllegalChar(CharSequence fileName) {
-        Pattern pattern = Pattern.compile("[^a-zA-Z0-9.\\- ]");
-        Matcher matcher = pattern.matcher(fileName);
-        return matcher.find();
-    }
-
     public long getSize() {
         return new File(path).length();
     }
-
 
     public String getDate() {
         Calendar recordingCal = Calendar.getInstance();
@@ -172,10 +187,6 @@ public class Recording implements Parcelable {
         this.id = id;
     }
 
-    public void setContactId(long contactId) {
-        this.contactId = contactId;
-    }
-
     public String getPath() {
         return path;
     }
@@ -192,12 +203,12 @@ public class Recording implements Parcelable {
         this.incoming = incoming;
     }
 
-    public void setFormat(String format) {
-        this.format = format;
-    }
-
     public String getFormat() {
         return format;
+    }
+
+    public void setFormat(String format) {
+        this.format = format;
     }
 
     public Boolean getIsNameSet() {
@@ -210,6 +221,10 @@ public class Recording implements Parcelable {
 
     public Long getContactId() {
         return contactId;
+    }
+
+    public void setContactId(long contactId) {
+        this.contactId = contactId;
     }
 
     public void setContactId(Long contactId) {
@@ -228,20 +243,20 @@ public class Recording implements Parcelable {
         return startTimestamp;
     }
 
-    public Long getEndTimestamp() {
-        return endTimestamp;
-    }
-
-    public String getMode() {
-        return mode;
-    }
-
     public void setStartTimestamp(Long startTimestamp) {
         this.startTimestamp = startTimestamp;
     }
 
+    public Long getEndTimestamp() {
+        return endTimestamp;
+    }
+
     public void setEndTimestamp(Long endTimestamp) {
         this.endTimestamp = endTimestamp;
+    }
+
+    public String getMode() {
+        return mode;
     }
 
     public void setMode(String mode) {
@@ -291,29 +306,4 @@ public class Recording implements Parcelable {
         dest.writeString(this.mode);
         dest.writeString(this.source);
     }
-
-    protected Recording(Parcel in) {
-        this.id = (Long) in.readValue(Long.class.getClassLoader());
-        this.contactId = (Long) in.readValue(Long.class.getClassLoader());
-        this.path = in.readString();
-        this.incoming = (Boolean) in.readValue(Boolean.class.getClassLoader());
-        this.startTimestamp = (Long) in.readValue(Long.class.getClassLoader());
-        this.endTimestamp = (Long) in.readValue(Long.class.getClassLoader());
-        this.isNameSet = (Boolean) in.readValue(Boolean.class.getClassLoader());
-        this.format = in.readString();
-        this.mode = in.readString();
-        this.source = in.readString();
-    }
-
-    public static final Creator<Recording> CREATOR = new Creator<Recording>() {
-        @Override
-        public Recording createFromParcel(Parcel source) {
-            return new Recording(source);
-        }
-
-        @Override
-        public Recording[] newArray(int size) {
-            return new Recording[size];
-        }
-    };
 }

@@ -1,11 +1,3 @@
-/*
- * Copyright (C) 2019 Eugen Rădulescu <synapticwebb@gmail.com> - All rights reserved.
- *
- * You may use, distribute and modify this code only under the conditions
- * stated in the SW Call Recorder license. You should have received a copy of the
- * SW Call Recorder license along with this file. If not, please write to <synapticwebb@gmail.com>.
- */
-
 package core.threebanders.recordr.data;
 
 import android.content.ContentResolver;
@@ -30,6 +22,17 @@ import core.threebanders.recordr.CoreUtil;
 
 
 public class Contact implements Comparable<Contact>, Parcelable {
+    public static final Creator<Contact> CREATOR = new Creator<Contact>() {
+        @Override
+        public Contact createFromParcel(Parcel source) {
+            return new Contact(source);
+        }
+
+        @Override
+        public Contact[] newArray(int size) {
+            return new Contact[size];
+        }
+    };
     private Long id = 0L;
     private String phoneNumber = "";
     private int phoneType = CoreUtil.UNKNOWN_TYPE_PHONE_CODE;
@@ -40,15 +43,25 @@ public class Contact implements Comparable<Contact>, Parcelable {
     private boolean isMissed = false;
     private Integer color = null;
 
-    public Contact(){
+    public Contact() {
     }
 
     public Contact(Long id, String phoneNumber, String contactName, String photoUriStr, Integer phoneTypeCode) {
-        if(id != null) setId(id);
-        if(phoneNumber != null) setPhoneNumber(phoneNumber);
-        if(contactName != null) setContactName(contactName);
-        if(photoUriStr != null) setPhotoUri(photoUriStr);
-        if(phoneTypeCode != null) setPhoneType(phoneTypeCode);
+        if (id != null) setId(id);
+        if (phoneNumber != null) setPhoneNumber(phoneNumber);
+        if (contactName != null) setContactName(contactName);
+        if (photoUriStr != null) setPhotoUri(photoUriStr);
+        if (phoneTypeCode != null) setPhoneType(phoneTypeCode);
+    }
+
+    protected Contact(Parcel in) {
+        this.id = (Long) in.readValue(Long.class.getClassLoader());
+        this.phoneNumber = in.readString();
+        this.phoneType = in.readInt();
+        this.contactName = in.readString();
+        this.photoUri = in.readParcelable(Uri.class.getClassLoader());
+        this.shouldRecord = in.readByte() != 0;
+        this.color = (Integer) in.readValue(Integer.class.getClassLoader());
     }
 
     public static Contact queryNumberInAppContacts(Repository repository, String receivedPhoneNumber) {
@@ -64,6 +77,33 @@ public class Contact implements Comparable<Contact>, Parcelable {
         return null;
     }
 
+    @Nullable
+    static public Contact queryNumberInPhoneContacts(final String number, @NonNull ContentResolver resolver) {
+        //implementare probabil mai eficientă decît ce aveam eu:
+        //https://stackoverflow.com/questions/3505865/android-check-phone-number-present-in-contact-list-phone-number-retrieve-fr
+        Uri lookupUri = Uri.withAppendedPath(
+                //e atît de lung pentru că am și eu ContactsContract.
+                android.provider.ContactsContract.PhoneLookup.CONTENT_FILTER_URI,
+                Uri.encode(number));
+        String[] projection = {android.provider.ContactsContract.PhoneLookup.NUMBER,
+                android.provider.ContactsContract.PhoneLookup.TYPE,
+                android.provider.ContactsContract.PhoneLookup.DISPLAY_NAME,
+                android.provider.ContactsContract.PhoneLookup.PHOTO_URI};
+        //Matchingul este asigurat de android, aî merg numere în diverse formaturi. Nu este nevoie de PhoneNumberUtil.
+        Cursor cursor = resolver.query(lookupUri, projection, null, null, null);
+
+        if (cursor != null && cursor.moveToFirst()) {
+            Contact contact = new Contact();
+            contact.setPhoneType(cursor.getInt(cursor.getColumnIndex(android.provider.ContactsContract.PhoneLookup.TYPE)));
+            contact.setContactName(cursor.getString(cursor.getColumnIndex(android.provider.ContactsContract.PhoneLookup.DISPLAY_NAME)));
+            contact.setPhoneNumber(cursor.getString(cursor.getColumnIndex(android.provider.ContactsContract.PhoneLookup.NUMBER)));
+            contact.setPhotoUri(cursor.getString(cursor.getColumnIndex(ContactsContract.PhoneLookup.PHOTO_URI)));
+            cursor.close();
+            return contact;
+        }
+        return null;
+    }
+
     public void update(Repository repository) {
         repository.updateContact(this);
     }
@@ -74,39 +114,12 @@ public class Contact implements Comparable<Contact>, Parcelable {
 
     public void delete(Repository repository, Context context) throws SQLException {
         List<Recording> recordings = repository.getRecordings(this);
-        for(Recording recording : recordings)
+        for (Recording recording : recordings)
             recording.delete(repository);
 
-        if(getPhotoUri() != null ) //întotdeauna este poza noastră.
+        if (getPhotoUri() != null) //întotdeauna este poza noastră.
             context.getContentResolver().delete(getPhotoUri(), null, null);
-       repository.deleteContact(this);
-    }
-
-  @Nullable
-  static public Contact queryNumberInPhoneContacts(final String number, @NonNull ContentResolver resolver) {
-        //implementare probabil mai eficientă decît ce aveam eu:
-      //https://stackoverflow.com/questions/3505865/android-check-phone-number-present-in-contact-list-phone-number-retrieve-fr
-      Uri lookupUri = Uri.withAppendedPath(
-              //e atît de lung pentru că am și eu ContactsContract.
-              android.provider.ContactsContract.PhoneLookup.CONTENT_FILTER_URI,
-              Uri.encode(number));
-      String[] projection = {android.provider.ContactsContract.PhoneLookup.NUMBER,
-              android.provider.ContactsContract.PhoneLookup.TYPE,
-              android.provider.ContactsContract.PhoneLookup.DISPLAY_NAME,
-              android.provider.ContactsContract.PhoneLookup.PHOTO_URI };
-      //Matchingul este asigurat de android, aî merg numere în diverse formaturi. Nu este nevoie de PhoneNumberUtil.
-      Cursor cursor = resolver.query(lookupUri, projection, null, null, null);
-
-          if(cursor != null && cursor.moveToFirst()) {
-              Contact contact = new Contact();
-              contact.setPhoneType(cursor.getInt(cursor.getColumnIndex(android.provider.ContactsContract.PhoneLookup.TYPE)));
-              contact.setContactName(cursor.getString(cursor.getColumnIndex(android.provider.ContactsContract.PhoneLookup.DISPLAY_NAME)));
-              contact.setPhoneNumber(cursor.getString(cursor.getColumnIndex(android.provider.ContactsContract.PhoneLookup.NUMBER)));
-              contact.setPhotoUri(cursor.getString(cursor.getColumnIndex(ContactsContract.PhoneLookup.PHOTO_URI)));
-              cursor.close();
-              return contact;
-          }
-      return null;
+        repository.deleteContact(this);
     }
 
     public boolean isPrivateNumber() {
@@ -117,36 +130,32 @@ public class Contact implements Comparable<Contact>, Parcelable {
         this.phoneNumber = null;
     }
 
-
-    public int compareTo(@NonNull Contact numberToCompare)
-    {
+    public int compareTo(@NonNull Contact numberToCompare) {
         return this.contactName.compareTo(numberToCompare.getContactName());
     }
-
 
     public String getPhoneNumber() {
         return phoneNumber;
     }
 
     public void setPhoneNumber(String phoneNumber) {
-            this.phoneNumber = phoneNumber;
+        this.phoneNumber = phoneNumber;
     }
 
     public int getPhoneTypeCode() {
         return phoneType;
     }
 
-    public String getPhoneTypeName(){
-        for(CoreUtil.PhoneTypeContainer typeContainer : Const.PHONE_TYPES)
-            if(typeContainer.getTypeCode() == this.phoneType)
+    public String getPhoneTypeName() {
+        for (CoreUtil.PhoneTypeContainer typeContainer : Const.PHONE_TYPES)
+            if (typeContainer.getTypeCode() == this.phoneType)
                 return typeContainer.getTypeName();
         return null;
     }
 
-    public void setPhoneType(String phoneType)
-    {
-        for(CoreUtil.PhoneTypeContainer typeContainer : Const.PHONE_TYPES)
-            if(typeContainer.getTypeName().equals(phoneType)) {
+    public void setPhoneType(String phoneType) {
+        for (CoreUtil.PhoneTypeContainer typeContainer : Const.PHONE_TYPES)
+            if (typeContainer.getTypeName().equals(phoneType)) {
                 this.phoneType = typeContainer.getTypeCode();
                 break;
             }
@@ -154,7 +163,7 @@ public class Contact implements Comparable<Contact>, Parcelable {
     }
 
     public void setPhoneType(int phoneTypeCode) {
-        for(CoreUtil.PhoneTypeContainer type : Const.PHONE_TYPES) {
+        for (CoreUtil.PhoneTypeContainer type : Const.PHONE_TYPES) {
             if (phoneTypeCode == type.getTypeCode()) {
                 this.phoneType = phoneTypeCode;
                 return;
@@ -176,7 +185,7 @@ public class Contact implements Comparable<Contact>, Parcelable {
     }
 
     public void setPhotoUri(String photoUriStr) {
-        if(photoUriStr != null)
+        if (photoUriStr != null)
             this.photoUri = Uri.parse(photoUriStr);
         else
             this.photoUri = null;
@@ -202,7 +211,9 @@ public class Contact implements Comparable<Contact>, Parcelable {
         this.color = color;
     }
 
-    /** Necesară pentru comparațiile din teste. */
+    /**
+     * Necesară pentru comparațiile din teste.
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -221,7 +232,6 @@ public class Contact implements Comparable<Contact>, Parcelable {
         return Objects.hash(phoneNumber, contactName);
     }
 
-
     @Override
     public int describeContents() {
         return 0;
@@ -237,28 +247,6 @@ public class Contact implements Comparable<Contact>, Parcelable {
         dest.writeByte(this.shouldRecord ? (byte) 1 : (byte) 0);
         dest.writeValue(this.color);
     }
-
-    protected Contact(Parcel in) {
-        this.id = (Long) in.readValue(Long.class.getClassLoader());
-        this.phoneNumber = in.readString();
-        this.phoneType = in.readInt();
-        this.contactName = in.readString();
-        this.photoUri = in.readParcelable(Uri.class.getClassLoader());
-        this.shouldRecord = in.readByte() != 0;
-        this.color = (Integer) in.readValue(Integer.class.getClassLoader());
-    }
-
-    public static final Creator<Contact> CREATOR = new Creator<Contact>() {
-        @Override
-        public Contact createFromParcel(Parcel source) {
-            return new Contact(source);
-        }
-
-        @Override
-        public Contact[] newArray(int size) {
-            return new Contact[size];
-        }
-    };
 
     public String getDaytime() {
         return daytime;

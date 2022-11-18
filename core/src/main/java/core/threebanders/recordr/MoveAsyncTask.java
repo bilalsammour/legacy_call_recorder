@@ -14,12 +14,12 @@ import core.threebanders.recordr.data.Recording;
 import core.threebanders.recordr.data.Repository;
 
 public class MoveAsyncTask extends AsyncTask<Recording, Integer, Boolean> {
-    public long alreadyCopied = 0;
     private final String path;
     private final long totalSize;
-    private MaterialDialog dialog;
     private final Repository repository;
     private final WeakReference<Activity> activityRef;
+    public long alreadyCopied = 0;
+    private MaterialDialog dialog;
 
     MoveAsyncTask(Repository repository, String folderPath, long totalSize, Activity activity) {
         this.path = folderPath;
@@ -51,7 +51,7 @@ public class MoveAsyncTask extends AsyncTask<Recording, Integer, Boolean> {
     }
 
     @Override
-    protected void onProgressUpdate(Integer...integers) {
+    protected void onProgressUpdate(Integer... integers) {
         dialog.setProgress(integers[0]);
     }
 
@@ -67,14 +67,13 @@ public class MoveAsyncTask extends AsyncTask<Recording, Integer, Boolean> {
     @Override
     protected void onPostExecute(Boolean result) {
         dialog.dismiss();
-        if(result) {
+        if (result) {
             new MaterialDialog.Builder(activityRef.get())
                     .title("Success")
                     .content("The recording(s) were successfully moved.")
                     .positiveText("OK")
                     .show();
-        }
-        else {
+        } else {
             new MaterialDialog.Builder(activityRef.get())
                     .title("Error")
                     .content("An error occurred while moving the recording(s). Some files might be corrupted or missing.")
@@ -84,14 +83,13 @@ public class MoveAsyncTask extends AsyncTask<Recording, Integer, Boolean> {
     }
 
     @Override
-    protected Boolean doInBackground(Recording...recordings) {
-        for(Recording recording : recordings) {
+    protected Boolean doInBackground(Recording... recordings) {
+        for (Recording recording : recordings) {
             try {
                 recording.move(repository, path, this, totalSize);
-                if(isCancelled())
+                if (isCancelled())
                     break;
-            }
-            catch (Exception exc) {
+            } catch (Exception exc) {
                 CrLog.log(CrLog.ERROR, "Error moving the recording(s): " + exc.getMessage());
                 return false;
             }

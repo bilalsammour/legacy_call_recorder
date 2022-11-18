@@ -41,17 +41,16 @@ public class CoreUtil {
         long minutes = TimeUnit.MILLISECONDS.toMinutes(millis);
         millis -= TimeUnit.MINUTES.toMillis(minutes);
         long seconds = TimeUnit.MILLISECONDS.toSeconds(millis);
-        if(spokenStyle) {
+        if (spokenStyle) {
             String duration = "";
-            if(hours > 0)
+            if (hours > 0)
                 duration += (hours + " hour" + (hours > 1 ? "s" : ""));
-            if(minutes > 0)
-                duration += ((hours > 0 ? ", " : "") + minutes + " minute" + (minutes > 1 ? "s" : "") );
-            if(seconds > 0)
-                duration += ((minutes > 0 || hours > 0 ? ", " : "") + seconds + " second" + (seconds > 1 ? "s" : "") );
+            if (minutes > 0)
+                duration += ((hours > 0 ? ", " : "") + minutes + " minute" + (minutes > 1 ? "s" : ""));
+            if (seconds > 0)
+                duration += ((minutes > 0 || hours > 0 ? ", " : "") + seconds + " second" + (seconds > 1 ? "s" : ""));
             return duration;
-        }
-        else {
+        } else {
             if (hours > 0)
                 return String.format(Locale.US, "%02d:%02d:%02d", hours, minutes, seconds);
             else
@@ -60,17 +59,17 @@ public class CoreUtil {
     }
 
     public static String getFileSizeHuman(long size) {
-        double numUnits =  size / 1024;
+        double numUnits = size / 1024;
         String unit = "KB";
-        if(numUnits > 1000) {
+        if (numUnits > 1000) {
             numUnits = (int) size / 1048576;
             unit = "MB";
             double diff = (size - numUnits * 1048576) / 1048576;
             numUnits = numUnits + diff;
-            if(numUnits > 1000) {
+            if (numUnits > 1000) {
                 numUnits = size / 1099511627776L;
                 unit = "GB";
-                 diff = (size - numUnits * 1099511627776L) / 1099511627776L;
+                diff = (size - numUnits * 1099511627776L) / 1099511627776L;
                 numUnits = numUnits + diff;
             }
         }
@@ -100,8 +99,7 @@ public class CoreUtil {
             }
             br.close();
             is.close();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             CrLog.log(CrLog.ERROR, "Error converting raw html to string: " + e.getMessage());
         }
         return sb.toString();
@@ -112,15 +110,14 @@ public class CoreUtil {
         private int typeCode;
         private String typeName;
 
-        PhoneTypeContainer(int code, String name)
-        {
+        PhoneTypeContainer(int code, String name) {
             typeCode = code;
             typeName = name;
         }
 
         @Override
         @NonNull
-        public String toString(){
+        public String toString() {
             return typeName;
         }
 

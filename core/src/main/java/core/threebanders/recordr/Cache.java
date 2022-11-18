@@ -7,8 +7,6 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
 public class Cache {
-    private SharedPreferences prefs;
-    private static Cache cache;
     public static final String ENABLED = "enabled";
     public static final String SOURCE = "source";
     public static final String FORMAT = "format";
@@ -16,6 +14,8 @@ public class Cache {
     public static final String STORAGE = "storage";
     public static final String STORAGE_PATH = "public_storage_path";
     public static final String RECORDINGS_LIST = "RECORDINGS_LIST";
+    private static Cache cache;
+    private SharedPreferences prefs;
 
     public static Cache getInstance(Context context) {
         if (cache == null) {

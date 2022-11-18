@@ -40,8 +40,8 @@
         android:layout_width="7dp"
         android:layout_height="match_parent"
         android:layout_alignParentStart="true"
-        android:visibility="gone"
-        android:orientation="horizontal" />
+        android:orientation="horizontal"
+        android:visibility="gone" />
 
     <LinearLayout
         style="?separatorStyle"
