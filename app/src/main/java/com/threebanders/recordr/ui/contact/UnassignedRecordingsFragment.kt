@@ -63,7 +63,7 @@ class UnassignedRecordingsFragment : ContactDetailFragment() {
         )
         recordingsRecycler?.adapter = adapter
         record = Recorder(context)
-        sharedPref = context?.getSharedPreferences(Cache.RECODINGS_LIST, Context.MODE_PRIVATE)
+        sharedPref = context?.getSharedPreferences(Cache.RECORDINGS_LIST, Context.MODE_PRIVATE)
         editor = sharedPref?.edit()
 
 
