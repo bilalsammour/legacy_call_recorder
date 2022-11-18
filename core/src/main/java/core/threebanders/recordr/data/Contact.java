@@ -1,5 +1,6 @@
 package core.threebanders.recordr.data;
 
+import android.annotation.SuppressLint;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
@@ -77,6 +78,7 @@ public class Contact implements Comparable<Contact>, Parcelable {
         return null;
     }
 
+    @SuppressLint("Range")
     @Nullable
     static public Contact queryNumberInPhoneContacts(final String number, @NonNull ContentResolver resolver) {
         //implementare probabil mai eficientă decît ce aveam eu:

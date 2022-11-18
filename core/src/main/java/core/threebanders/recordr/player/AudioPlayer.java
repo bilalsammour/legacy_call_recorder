@@ -24,10 +24,6 @@ import java.util.concurrent.TimeUnit;
 
 import core.threebanders.recordr.CrLog;
 
-
-//Playerul a fost gîndit pe baza arhitecturii de aici:
-//https://medium.com/google-developers/building-a-simple-audio-app-in-android-part-2-3-a514f6224b83
-@SuppressWarnings("CatchMayIgnoreException")
 public class AudioPlayer extends Thread implements PlayerAdapter {
     private static final int PLAYBACK_POSITION_REFRESH_INTERVAL_MS = 500;
     private static final int SAMPLE_RATE = 44100;

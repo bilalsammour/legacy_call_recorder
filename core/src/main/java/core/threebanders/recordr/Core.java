@@ -18,11 +18,12 @@ public class Core {
     private static int versionCode;
     private static String versionName;
     private static Repository repository;
+    private int iconSmallIcon;
 
     public Core(Builder builder) {
         this.context = builder.context;
         this.notificationIcon = builder.notificationIcon;
-        int iconSmallIcon = builder.iconSmallIcon;
+        this.iconSmallIcon = builder.iconSmallIcon;
         this.iconSpeakerOff = builder.iconSpeakerOff;
         this.iconSpeakerOn = builder.iconSpeakerOn;
         this.iconSuccess = builder.iconSuccess;
@@ -38,7 +39,7 @@ public class Core {
     }
 
     public void setContext(Context context) {
-        this.context = context;
+        Core.context = context;
     }
 
     public static int getNotificationIcon() {
@@ -90,6 +91,7 @@ public class Core {
     }
 
     public static class Builder {
+
         private Context context;
         private int notificationIcon;
         private int iconSmallIcon;
@@ -101,7 +103,6 @@ public class Core {
         private int versionCode;
         private String versionName;
         private Repository repository;
-
         public Builder() {
         }
 
@@ -118,8 +119,43 @@ public class Core {
             return this;
         }
 
+        public Builder setNotificationIcon(int notificationIcon) {
+            this.notificationIcon = notificationIcon;
+            return this;
+        }
+
+        public Builder setIconSpeakerOff(int iconSpeakerOff) {
+            this.iconSpeakerOff = iconSpeakerOff;
+            return this;
+        }
+
+        public Builder setIconSpeakerOn(int iconSpeakerOn) {
+            this.iconSpeakerOn = iconSpeakerOn;
+            return this;
+        }
+
+        public Builder setIconSuccess(int iconSuccess) {
+            this.iconSuccess = iconSuccess;
+            return this;
+        }
+
+        public Builder setIconFailure(int iconFailure) {
+            this.iconFailure = iconFailure;
+            return this;
+        }
+
         public Builder setNotifyGoToActivity(Class<?> notifyGoToActivity) {
             this.notifyGoToActivity = notifyGoToActivity;
+            return this;
+        }
+
+        public Builder setVersionCode(int versionCode) {
+            this.versionCode = versionCode;
+            return this;
+        }
+
+        public Builder setVersionName(String versionName) {
+            this.versionName = versionName;
             return this;
         }
 
