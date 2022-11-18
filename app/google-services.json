@@ -30,6 +30,14 @@
           }
         },
         {
+          "client_id": "719170211909-ph107vb4s5q9fpk228fchfb7mc5hcr0b.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.threebanders.recordr",
+            "certificate_hash": "cdec0ce90502856a5741e4939377fab60d69f4a1"
+          }
+        },
+        {
           "client_id": "719170211909-23adcofih13f6p14o37rpiv4jk0lsr0n.apps.googleusercontent.com",
           "client_type": 3
         }
