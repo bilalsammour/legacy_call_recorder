@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace 'com.threebanders.recordrs'
+    namespace 'com.threebanders.recordr'
 
     compileSdkVersion 33
     buildToolsVersion "33.0.0"
