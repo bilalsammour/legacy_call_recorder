@@ -18,7 +18,10 @@ class CrApp : Application() {
 
     override fun attachBaseContext(base: Context) {
         super.attachBaseContext(base)
-        if (!BuildConfig.DEBUG) ACRA.init(this)
+
+        if (!BuildConfig.DEBUG) {
+            ACRA.init(this)
+        }
     }
 
     init {
@@ -27,8 +30,7 @@ class CrApp : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        //        Shell.Config.setFlags(Shell.FLAG_REDIRECT_STDERR);
-//        Shell.Config.verboseLogging(BuildConfig.DEBUG);
+
         core = Core.Builder.newInstance()
             .setContext(applicationContext)
             .setNotifyGoToActivity(ContactsListActivityMain::class.java)
@@ -43,8 +45,6 @@ class CrApp : Application() {
     }
 
     companion object {
-        private val TAG = CrApp::class.java.simpleName
-
         lateinit var instance: CrApp
             private set
     }
