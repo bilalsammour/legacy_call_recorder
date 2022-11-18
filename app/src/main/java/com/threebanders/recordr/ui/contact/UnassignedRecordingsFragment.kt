@@ -41,6 +41,7 @@ class UnassignedRecordingsFragment : ContactDetailFragment() {
     private var editor: SharedPreferences.Editor? = null
     private var file: File? = null
     private var fileName: String = ""
+    private val FOLDER_NAME = Constants.APP_NAME
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -111,12 +112,12 @@ class UnassignedRecordingsFragment : ContactDetailFragment() {
                 var folderId = ""
                 withContext(Dispatchers.IO) {
                     val gFolder = com.google.api.services.drive.model.File()
-                    gFolder.name = Constants.APP_NAME
+                    gFolder.name = FOLDER_NAME
                     gFolder.mimeType = "application/vnd.google-apps.folder"
 
                     launch {
                         val fileList = drive?.Files()?.list()
-                            ?.setQ("mimeType='application/vnd.google-apps.folder' and trashed=false and name='$Constants.APP_NAME'")
+                            ?.setQ("mimeType='application/vnd.google-apps.folder' and trashed=false and name='$FOLDER_NAME'")
                             ?.execute()
 
                         folderId = if (fileList?.files?.isEmpty() == true) {
