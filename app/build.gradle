@@ -94,5 +94,4 @@ dependencies {
     }
     implementation platform('com.google.firebase:firebase-bom:31.0.2')
     implementation 'com.google.firebase:firebase-analytics'
-    implementation 'com.google.android.gms:play-services-ads:21.3.0'
 }

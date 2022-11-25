@@ -123,18 +123,17 @@
             android:id="@+id/contacts_list_fragment_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_above="@+id/adView"
+            android:layout_above="@+id/startAppBanner"
             android:layout_below="@+id/bottom_tab_nav" />
 
-        <com.google.android.gms.ads.AdView xmlns:ads="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/adView"
+        <com.startapp.sdk.ads.banner.Banner
+            android:id="@+id/startAppBanner"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
-            android:layout_marginBottom="16dp"
-            ads:adSize="BANNER"
-            ads:adUnitId="@string/ad_mob_main_unit" />
+            android:layout_marginBottom="16dp" />
+
     </RelativeLayout>
 
     <com.google.android.material.navigation.NavigationView
