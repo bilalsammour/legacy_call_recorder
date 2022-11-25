@@ -76,11 +76,6 @@
             android:parentActivityName=".ui.contact.ContactsListActivityMain"
             android:screenOrientation="fullSensor" />
         <activity
-            android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
-            android:exported="true"
-            android:screenOrientation="fullSensor"
-            android:theme="@style/Base.Theme.AppCompat" />
-        <activity
             android:name=".ui.setup.SetupActivity"
             android:exported="true"
             android:parentActivityName=".ui.contact.ContactsListActivityMain"

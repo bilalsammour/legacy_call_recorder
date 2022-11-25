@@ -9,6 +9,8 @@ import android.util.Log;
 import androidx.annotation.StringDef;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.afollestad.materialdialogs.BuildConfig;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.BufferedWriter;
