@@ -159,5 +159,8 @@
     <string name="signed_out">Signed Out</string>
     <string name="recordings_associated">The recordings associated with this contact consume storage as follows:</string>
     <string name="missed_by">Missed by</string>
+    <string name="did_you_like_the_recording">Did you like the recording?</string>
+    <string name="happy">Happy</string>
+    <string name="sad">Sad</string>
 
 </resources>
