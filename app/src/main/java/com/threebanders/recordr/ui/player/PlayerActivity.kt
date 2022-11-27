@@ -13,6 +13,9 @@ import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import com.chibde.visualizer.LineBarVisualizer
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.analytics.ktx.analytics
+import com.google.firebase.ktx.Firebase
 import com.sdsmdg.harjot.crollerTest.Croller
 import com.threebanders.recordr.R
 import com.threebanders.recordr.ui.BaseActivity
@@ -28,6 +31,8 @@ class PlayerActivity : BaseActivity() {
     var recording: Recording? = null
     var playPause: ImageButton? = null
     var resetPlaying: ImageButton? = null
+    var happy: ImageButton? = null
+    var sad: ImageButton? = null
     lateinit var recordingInfo: TextView
     var playSeekBar: SeekBar? = null
     var playedTime: TextView? = null
@@ -38,7 +43,9 @@ class PlayerActivity : BaseActivity() {
     var phoneVolume = 0
     lateinit var gainControl: Croller
     lateinit var volumeControl: Croller
-    
+
+    private lateinit var firebaseAnalytics: FirebaseAnalytics
+
     public override fun createFragment(): Fragment? {
         return null
     }
@@ -47,6 +54,9 @@ class PlayerActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         setTheme()
         setContentView(R.layout.player_activity)
+
+        firebaseAnalytics = Firebase.analytics
+
         val toolbar = findViewById<Toolbar>(R.id.toolbar_player)
         setSupportActionBar(toolbar)
         val actionBar = supportActionBar
@@ -131,6 +141,22 @@ class PlayerActivity : BaseActivity() {
             resources.getString(R.string.recording_info),
             recording!!.name, recording!!.getHumanReadingFormat(applicationContext)
         )
+
+        happy = findViewById(R.id.happy)
+        happy!!.setOnClickListener {
+            val bundle = Bundle()
+            bundle.putString(FirebaseAnalytics.Param.SCORE, "1")
+
+            firebaseAnalytics.logEvent(FirebaseAnalytics.Event.POST_SCORE, bundle)
+        }
+
+        sad = findViewById(R.id.sad)
+        sad!!.setOnClickListener {
+            val bundle = Bundle()
+            bundle.putString(FirebaseAnalytics.Param.SCORE, "-1")
+
+            firebaseAnalytics.logEvent(FirebaseAnalytics.Event.POST_SCORE, bundle)
+        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
