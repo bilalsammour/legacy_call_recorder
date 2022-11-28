@@ -12,7 +12,7 @@ import core.threebanders.recordr.data.Repository
 import java.io.File
 
 class MainViewModel : ViewModel() {
-    private val repository: Repository
+    private val repository: Repository = Core.getRepository()
     var contact = MutableLiveData<Contact?>()
     private var contactList: List<Contact> = ArrayList()
     var contacts = MutableLiveData(contactList)
@@ -23,11 +23,10 @@ class MainViewModel : ViewModel() {
     var deletedRecording = MutableLiveData<Recording?>()
 
     init {
-        repository = Core.getRepository()
         setupAllContacts()
     }
 
-    fun setupAllContacts() {
+    private fun setupAllContacts() {
         contactList = repository.allContacts
         contacts.value = contactList
     }
