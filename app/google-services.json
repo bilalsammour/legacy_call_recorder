@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "719170211909-2q5isldob3cenebabv3vmp667k61m3m6.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.threebanders.recordr",
+            "certificate_hash": "e57e9dd89650bfcafe689ae41b59c54437e177c6"
+          }
+        },
+        {
           "client_id": "719170211909-be795n3kdsd3g9k2pjocksen12aimtbs.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
