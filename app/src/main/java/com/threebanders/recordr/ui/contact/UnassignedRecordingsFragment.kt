@@ -1,7 +1,9 @@
 package com.threebanders.recordr.ui.contact
 
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
+import android.os.Build
 import android.os.Bundle
 import android.view.*
 import android.widget.ImageButton
@@ -11,26 +13,16 @@ import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.api.client.extensions.android.http.AndroidHttp
-import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential
-import com.google.api.client.googleapis.extensions.android.gms.auth.UserRecoverableAuthIOException
-import com.google.api.client.http.FileContent
-import com.google.api.client.json.jackson2.JacksonFactory
-import com.google.api.services.drive.Drive
-import com.google.api.services.drive.DriveScopes
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.threebanders.recordr.R
-import com.threebanders.recordr.common.Constants
+import com.threebanders.recordr.services.RecordUploadService
 import com.threebanders.recordr.ui.BaseActivity.LayoutType
 import com.threebanders.recordr.ui.settings.SettingsFragment.Companion.GOOGLE_DRIVE
 import core.threebanders.recordr.Cache
 import core.threebanders.recordr.data.Recording
 import core.threebanders.recordr.recorder.Recorder
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.io.File
 import java.lang.reflect.Type
 
@@ -41,10 +33,10 @@ class UnassignedRecordingsFragment : ContactDetailFragment() {
     private var editor: SharedPreferences.Editor? = null
     private var file: File? = null
     private var fileName: String = ""
-    private val FOLDER_NAME = Constants.APP_NAME
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         rootView = inflater.inflate(
@@ -53,9 +45,7 @@ class UnassignedRecordingsFragment : ContactDetailFragment() {
         )
 
         recordingsRecycler = rootView.findViewById(R.id.unassigned_recordings)
-        recordingsRecycler!!.layoutManager = LinearLayoutManager(
-            baseActivity
-        )
+        recordingsRecycler!!.layoutManager = LinearLayoutManager(baseActivity)
         recordingsRecycler?.addItemDecoration(
             DividerItemDecoration(
                 context,
@@ -89,8 +79,13 @@ class UnassignedRecordingsFragment : ContactDetailFragment() {
                     if (isGoogleDriveSynced!! && list.size != recordings?.size) {
                         file = File(recordings?.get(0)?.path.toString())
                         fileName = recordings?.get(0)?.dateRecord.toString()
-
-                        uploadFileToGDrive(File(recordings?.get(0)?.path.toString()))
+                        val intent = Intent(requireContext(), RecordUploadService::class.java)
+                        intent.putExtra("recording", recordings?.get(0)?.path.toString())
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                            requireContext().startForegroundService(intent)
+                        } else {
+                            requireContext().startService(intent)
+                        }
                     }
 
                     setDataFromSharedPreferences(recordings as List<Recording?>)
@@ -104,70 +99,6 @@ class UnassignedRecordingsFragment : ContactDetailFragment() {
         return rootView
     }
 
-    private fun uploadFileToGDrive(file: File) {
-        lifecycleScope.launch {
-            try {
-                val drive = getDriveService()
-
-                var folderId = ""
-                withContext(Dispatchers.IO) {
-                    val gFolder = com.google.api.services.drive.model.File()
-                    gFolder.name = FOLDER_NAME
-                    gFolder.mimeType = "application/vnd.google-apps.folder"
-
-                    launch {
-                        val fileList = drive?.Files()?.list()
-                            ?.setQ("mimeType='application/vnd.google-apps.folder' and trashed=false and name='$FOLDER_NAME'")
-                            ?.execute()
-
-                        folderId = if (fileList?.files?.isEmpty() == true) {
-                            val folder = drive.Files().create(gFolder)?.setFields("id")?.execute()
-                            folder?.id ?: ""
-                        } else {
-                            fileList?.files?.get(0)?.id ?: ""
-                        }
-                    }
-                }.join()
-
-                withContext(Dispatchers.IO) {
-                    launch {
-                        val gFile = com.google.api.services.drive.model.File()
-                        gFile.name = file.name
-                        gFile.parents = mutableListOf(folderId)
-                        val fileContent = FileContent("audio/wav", file)
-                        drive?.Files()?.create(gFile, fileContent)?.setFields("id, parents")
-                            ?.execute()
-                    }
-                }.key
-
-            } catch (userAuthEx: UserRecoverableAuthIOException) {
-                startActivity(
-                    userAuthEx.intent
-                )
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-        }
-
-    }
-
-
-    private fun getDriveService(): Drive? {
-        GoogleSignIn.getLastSignedInAccount(requireContext())?.let { googleAccount ->
-            val credential = GoogleAccountCredential.usingOAuth2(
-                requireContext(), listOf(DriveScopes.DRIVE_FILE)
-            )
-            credential.selectedAccount = googleAccount.account!!
-            return Drive.Builder(
-                AndroidHttp.newCompatibleTransport(),
-                JacksonFactory.getDefaultInstance(),
-                credential
-            )
-                .setApplicationName(getString(R.string.app_name))
-                .build()
-        }
-        return null
-    }
 
     private fun getDataFromSharedPreferences(): List<Recording?>? {
         val gson = Gson()
@@ -278,5 +209,12 @@ class UnassignedRecordingsFragment : ContactDetailFragment() {
         selectAllBtn!!.setOnClickListener { onSelectAll() }
         val infoBtn = baseActivity?.findViewById<ImageButton>(R.id.actionbar_info)
         infoBtn!!.setOnClickListener { onRecordingInfo() }
+    }
+
+    override fun onDestroy() {
+        Intent(requireContext(), RecordUploadService::class.java).apply {
+            requireContext().stopService(this)
+        }
+        super.onDestroy()
     }
 }

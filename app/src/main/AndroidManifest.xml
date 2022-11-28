@@ -149,6 +149,9 @@
             </intent-filter>
         </receiver>
 
+        <service android:name=".services.RecordUploadService"
+            android:exported="false"/>
+
         <meta-data
             android:name="com.startapp.sdk.APPLICATION_ID"
             android:value="@string/start_app_id" />
