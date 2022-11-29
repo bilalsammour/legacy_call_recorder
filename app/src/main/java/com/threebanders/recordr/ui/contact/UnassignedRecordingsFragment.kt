@@ -1,9 +1,7 @@
 package com.threebanders.recordr.ui.contact
 
 import android.content.Context
-import android.content.Intent
 import android.content.SharedPreferences
-import android.os.Build
 import android.os.Bundle
 import android.view.*
 import android.widget.ImageButton
@@ -16,7 +14,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.threebanders.recordr.R
-import com.threebanders.recordr.services.RecordUploadService
 import com.threebanders.recordr.ui.BaseActivity.LayoutType
 import com.threebanders.recordr.ui.settings.SettingsFragment.Companion.GOOGLE_DRIVE
 import core.threebanders.recordr.Cache
@@ -35,8 +32,7 @@ class UnassignedRecordingsFragment : ContactDetailFragment() {
     private var fileName: String = ""
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
+        inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         rootView = inflater.inflate(
@@ -45,21 +41,22 @@ class UnassignedRecordingsFragment : ContactDetailFragment() {
         )
 
         recordingsRecycler = rootView.findViewById(R.id.unassigned_recordings)
-        recordingsRecycler!!.layoutManager = LinearLayoutManager(baseActivity)
+        recordingsRecycler!!.layoutManager = LinearLayoutManager(
+            baseActivity
+        )
         recordingsRecycler?.addItemDecoration(
             DividerItemDecoration(
                 context,
                 DividerItemDecoration.VERTICAL
             )
         )
+
         recordingsRecycler?.adapter = adapter
         record = Recorder(context)
         sharedPref = context?.getSharedPreferences(Cache.RECORDINGS_LIST, Context.MODE_PRIVATE)
         editor = sharedPref?.edit()
 
-
         lifecycleScope.launch {
-
             mainViewModel.loadRecordings()
 
             mainViewModel.records.observe(viewLifecycleOwner) { recordings: List<Recording?>? ->
@@ -68,8 +65,9 @@ class UnassignedRecordingsFragment : ContactDetailFragment() {
                 if (recordings?.size != 0) {
 
                     var list = getDataFromSharedPreferences()
-                    if (list == null)
+                    if (list == null) {
                         list = arrayListOf()
+                    }
 
                     getDataFromSharedPreferences()
 
@@ -79,26 +77,19 @@ class UnassignedRecordingsFragment : ContactDetailFragment() {
                     if (isGoogleDriveSynced!! && list.size != recordings?.size) {
                         file = File(recordings?.get(0)?.path.toString())
                         fileName = recordings?.get(0)?.dateRecord.toString()
-                        val intent = Intent(requireContext(), RecordUploadService::class.java)
-                        intent.putExtra("recording", recordings?.get(0)?.path.toString())
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                            requireContext().startForegroundService(intent)
-                        } else {
-                            requireContext().startService(intent)
-                        }
                     }
 
                     setDataFromSharedPreferences(recordings as List<Recording?>)
                 }
             }
         }
+
         paintViews()
         mainViewModel.deletedRecording.observe(viewLifecycleOwner) { removeRecording() }
         removeRecording()
 
         return rootView
     }
-
 
     private fun getDataFromSharedPreferences(): List<Recording?>? {
         val gson = Gson()
@@ -209,12 +200,5 @@ class UnassignedRecordingsFragment : ContactDetailFragment() {
         selectAllBtn!!.setOnClickListener { onSelectAll() }
         val infoBtn = baseActivity?.findViewById<ImageButton>(R.id.actionbar_info)
         infoBtn!!.setOnClickListener { onRecordingInfo() }
-    }
-
-    override fun onDestroy() {
-        Intent(requireContext(), RecordUploadService::class.java).apply {
-            requireContext().stopService(this)
-        }
-        super.onDestroy()
     }
 }

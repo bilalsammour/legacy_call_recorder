@@ -138,6 +138,7 @@ public class RecorderService extends Service {
                     builder.setSmallIcon(Core.getIconSuccess())
                             .setContentText("The phone call was successfully recorded.")
                             .setAutoCancel(true);
+
             }
 
             return builder.build();
