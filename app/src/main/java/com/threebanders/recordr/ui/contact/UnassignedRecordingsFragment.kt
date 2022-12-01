@@ -186,8 +186,11 @@ class UnassignedRecordingsFragment : ContactDetailFragment() {
             val recording = (recordingsRecycler!!.adapter as RecordingAdapter?)!!.getItem(
                 selectedItems!![0]
             )
-            if (selectedItems!!.size > 1 || !recording!!.exists()) renameMenuItem.isEnabled =
-                false
+
+            if (selectedItems!!.size > 1 || !recording!!.exists()) {
+                renameMenuItem.isEnabled = false
+            }
+            
             popupMenu.show()
         }
         val moveBtn = baseActivity!!.findViewById<ImageButton>(R.id.actionbar_select_move)
