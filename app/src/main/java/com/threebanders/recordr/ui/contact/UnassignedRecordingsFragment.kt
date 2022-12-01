@@ -30,6 +30,7 @@ class UnassignedRecordingsFragment : ContactDetailFragment() {
     private var editor: SharedPreferences.Editor? = null
     private var file: File? = null
     private var fileName: String = ""
+    private var isGoogleDriveSynced = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -50,7 +51,6 @@ class UnassignedRecordingsFragment : ContactDetailFragment() {
                 DividerItemDecoration.VERTICAL
             )
         )
-
         recordingsRecycler?.adapter = adapter
         record = Recorder(context)
         sharedPref = context?.getSharedPreferences(Cache.RECORDINGS_LIST, Context.MODE_PRIVATE)
@@ -63,7 +63,6 @@ class UnassignedRecordingsFragment : ContactDetailFragment() {
                 paintViews()
 
                 if (recordings?.size != 0) {
-
                     var list = getDataFromSharedPreferences()
                     if (list == null) {
                         list = arrayListOf()
@@ -72,9 +71,9 @@ class UnassignedRecordingsFragment : ContactDetailFragment() {
                     getDataFromSharedPreferences()
 
                     val settings = baseActivity?.prefs
-                    val isGoogleDriveSynced = settings?.getBoolean(GOOGLE_DRIVE, false)
+                    isGoogleDriveSynced = settings?.getBoolean(GOOGLE_DRIVE, false)!!
 
-                    if (isGoogleDriveSynced!! && list.size != recordings?.size) {
+                    if (isGoogleDriveSynced && list.size != recordings?.size) {
                         file = File(recordings?.get(0)?.path.toString())
                         fileName = recordings?.get(0)?.dateRecord.toString()
                     }
