@@ -89,6 +89,7 @@ class MainViewModel : ViewModel() {
         return null
     }
 
+    /* ------------------- CLEAN UP CODE --------------------*/
 
     // TODO : Shared Prefs
     fun getPrefs(context: Context) : List<Recording?>?{

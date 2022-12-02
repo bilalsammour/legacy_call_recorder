@@ -16,7 +16,6 @@ import kotlinx.coroutines.launch
 
 class UnassignedRecordingsFragment : ContactDetailFragment() {
     private lateinit var rootView: View
-    private lateinit var contactDetailFragment: ContactDetailFragment
     private var record: Recorder? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -38,7 +37,6 @@ class UnassignedRecordingsFragment : ContactDetailFragment() {
             }
         }
 
-        paintViews()
         mainViewModel.deletedRecording.observe(viewLifecycleOwner) { removeRecording() }
         removeRecording()
 
@@ -51,7 +49,8 @@ class UnassignedRecordingsFragment : ContactDetailFragment() {
         val params = title?.layoutParams as Toolbar.LayoutParams
         params.gravity = if (selectMode) Gravity.START else Gravity.CENTER
         title.layoutParams = params
-        title.text = if (selectMode) selectedItems!!.size.toString() else getString(R.string.app_name)
+        title.text =
+            if (selectMode) selectedItems!!.size.toString() else getString(R.string.app_name)
     }
     public override fun toggleSelectModeActionBar(animate: Boolean) {
         val closeBtn = baseActivity?.findViewById<ImageButton>(R.id.close_select_mode)
@@ -92,9 +91,12 @@ class UnassignedRecordingsFragment : ContactDetailFragment() {
     override fun setDetailsButtonsListeners() {
         val closeBtn = baseActivity?.findViewById<ImageButton>(R.id.close_select_mode)
         closeBtn!!.setOnClickListener { clearSelectMode() }
-        val menuButtonSelected = baseActivity?.findViewById<ImageButton>(R.id.contact_detail_selected_menu)
+        val menuButtonSelected =
+            baseActivity?.findViewById<ImageButton>(R.id.contact_detail_selected_menu)
         menuButtonSelected!!.setOnClickListener { view: View ->
-            val popupMenu = PopupMenu(baseActivity!!, view)
+            val popupMenu = PopupMenu(
+                baseActivity!!, view
+            )
             popupMenu.setOnMenuItemClickListener { item: MenuItem ->
                 when (item.itemId) {
                     R.id.rename_recording -> {

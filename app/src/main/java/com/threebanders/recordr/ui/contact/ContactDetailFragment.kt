@@ -69,17 +69,8 @@ open class ContactDetailFragment : BaseFragment() {
                 false
             ) as RelativeLayout
         recordingsRecycler = detailView!!.findViewById(R.id.recordings)
-        recordingsRecycler!!.setLayoutManager(
-            LinearLayoutManager(
-                mainActivity
-            )
-        )
-        recordingsRecycler!!.addItemDecoration(
-            DividerItemDecoration(
-                context,
-                DividerItemDecoration.VERTICAL
-            )
-        )
+        recordingsRecycler!!.setLayoutManager(LinearLayoutManager(mainActivity))
+        recordingsRecycler!!.addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
         recordingsRecycler!!.adapter = adapter
 
         return detailView
@@ -209,7 +200,7 @@ open class ContactDetailFragment : BaseFragment() {
         }
     }
 
-    open fun toggleTitle() {
+    protected open fun toggleTitle() {
         val title = mainActivity!!.findViewById<TextView>(R.id.actionbar_title)
         if (mainActivity!!.layoutType == LayoutType.DOUBLE_PANE) {
             val params = title.layoutParams as Toolbar.LayoutParams
