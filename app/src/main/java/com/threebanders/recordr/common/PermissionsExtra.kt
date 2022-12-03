@@ -46,7 +46,9 @@ object PermissionsExtra {
     fun accessibilityPermission(activity: FragmentActivity) {
         val intent = Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS)
         val pm = activity.packageManager
-        if (intent.resolveActivity(pm) != null) activity.startActivity(intent)
+        if (intent.resolveActivity(pm) != null) {
+            activity.startActivity(intent)
+        }
     }
 
     // SHOW WARNING MESSAGE
