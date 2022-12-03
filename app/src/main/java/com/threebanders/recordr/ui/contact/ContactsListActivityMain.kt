@@ -1,7 +1,6 @@
 package com.threebanders.recordr.ui.contact
 
 import android.Manifest
-import android.annotation.SuppressLint
 import android.app.ActivityManager
 import android.content.ActivityNotFoundException
 import android.content.Intent
@@ -10,9 +9,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.PowerManager
-import android.view.Gravity
 import android.view.MenuItem
-import android.view.View
 import android.widget.ImageButton
 import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
@@ -25,7 +22,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.preference.PreferenceManager
 import com.afollestad.materialdialogs.DialogAction
 import com.afollestad.materialdialogs.MaterialDialog
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationView
 import com.threebanders.recordr.R
 import com.threebanders.recordr.ui.BaseActivity
@@ -37,10 +33,10 @@ import core.threebanders.recordr.MyService
 
 class ContactsListActivityMain : BaseActivity() {
     private var fm: FragmentManager? = null
-    var unassignedToInsert: Fragment? = null
-    var viewModel: MainViewModel? = null
+    private var unassignedToInsert: Fragment? = null
+    private var viewModel: MainViewModel? = null
 
-    override fun createFragment(): Fragment? {
+    override fun createFragment(): Fragment {
         return UnassignedRecordingsFragment()
     }
 
@@ -50,11 +46,10 @@ class ContactsListActivityMain : BaseActivity() {
         checkIfThemeChanged()
     }
 
-    @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme()
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_masterdetail)
+        setContentView(R.layout.contacts_list_activity_onepane)
 
         viewModel = ViewModelProvider(this)[MainViewModel::class.java]
 
@@ -89,12 +84,9 @@ class ContactsListActivityMain : BaseActivity() {
         } else setupRecorderFragment()
 
         if (savedInstanceState == null) insertFragment(R.id.contacts_list_fragment_container)
-        @SuppressLint("MissingInflatedId", "LocalSuppress") val hamburger =
-            findViewById<ImageButton>(R.id.hamburger)
-        @SuppressLint("MissingInflatedId", "LocalSuppress") val drawer =
-            findViewById<DrawerLayout>(R.id.drawer_layout)
-        @SuppressLint("MissingInflatedId", "LocalSuppress") val navigationView =
-            findViewById<NavigationView>(R.id.navigation_view)
+        val hamburger = findViewById<ImageButton>(R.id.hamburger)
+        val drawer = findViewById<DrawerLayout>(R.id.drawer_layout)
+        val navigationView = findViewById<NavigationView>(R.id.navigation_view)
         val navWidth: Int
         val pixelsDp =
             (resources.displayMetrics.widthPixels / resources.displayMetrics.density).toInt()
@@ -149,65 +141,6 @@ class ContactsListActivityMain : BaseActivity() {
     private fun setupRecorderFragment() {
         unassignedToInsert = UnassignedRecordingsFragment()
         fm = supportFragmentManager
-
-        val bottomNav = findViewById<BottomNavigationView>(R.id.bottom_tab_nav)
-        bottomNav.setOnNavigationItemSelectedListener { item: MenuItem ->
-            when (item.itemId) {
-                R.id.bottom_nav_unassigned -> {
-                    resetActionBar(BottomNavTabs.UNASSIGNED)
-                    if (layoutType == LayoutType.SINGLE_PANE) {
-                        fm!!.beginTransaction()
-                            .replace(R.id.contacts_list_fragment_container, unassignedToInsert!!)
-                            .commit()
-                    } else {
-                        val oldListcontacts =
-                            fm!!.findFragmentById(R.id.contacts_list_fragment_container)
-                        val oldDetail =
-                            fm!!.findFragmentById(R.id.contact_detail_fragment_container)
-                        if (oldListcontacts != null) fm!!.beginTransaction().remove(oldListcontacts)
-                            .commit()
-                        if (oldDetail != null) fm!!.beginTransaction().remove(oldDetail).commit()
-                        fm!!.beginTransaction()
-                            .add(R.id.tab_fragment_container, unassignedToInsert!!)
-                            .commit()
-                    }
-                }
-            }
-            true
-        }
-    }
-
-    internal enum class BottomNavTabs {
-        CONTACTS, UNASSIGNED
-    }
-
-    private fun resetActionBar(tab: BottomNavTabs) {
-        val hamburger = findViewById<ImageButton>(R.id.hamburger)
-        val closeBtn = findViewById<ImageButton>(R.id.close_select_mode)
-        val moveBtn = findViewById<ImageButton>(R.id.actionbar_select_move)
-        val selectAllBtn = findViewById<ImageButton>(R.id.actionbar_select_all)
-        val infoBtn = findViewById<ImageButton>(R.id.actionbar_info)
-        val menuRightBtn = findViewById<ImageButton>(R.id.contact_detail_menu)
-        val menuRightSelectedBtn = findViewById<ImageButton>(R.id.contact_detail_selected_menu)
-        val actionBarTitle = findViewById<TextView>(R.id.actionbar_title)
-        hamburger.visibility = View.VISIBLE
-        hamburger.alpha = 1f
-        closeBtn.visibility = View.GONE
-        moveBtn.visibility = View.GONE
-        selectAllBtn.visibility = View.GONE
-        infoBtn.visibility = View.GONE
-        menuRightSelectedBtn.visibility = View.GONE
-        val params = actionBarTitle.layoutParams as Toolbar.LayoutParams
-        params.gravity = Gravity.CENTER
-        actionBarTitle.layoutParams = params
-        actionBarTitle.text = resources.getString(R.string.app_name)
-        if (layoutType == LayoutType.DOUBLE_PANE) {
-            if (tab == BottomNavTabs.CONTACTS) {
-                menuRightBtn.visibility = View.VISIBLE
-            } else {
-                menuRightBtn.visibility = View.GONE
-            }
-        }
     }
 
     public override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -240,7 +173,7 @@ class ContactsListActivityMain : BaseActivity() {
             .content(R.string.exit_app_message)
             .positiveText(android.R.string.ok)
             .negativeText(android.R.string.cancel)
-            .onPositive { dialog: MaterialDialog, _: DialogAction ->
+            .onPositive { _: MaterialDialog, _: DialogAction ->
                 super@ContactsListActivityMain.onBackPressed()
             }
             .show()
