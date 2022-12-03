@@ -96,6 +96,14 @@ class MainViewModel : ViewModel() {
         SharedPrefsExtra.setDataFromSharedPreferences(context, list)
     }
 
+    fun checkPermissions(context: Context): Boolean {
+        return PermissionsExtra.checkPermissions(context)
+    }
+
+    fun requestAllPermissions(context: Context, permissionRequest: Int) {
+        PermissionsExtra.requestAllPermissions(context, permissionRequest)
+    }
+
     // TODO : Show Permissions Dialog
     fun showPermissionsDialog(parentActivity: SetupActivity?, onNextScreen: () -> Unit) {
         PermissionsExtra.permissionsDialog(parentActivity, onNextScreen)

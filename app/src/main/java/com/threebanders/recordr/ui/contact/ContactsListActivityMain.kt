@@ -1,10 +1,8 @@
 package com.threebanders.recordr.ui.contact
 
-import android.Manifest
 import android.app.ActivityManager
 import android.content.ActivityNotFoundException
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -13,7 +11,6 @@ import android.view.MenuItem
 import android.widget.ImageButton
 import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
-import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
@@ -72,7 +69,7 @@ class ContactsListActivityMain : BaseActivity() {
         var permsNotGranted = 0
         var powerOptimized = 0
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            permsNotGranted = if (checkPermissions()) 0 else PERMS_NOT_GRANTED
+            permsNotGranted = if (viewModel!!.checkPermissions(this)) 0 else PERMS_NOT_GRANTED
             powerOptimized =
                 if (pm.isIgnoringBatteryOptimizations(packageName)) 0 else POWER_OPTIMIZED
         }
@@ -177,24 +174,6 @@ class ContactsListActivityMain : BaseActivity() {
                 super@ContactsListActivityMain.onBackPressed()
             }
             .show()
-    }
-
-    private fun checkPermissions(): Boolean {
-        val phoneState =
-            (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE)
-                    == PackageManager.PERMISSION_GRANTED)
-        val recordAudio = (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO)
-                == PackageManager.PERMISSION_GRANTED)
-        val readContacts =
-            (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS)
-                    == PackageManager.PERMISSION_GRANTED)
-        val readStorage =
-            (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
-                    == PackageManager.PERMISSION_GRANTED)
-        val writeStorage =
-            (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                    == PackageManager.PERMISSION_GRANTED)
-        return phoneState && recordAudio && readContacts && readStorage && writeStorage
     }
 
     companion object {
