@@ -49,7 +49,7 @@ class ContactsListActivityMain : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme()
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.contacts_list_activity_onepane)
+        setContentView(R.layout.contacts_list_activity)
 
         viewModel = ViewModelProvider(this)[MainViewModel::class.java]
 
