@@ -92,26 +92,27 @@ class MainViewModel : ViewModel() {
     /* ------------------- CLEAN UP CODE --------------------*/
 
     // TODO : Shared Prefs
-    fun getPrefs(context: Context) : List<Recording?>?{
+    fun getPrefs(context: Context): List<Recording?>? {
         return SharedPrefsExtra.getDataFromSharedPreferences(context)
     }
-    fun setPrefs(context: Context,list: List<Recording?>){
-        SharedPrefsExtra.setDataFromSharedPreferences(context,list)
+
+    fun setPrefs(context: Context, list: List<Recording?>) {
+        SharedPrefsExtra.setDataFromSharedPreferences(context, list)
     }
 
 
     // TODO : Show Permissions Dialog
-    fun showPermissionsDialog(parentActivity: SetupActivity?, onNextScreen : () -> Unit){
-        PermissionsExtra.permissionsDialog(parentActivity,onNextScreen)
+    fun showPermissionsDialog(parentActivity: SetupActivity?, onNextScreen: () -> Unit) {
+        PermissionsExtra.permissionsDialog(parentActivity, onNextScreen)
     }
 
     // TODO : Show Warning Dialog
-    fun showWarningDialog(parentActivity: SetupActivity?,onFinish : () -> Unit){
-        PermissionsExtra.warningDialog(parentActivity,onFinish)
+    fun showWarningDialog(parentActivity: SetupActivity?, onFinish: () -> Unit) {
+        PermissionsExtra.warningDialog(parentActivity, onFinish)
     }
 
     // TODO : ASK FOR ACCESSIBILITY PERMISSION
-    fun showAccessibilityPermissions(fragmentActivity: FragmentActivity){
+    fun showAccessibilityPermissions(fragmentActivity: FragmentActivity) {
         PermissionsExtra.accessibilityPermission(fragmentActivity)
     }
 

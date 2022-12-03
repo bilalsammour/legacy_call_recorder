@@ -39,10 +39,17 @@ object Extras {
 
 
     // TODO : SHOW RECYCLER
-    fun showRecyclerView(recordingsRecycler : RecyclerView?, baseActivity : BaseActivity?,context : Context,
-    recordingAdapter: ContactDetailFragment.RecordingAdapter){
+    fun showRecyclerView(
+        recordingsRecycler: RecyclerView?, baseActivity: BaseActivity?, context: Context,
+        recordingAdapter: ContactDetailFragment.RecordingAdapter
+    ) {
         recordingsRecycler!!.layoutManager = LinearLayoutManager(baseActivity)
-        recordingsRecycler.addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
+        recordingsRecycler.addItemDecoration(
+            DividerItemDecoration(
+                context,
+                DividerItemDecoration.VERTICAL
+            )
+        )
         recordingsRecycler.adapter = recordingAdapter
     }
 
@@ -78,7 +85,8 @@ object Extras {
                         gFile.name = file.name
                         gFile.parents = mutableListOf(folderId)
                         val fileContent = FileContent("audio/wav", file)
-                        drive?.Files()?.create(gFile, fileContent)?.setFields("id, parents")?.execute()
+                        drive?.Files()?.create(gFile, fileContent)?.setFields("id, parents")
+                            ?.execute()
                         showNotification(context)
                     }
                 }.key
@@ -91,6 +99,7 @@ object Extras {
             e.printStackTrace()
         }
     }
+
     private fun getDriveService(context: Context?): Drive? {
         GoogleSignIn.getLastSignedInAccount(context!!)?.let { googleAccount ->
             val credential = GoogleAccountCredential.usingOAuth2(
@@ -135,9 +144,10 @@ object Extras {
 
 
     // TODO : Receiver Prefs
-    fun getSharedPrefsInstance(context: Context?) : SharedPreferences {
+    fun getSharedPrefsInstance(context: Context?): SharedPreferences {
         return context!!.getSharedPreferences("audioPrefs", Context.MODE_PRIVATE)
     }
+
     fun getAudioPath(context: Context?): String {
         return getSharedPrefsInstance(context).getString("audioPath", "")!!
     }

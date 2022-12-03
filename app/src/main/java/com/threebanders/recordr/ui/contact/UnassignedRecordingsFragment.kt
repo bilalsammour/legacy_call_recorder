@@ -18,12 +18,16 @@ class UnassignedRecordingsFragment : ContactDetailFragment() {
     private lateinit var rootView: View
     private var record: Recorder? = null
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         rootView = inflater.inflate(R.layout.unassigned_recordings_fragment, container, false)
 
 
         recordingsRecycler = rootView.findViewById(R.id.unassigned_recordings)
-        Extras.showRecyclerView(recordingsRecycler,baseActivity,requireContext(),adapter!!)
+        Extras.showRecyclerView(recordingsRecycler, baseActivity, requireContext(), adapter!!)
         record = Recorder(context)
 
         lifecycleScope.launch {
@@ -32,7 +36,7 @@ class UnassignedRecordingsFragment : ContactDetailFragment() {
                 paintViews()
                 if (recordings?.size != 0) {
                     mainViewModel.getPrefs(requireContext())
-                    mainViewModel.setPrefs(requireContext(),recordings as List<Recording?>)
+                    mainViewModel.setPrefs(requireContext(), recordings as List<Recording?>)
                 }
             }
         }
@@ -52,6 +56,7 @@ class UnassignedRecordingsFragment : ContactDetailFragment() {
         title.text =
             if (selectMode) selectedItems!!.size.toString() else getString(R.string.app_name)
     }
+
     public override fun toggleSelectModeActionBar(animate: Boolean) {
         val closeBtn = baseActivity?.findViewById<ImageButton>(R.id.close_select_mode)
         val moveBtn = baseActivity?.findViewById<ImageButton>(R.id.actionbar_select_move)
@@ -80,6 +85,7 @@ class UnassignedRecordingsFragment : ContactDetailFragment() {
         )
         if (selectMode) hideView(hamburger, animate) else showView(hamburger, animate)
     }
+
     override fun paintViews() {
         if (selectMode) putInSelectMode(false)
         val noContent = rootView.findViewById<TextView>(R.id.no_content_detail)
@@ -88,6 +94,7 @@ class UnassignedRecordingsFragment : ContactDetailFragment() {
         noContent.visibility =
             if (mainViewModel.records.value!!.size > 0) View.GONE else View.VISIBLE
     }
+
     override fun setDetailsButtonsListeners() {
         val closeBtn = baseActivity?.findViewById<ImageButton>(R.id.close_select_mode)
         closeBtn!!.setOnClickListener { clearSelectMode() }

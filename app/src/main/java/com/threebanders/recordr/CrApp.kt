@@ -55,10 +55,13 @@ class CrApp : Application() {
             private set
     }
 
-    private fun createNotification(){
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+    private fun createNotification() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val notificationChannel = NotificationChannel(
-                Extras.NOTIFICATION_ID, Extras.NOTIFICATION_STRING, NotificationManager.IMPORTANCE_DEFAULT)
+                Extras.NOTIFICATION_ID,
+                Extras.NOTIFICATION_STRING,
+                NotificationManager.IMPORTANCE_DEFAULT
+            )
             val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
             notificationManager.createNotificationChannel(notificationChannel)
         }

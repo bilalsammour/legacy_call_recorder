@@ -109,7 +109,6 @@
         </androidx.appcompat.widget.Toolbar>
 
 
-
         <FrameLayout
             android:id="@+id/contacts_list_fragment_container"
             android:layout_width="match_parent"

@@ -70,7 +70,12 @@ open class ContactDetailFragment : BaseFragment() {
             ) as RelativeLayout
         recordingsRecycler = detailView!!.findViewById(R.id.recordings)
         recordingsRecycler!!.setLayoutManager(LinearLayoutManager(mainActivity))
-        recordingsRecycler!!.addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
+        recordingsRecycler!!.addItemDecoration(
+            DividerItemDecoration(
+                context,
+                DividerItemDecoration.VERTICAL
+            )
+        )
         recordingsRecycler!!.adapter = adapter
 
         return detailView
