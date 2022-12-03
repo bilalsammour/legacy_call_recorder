@@ -18,15 +18,18 @@ class ShowEulaActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.setup_show_eula_activity)
+
         val toolbar = findViewById<Toolbar>(R.id.toolbar_show_eula)
         setSupportActionBar(toolbar)
         val actionBar = supportActionBar
         actionBar?.setDisplayHomeAsUpEnabled(true)
+
         var html = CoreUtil.rawHtmlToString(R.raw.eula, this)
         html = html.replace(
             HelpActivity.APP_NAME_PLACEHOLDER,
             resources.getString(R.string.app_name)
         )
+        
         val eulaHtml = findViewById<WebView>(R.id.eula_hmtl)
         eulaHtml.loadDataWithBaseURL(
             "file:///android_asset/",

@@ -17,6 +17,7 @@ import com.threebanders.recordr.ui.contact.ContactsListActivityMain
 class SetupPermissionsFragment : Fragment() {
     private lateinit var mainViewModel: MainViewModel
     private var parentActivity: SetupActivity? = null
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -27,7 +28,6 @@ class SetupPermissionsFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-
 
         mainViewModel = ViewModelProvider(this)[MainViewModel::class.java]
         val res = resources
@@ -59,13 +59,15 @@ class SetupPermissionsFragment : Fragment() {
                 mainViewModel.showPermissionsDialog(parentActivity) {
                     permissionsNext()
                 }
-            } else permissionsNext()
+            } else {
+                permissionsNext()
+            }
         }
     }
 
     private fun permissionsNext() {
         val checkResult = parentActivity?.checkResult
-        //după permisiuni afișăm powersetup dacă suntem la prima rulare sau aplicația este optimizată.
+
         if (((checkResult!! != 0) and (ContactsListActivityMain.EULA_NOT_ACCEPTED != 0)) || ((checkResult != 0) and (ContactsListActivityMain.POWER_OPTIMIZED != 0))
         ) {
             val powerFragment = SetupPowerFragment()

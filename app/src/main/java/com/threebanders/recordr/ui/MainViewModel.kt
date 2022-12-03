@@ -10,7 +10,6 @@ import com.threebanders.recordr.common.PermissionsExtra
 import com.threebanders.recordr.common.SharedPrefsExtra
 import com.threebanders.recordr.ui.setup.SetupActivity
 import core.threebanders.recordr.Core
-import core.threebanders.recordr.CrLog
 import core.threebanders.recordr.data.Contact
 import core.threebanders.recordr.data.Recording
 import core.threebanders.recordr.data.Repository
@@ -28,7 +27,6 @@ class MainViewModel : ViewModel() {
 
     init {
         setupAllContacts()
-
     }
 
     private fun setupAllContacts() {
@@ -50,7 +48,6 @@ class MainViewModel : ViewModel() {
                 recording!!.delete(repository)
                 deletedRecording.postValue(recording)
             } catch (exc: Exception) {
-                CrLog.log(CrLog.ERROR, "Error deleting the selected recording(s): " + exc.message)
                 return DialogInfo(
                     R.string.error_title,
                     R.string.error_deleting_recordings,
@@ -83,7 +80,6 @@ class MainViewModel : ViewModel() {
                 recording.update(repository)
             } else throw Exception("File.renameTo() has returned false.")
         } catch (e: Exception) {
-            CrLog.log(CrLog.ERROR, "Error renaming the recording:" + e.message)
             return DialogInfo(R.string.error_title, R.string.rename_error, R.drawable.error)
         }
         return null
@@ -100,7 +96,6 @@ class MainViewModel : ViewModel() {
         SharedPrefsExtra.setDataFromSharedPreferences(context, list)
     }
 
-
     // TODO : Show Permissions Dialog
     fun showPermissionsDialog(parentActivity: SetupActivity?, onNextScreen: () -> Unit) {
         PermissionsExtra.permissionsDialog(parentActivity, onNextScreen)
@@ -115,6 +110,4 @@ class MainViewModel : ViewModel() {
     fun showAccessibilityPermissions(fragmentActivity: FragmentActivity) {
         PermissionsExtra.accessibilityPermission(fragmentActivity)
     }
-
-
 }

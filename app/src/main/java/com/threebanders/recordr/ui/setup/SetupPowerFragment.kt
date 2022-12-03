@@ -19,10 +19,9 @@ import com.threebanders.recordr.ui.contact.ContactsListActivityMain
 
 class SetupPowerFragment : Fragment() {
     private var parentActivity: SetupActivity? = null
-    private lateinit var dozeInfoText: TextView
-    private lateinit var otherOptimizations: TextView
     private lateinit var dozeInfo: LinearLayout
     private lateinit var mainViewModel: MainViewModel
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -35,16 +34,16 @@ class SetupPowerFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-
         prepareUi()
 
-        if (parentActivity!!.checkResult and ContactsListActivityMain.Companion.POWER_OPTIMIZED != 0) {
+        if (parentActivity!!.checkResult and ContactsListActivityMain.POWER_OPTIMIZED != 0) {
             dozeInfo.visibility = View.VISIBLE
             val turnOffDoze = parentActivity!!.findViewById<Button>(R.id.turn_off_doze)
-            turnOffDoze.setOnClickListener { //pentru a rezolva crash-ul e86a71db-dca0-4064-9bb5-466c6fd9dfce
+            turnOffDoze.setOnClickListener {
                 mainViewModel.showAccessibilityPermissions(requireActivity())
             }
         }
+
         val finish = parentActivity!!.findViewById<Button>(R.id.setup_power_finish)
         finish.setOnClickListener {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -53,7 +52,9 @@ class SetupPowerFragment : Fragment() {
                     mainViewModel.showWarningDialog(parentActivity) {
                         parentActivity!!.finish()
                     } else parentActivity!!.finish()
-            } else parentActivity!!.finish()
+            } else {
+                parentActivity!!.finish()
+            }
         }
     }
 
@@ -71,6 +72,6 @@ class SetupPowerFragment : Fragment() {
             res.getString(R.string.other_power_optimizations),
             res.getString(R.string.app_name)
         )
-        dozeInfo = parentActivity!!.findViewById<LinearLayout>(R.id.doze_info)
+        dozeInfo = parentActivity!!.findViewById(R.id.doze_info)
     }
 }

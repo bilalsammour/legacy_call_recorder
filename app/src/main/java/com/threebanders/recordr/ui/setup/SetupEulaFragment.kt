@@ -15,11 +15,11 @@ import com.threebanders.recordr.R
 import com.threebanders.recordr.ui.contact.ContactsListActivityMain
 
 class SetupEulaFragment : Fragment() {
-
     private lateinit var version: TextView
     private lateinit var showEula: Button
     private lateinit var cancelButton: Button
     private lateinit var nextButton: Button
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -30,6 +30,7 @@ class SetupEulaFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+
         val parentActivity = activity as SetupActivity?
         val checkResult = parentActivity!!.checkResult
 
@@ -38,9 +39,13 @@ class SetupEulaFragment : Fragment() {
         showEula.setOnClickListener {
             startActivity(Intent(activity, ShowEulaActivity::class.java))
         }
+
         nextButton.setOnClickListener(View.OnClickListener {
             val hasAccepted = parentActivity.findViewById<CheckBox>(R.id.has_accepted)
-            if (!hasAccepted.isChecked || activity == null) return@OnClickListener
+            if (!hasAccepted.isChecked || activity == null) {
+                return@OnClickListener
+            }
+
             val settings = (requireActivity().application as CrApp).core.prefs
             val editor = settings.edit()
             editor.putBoolean(ContactsListActivityMain.HAS_ACCEPTED_EULA, true)
