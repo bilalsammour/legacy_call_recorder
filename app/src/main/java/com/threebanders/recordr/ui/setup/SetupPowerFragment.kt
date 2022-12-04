@@ -1,10 +1,6 @@
 package com.threebanders.recordr.ui.setup
 
-import android.annotation.SuppressLint
-import android.content.Context
-import android.os.Build
 import android.os.Bundle
-import android.os.PowerManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,8 +10,8 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.threebanders.recordr.R
+import com.threebanders.recordr.common.ContactsExtras
 import com.threebanders.recordr.ui.MainViewModel
-import com.threebanders.recordr.ui.contact.ContactsListActivityMain
 
 class SetupPowerFragment : Fragment() {
     private var parentActivity: SetupActivity? = null
@@ -30,29 +26,25 @@ class SetupPowerFragment : Fragment() {
         return inflater.inflate(R.layout.setup_power_fragment, container, false)
     }
 
-    @SuppressLint("NewApi")
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
         prepareUi()
 
-        if (parentActivity!!.checkResult and ContactsListActivityMain.POWER_OPTIMIZED != 0) {
+        if (parentActivity!!.checkResult and ContactsExtras.POWER_OPTIMIZED != 0) {
             dozeInfo.visibility = View.VISIBLE
             val turnOffDoze = parentActivity!!.findViewById<Button>(R.id.turn_off_doze)
             turnOffDoze.setOnClickListener {
-                mainViewModel.showAccessibilityPermissions(requireActivity())
+                mainViewModel.changeBatteryOptimization(requireActivity())
             }
         }
 
         val finish = parentActivity!!.findViewById<Button>(R.id.setup_power_finish)
         finish.setOnClickListener {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                val pm = parentActivity!!.getSystemService(Context.POWER_SERVICE) as PowerManager
-                if (!pm.isIgnoringBatteryOptimizations(parentActivity!!.packageName))
-                    mainViewModel.showWarningDialog(parentActivity) {
-                        parentActivity!!.finish()
-                    } else parentActivity!!.finish()
-            } else {
+            if (!mainViewModel.isIgnoringBatteryOptimizations(requireActivity()))
+                mainViewModel.showWarningDialog(parentActivity) {
+                    parentActivity!!.finish()
+                } else {
                 parentActivity!!.finish()
             }
         }

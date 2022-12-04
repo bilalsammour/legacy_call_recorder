@@ -10,9 +10,9 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.threebanders.recordr.R
+import com.threebanders.recordr.common.ContactsExtras
 import com.threebanders.recordr.common.PermissionsExtra
 import com.threebanders.recordr.ui.MainViewModel
-import com.threebanders.recordr.ui.contact.ContactsListActivityMain
 
 class SetupPermissionsFragment : Fragment() {
     private lateinit var mainViewModel: MainViewModel
@@ -68,7 +68,7 @@ class SetupPermissionsFragment : Fragment() {
     private fun permissionsNext() {
         val checkResult = parentActivity?.checkResult
 
-        if (((checkResult!! != 0) and (ContactsListActivityMain.EULA_NOT_ACCEPTED != 0)) || ((checkResult != 0) and (ContactsListActivityMain.POWER_OPTIMIZED != 0))
+        if (((checkResult!! != 0) and (ContactsExtras.EULA_NOT_ACCEPTED != 0)) || ((checkResult != 0) and (ContactsExtras.POWER_OPTIMIZED != 0))
         ) {
             val powerFragment = SetupPowerFragment()
             parentActivity!!.supportFragmentManager.beginTransaction()

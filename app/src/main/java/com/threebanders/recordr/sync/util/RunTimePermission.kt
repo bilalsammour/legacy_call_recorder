@@ -1,7 +1,6 @@
 package com.threebanders.recordr.sync.util
 
 import android.content.pm.PackageManager
-import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 
@@ -10,26 +9,23 @@ open class RunTimePermission : AppCompatActivity() {
     private var callback: ((Boolean) -> Unit)? = null
 
     fun requestPermission(permissions: Array<String>, callback: (isGranted: Boolean) -> Unit) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            var granted = true
-            for (permission in permissions) {
-                if (ContextCompat.checkSelfPermission(
-                        this,
-                        permission
-                    ) != PackageManager.PERMISSION_GRANTED
-                ) {
-                    granted = false
-                    break
-                }
+        var granted = true
+        for (permission in permissions) {
+            if (ContextCompat.checkSelfPermission(
+                    this,
+                    permission
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                granted = false
+                break
             }
-            if (granted) {
-                callback(true)
-            } else {
-                this.callback = callback
-                requestPermissions(permissions, Integer.MAX_VALUE)
-            }
-        } else callback(true)
-
+        }
+        if (granted) {
+            callback(true)
+        } else {
+            this.callback = callback
+            requestPermissions(permissions, Integer.MAX_VALUE)
+        }
     }
 
     override fun onRequestPermissionsResult(

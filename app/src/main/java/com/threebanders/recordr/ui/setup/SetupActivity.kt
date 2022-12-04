@@ -4,19 +4,20 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.threebanders.recordr.R
+import com.threebanders.recordr.common.ContactsExtras
+import com.threebanders.recordr.common.ContactsExtras.EULA_NOT_ACCEPTED
 import com.threebanders.recordr.ui.BaseActivity
-import com.threebanders.recordr.ui.contact.ContactsListActivityMain
 
 class SetupActivity : BaseActivity() {
     var checkResult = 0
         private set
 
     override fun createFragment(): Fragment? {
-        return if (checkResult and ContactsListActivityMain.EULA_NOT_ACCEPTED != 0)
+        return if (checkResult and EULA_NOT_ACCEPTED != 0)
             SetupEulaFragment()
-        else if (checkResult and ContactsListActivityMain.PERMS_NOT_GRANTED != 0)
+        else if (checkResult and ContactsExtras.PERMS_NOT_GRANTED != 0)
             SetupPermissionsFragment()
-        else if (checkResult and ContactsListActivityMain.POWER_OPTIMIZED != 0)
+        else if (checkResult and ContactsExtras.POWER_OPTIMIZED != 0)
             SetupPowerFragment() else null
     }
 
@@ -26,10 +27,10 @@ class SetupActivity : BaseActivity() {
         setContentView(R.layout.setup_activity)
 
         checkResult = intent.getIntExtra(
-            ContactsListActivityMain.SETUP_ARGUMENT,
-            ContactsListActivityMain.EULA_NOT_ACCEPTED
-                    and ContactsListActivityMain.PERMS_NOT_GRANTED and
-                    ContactsListActivityMain.POWER_OPTIMIZED
+            ContactsExtras.SETUP_ARGUMENT,
+            EULA_NOT_ACCEPTED
+                    and ContactsExtras.PERMS_NOT_GRANTED and
+                    ContactsExtras.POWER_OPTIMIZED
         )
         insertFragment(R.id.setup_fragment_container)
     }

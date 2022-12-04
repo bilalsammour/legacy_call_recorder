@@ -29,7 +29,7 @@ class ShowEulaActivity : BaseActivity() {
             HelpActivity.APP_NAME_PLACEHOLDER,
             resources.getString(R.string.app_name)
         )
-        
+
         val eulaHtml = findViewById<WebView>(R.id.eula_hmtl)
         eulaHtml.loadDataWithBaseURL(
             "file:///android_asset/",

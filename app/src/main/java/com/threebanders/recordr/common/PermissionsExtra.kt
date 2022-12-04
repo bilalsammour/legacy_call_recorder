@@ -70,24 +70,32 @@ object PermissionsExtra {
             .show()
     }
 
-
-    // SHOW ACCESSIBILITY PERMISSIONS
-    @SuppressLint("InlinedApi", "QueryPermissionsNeeded")
-    fun accessibilityPermission(activity: FragmentActivity) {
+    @SuppressLint("BatteryLife")
+    fun changeBatteryOptimization(activity: FragmentActivity) {
         val intent = Intent()
         val packageName: String = activity.packageName
-        val pm = activity. getSystemService(Context.POWER_SERVICE) as PowerManager
-        if (!pm.isIgnoringBatteryOptimizations(packageName)) {
+
+        if (!isIgnoringBatteryOptimizations(activity)) {
             intent.action = Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS
             intent.data = Uri.parse("package:$packageName")
-            activity. startActivity(intent)
+            activity.startActivity(intent)
         }
+    }
 
-        val intent0 = Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS)
-        val pm0 = activity.packageManager
-        if (intent0.resolveActivity(pm0) != null) {
-            activity.startActivity(intent0)
+    @SuppressLint("QueryPermissionsNeeded")
+    fun changeBatteryOptimizationIntent(activity: FragmentActivity) {
+        val intent = Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS)
+        val pm = activity.packageManager
+
+        if (intent.resolveActivity(pm) != null) {
+            activity.startActivity(intent)
         }
+    }
+
+    fun isIgnoringBatteryOptimizations(activity: FragmentActivity): Boolean {
+        val pm = activity.getSystemService(Context.POWER_SERVICE) as PowerManager
+
+        return pm.isIgnoringBatteryOptimizations(activity.packageName)
     }
 
     // SHOW WARNING MESSAGE

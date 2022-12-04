@@ -9,10 +9,10 @@ import android.widget.Button
 import android.widget.CheckBox
 import android.widget.TextView
 import androidx.fragment.app.Fragment
-import com.threebanders.recordr.BuildConfig
 import com.threebanders.recordr.CrApp
 import com.threebanders.recordr.R
-import com.threebanders.recordr.ui.contact.ContactsListActivityMain
+import com.threebanders.recordr.common.ContactsExtras
+import org.acra.BuildConfig
 
 class SetupEulaFragment : Fragment() {
     private lateinit var version: TextView
@@ -48,9 +48,9 @@ class SetupEulaFragment : Fragment() {
 
             val settings = (requireActivity().application as CrApp).core.prefs
             val editor = settings.edit()
-            editor.putBoolean(ContactsListActivityMain.HAS_ACCEPTED_EULA, true)
+            editor.putBoolean(ContactsExtras.HAS_ACCEPTED_EULA, true)
             editor.apply()
-            if (checkResult and ContactsListActivityMain.PERMS_NOT_GRANTED != 0) {
+            if (checkResult and ContactsExtras.PERMS_NOT_GRANTED != 0) {
                 val permissionsFragment = SetupPermissionsFragment()
                 showFragment(permissionsFragment, parentActivity)
             } else {

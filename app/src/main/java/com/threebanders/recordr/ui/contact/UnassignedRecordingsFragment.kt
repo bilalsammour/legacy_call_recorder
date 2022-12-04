@@ -40,6 +40,7 @@ class UnassignedRecordingsFragment : ContactDetailFragment() {
             }
         }
 
+        paintViews()
         mainViewModel.deletedRecording.observe(viewLifecycleOwner) { removeRecording() }
         removeRecording()
 
@@ -139,5 +140,4 @@ class UnassignedRecordingsFragment : ContactDetailFragment() {
         val infoBtn = baseActivity?.findViewById<ImageButton>(R.id.actionbar_info)
         infoBtn!!.setOnClickListener { onRecordingInfo() }
     }
-
 }

@@ -114,8 +114,15 @@ class MainViewModel : ViewModel() {
         PermissionsExtra.warningDialog(parentActivity, onFinish)
     }
 
-    // TODO : ASK FOR ACCESSIBILITY PERMISSION
-    fun showAccessibilityPermissions(fragmentActivity: FragmentActivity) {
-        PermissionsExtra.accessibilityPermission(fragmentActivity)
+    fun changeBatteryOptimization(fragmentActivity: FragmentActivity) {
+        PermissionsExtra.changeBatteryOptimization(fragmentActivity)
+    }
+
+    fun isIgnoringBatteryOptimizations(activity: FragmentActivity): Boolean {
+        return PermissionsExtra.isIgnoringBatteryOptimizations(activity)
+    }
+
+    fun changeBatteryOptimizationIntent(fragmentActivity: FragmentActivity) {
+        PermissionsExtra.changeBatteryOptimizationIntent(fragmentActivity)
     }
 }
