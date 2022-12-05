@@ -18,7 +18,6 @@ import core.threebanders.recordr.data.Repository
 import java.io.File
 
 class MainViewModel : ViewModel() {
-    // change in mainviewmodel
     private val repository: Repository = Core.getRepository()
     var contact = MutableLiveData<Contact?>()
     private var contactList: List<Contact> = ArrayList()

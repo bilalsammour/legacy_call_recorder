@@ -16,8 +16,6 @@ import com.threebanders.recordr.ui.settings.SettingsActivity
 import com.threebanders.recordr.ui.setup.SetupActivity
 
 object ContactsExtras {
-
-    // we make a comment
     const val SETUP_ACTIVITY = 3
     const val HAS_ACCEPTED_EULA = "has_accepted_eula"
     const val EULA_NOT_ACCEPTED = 1

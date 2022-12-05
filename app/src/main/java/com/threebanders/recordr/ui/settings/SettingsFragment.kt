@@ -23,8 +23,6 @@ import com.threebanders.recordr.R
 import com.threebanders.recordr.ui.BaseActivity
 
 class SettingsFragment : PreferenceFragmentCompat() {
-    // and here
-
     private var parentActivity: BaseActivity? = null
     private var preferences: SharedPreferences? = null
     private var mGoogleApiClient: GoogleSignInClient? = null
