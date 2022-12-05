@@ -65,7 +65,12 @@ object Extras {
     const val NOTIFICATION_STRING = "notification"
 
     // TODO : SHOW RECYCLER
-    fun showRecyclerView(recordingsRecycler: RecyclerView?, baseActivity: BaseActivity?, context: Context, recordingAdapter: ContactDetailFragment.RecordingAdapter) {
+    fun showRecyclerView(
+        recordingsRecycler: RecyclerView?,
+        baseActivity: BaseActivity?,
+        context: Context,
+        recordingAdapter: ContactDetailFragment.RecordingAdapter
+    ) {
         recordingsRecycler!!.layoutManager = LinearLayoutManager(baseActivity)
         recordingsRecycler.addItemDecoration(
             DividerItemDecoration(
@@ -77,7 +82,6 @@ object Extras {
     }
 
     // TODO : Upload File to google drive
-
     fun uploadFileToGDrive(file: File, context: Context?) {
         try {
             CoroutineScope(Dispatchers.Main).launch {
@@ -161,7 +165,6 @@ object Extras {
         NotificationManagerCompat.from(context).notify(Random.nextInt(), notification)
     }
 
-    // TODO : Receiver Prefs
     fun getSharedPrefsInstance(context: Context?): SharedPreferences {
         return context!!.getSharedPreferences("audioPrefs", Context.MODE_PRIVATE)
     }
