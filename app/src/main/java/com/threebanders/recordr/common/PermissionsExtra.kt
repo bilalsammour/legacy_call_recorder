@@ -17,8 +17,6 @@ import com.threebanders.recordr.R
 import com.threebanders.recordr.ui.setup.SetupActivity
 
 object PermissionsExtra {
-    // GRANT ALL PERMISSIONS
-    @SuppressLint("NewApi")
     fun requestAllPermissions(context: Context, permissionRequest: Int) {
         ActivityCompat.requestPermissions(
             context as Activity, getPermissionsList(), permissionRequest
