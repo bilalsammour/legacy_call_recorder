@@ -6,8 +6,6 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -33,10 +31,8 @@ import java.io.File
 import kotlin.random.Random
 
 object Extras {
-
     const val NOTIFICATION_ID = "1"
     const val NOTIFICATION_STRING = "notification"
-
 
     // TODO : SHOW RECYCLER
     fun showRecyclerView(
@@ -52,7 +48,6 @@ object Extras {
         )
         recordingsRecycler.adapter = recordingAdapter
     }
-
 
     // TODO : Upload File to google drive
     @SuppressLint("NewApi")
@@ -117,9 +112,6 @@ object Extras {
         return null
     }
 
-
-    // TODO : Show Notification After Recording is uploaded
-    @RequiresApi(Build.VERSION_CODES.M)
     private fun showNotification(context: Context?) {
         val pendingIntent: PendingIntent =
             Intent(context, ContactsListActivityMain::class.java).let { notificationIntent ->

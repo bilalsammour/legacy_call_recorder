@@ -5,7 +5,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 
 open class RunTimePermission : AppCompatActivity() {
-
     private var callback: ((Boolean) -> Unit)? = null
 
     fun requestPermission(permissions: Array<String>, callback: (isGranted: Boolean) -> Unit) {
@@ -34,6 +33,7 @@ open class RunTimePermission : AppCompatActivity() {
         grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+
         if (requestCode == Integer.MAX_VALUE) {
             var granted = true
             for (element in grantResults) {
@@ -42,9 +42,12 @@ open class RunTimePermission : AppCompatActivity() {
                     break
                 }
             }
-            if (granted)
+
+            if (granted) {
                 callback?.invoke(true)
-            else onDenied()
+            } else {
+                onDenied()
+            }
         }
     }
 

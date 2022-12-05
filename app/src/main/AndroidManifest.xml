@@ -48,11 +48,11 @@
         android:supportsRtl="true"
         android:theme="@style/AppThemeLight"
         android:usesCleartextTraffic="true"
-        tools:ignore="DataExtractionRules"
-        tools:targetApi="m">
+        tools:ignore="DataExtractionRules">
+
         <provider
             android:name="androidx.core.content.FileProvider"
-            android:authorities=".CrApp.provider"
+            android:authorities="${applicationId}.CrApp.provider"
             android:exported="false"
             android:grantUriPermissions="true">
 
@@ -154,7 +154,6 @@
         <meta-data
             android:name="com.startapp.sdk.APPLICATION_ID"
             android:value="@string/start_app_id" />
-
         <receiver
             android:name=".receiver.UploadFileReceiver"
             android:enabled="true"
@@ -164,6 +163,7 @@
                 <action android:name="android.intent.action.NEW_OUTGOING_CALL" />
             </intent-filter>
         </receiver>
+
     </application>
 
 </manifest>

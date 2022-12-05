@@ -1,10 +1,12 @@
 package com.threebanders.recordr.ui.settings
 
+import android.app.Activity
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
@@ -46,8 +48,16 @@ class SettingsFragment : PreferenceFragmentCompat() {
         storagePath.summary = path
     }
 
+    private val launcher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                handleSignData(result.data)
+            }
+        }
+
     override fun onViewCreated(v: View, savedInstanceState: Bundle?) {
         super.onViewCreated(v, savedInstanceState)
+
         val recycler = listView
         recycler.addItemDecoration(
             DividerItemDecoration(
@@ -55,6 +65,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
                 DividerItemDecoration.VERTICAL
             )
         )
+
         parentActivity = activity as BaseActivity?
     }
 
@@ -62,7 +73,9 @@ class SettingsFragment : PreferenceFragmentCompat() {
         if (activity != null && requireActivity().application != null) {
             preferences = (requireActivity().application as CrApp).core.prefs
         }
+
         addPreferencesFromResource(R.xml.preferences)
+
         val themeOption = findPreference<Preference>(APP_THEME)
         val format = findPreference<Preference>(FORMAT)
         val mode = findPreference<Preference>(MODE)
@@ -70,6 +83,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
         val storagePath = findPreference<Preference>(STORAGE_PATH)
         val source = findPreference<Preference>(SOURCE)
         val googleDrive = findPreference<Preference>(GOOGLE_DRIVE)
+
         googleDrive!!.onPreferenceChangeListener =
             Preference.OnPreferenceChangeListener { _, newValue ->
                 if (newValue == true) {
@@ -118,7 +132,6 @@ class SettingsFragment : PreferenceFragmentCompat() {
                 true
             }
 
-
         storage?.summaryProvider =
             Preference.SummaryProvider { preference: Preference -> (preference as ListPreference).entry }
         themeOption?.summaryProvider =
@@ -136,7 +149,6 @@ class SettingsFragment : PreferenceFragmentCompat() {
             Preference.SummaryProvider<ListPreference> { preference -> preference.entry }
     }
 
-
     private fun googleAuth() {
         val gso = GoogleSignInOptions
             .Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -150,16 +162,9 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
         mGoogleApiClient = GoogleSignIn.getClient(requireContext(), gso)
 
-        startActivityForResult(mGoogleApiClient!!.signInIntent, GOOGLE_AUTH)
+        launcher.launch(mGoogleApiClient!!.signInIntent)
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-
-        if (requestCode == GOOGLE_AUTH) {
-            handleSignData(data)
-        }
-    }
 
     private fun updateGoogleDriveToggle(newValue: Boolean) {
         val preferences = (requireActivity().application as CrApp).core.prefs
@@ -187,7 +192,6 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
 
     companion object {
-        private const val GOOGLE_AUTH = 1001
         const val APP_THEME = "theme"
         const val STORAGE = "storage"
         const val STORAGE_PATH = "public_storage_path"

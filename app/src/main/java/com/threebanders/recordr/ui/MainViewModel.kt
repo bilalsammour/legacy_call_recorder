@@ -1,10 +1,12 @@
 package com.threebanders.recordr.ui
 
+import android.app.Activity
 import android.content.Context
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.threebanders.recordr.R
+import com.threebanders.recordr.common.ContactsExtras
 import com.threebanders.recordr.common.DialogInfo
 import com.threebanders.recordr.common.PermissionsExtra
 import com.threebanders.recordr.common.SharedPrefsExtra
@@ -122,7 +124,31 @@ class MainViewModel : ViewModel() {
         return PermissionsExtra.isIgnoringBatteryOptimizations(activity)
     }
 
-    fun changeBatteryOptimizationIntent(fragmentActivity: FragmentActivity) {
-        PermissionsExtra.changeBatteryOptimizationIntent(fragmentActivity)
+    fun showOnBackPressedDialog(context: Context, onBackPressed: () -> Unit) {
+        ContactsExtras.showExitDialog(context, onBackPressed)
+    }
+
+    fun checkIfServiceIsRunning(context: Context, serviceClass: Class<*>): Boolean {
+        return ContactsExtras.isMyServiceRunning(context, serviceClass)
+    }
+
+    fun showAccessibilitySettingsInApp(context: Activity) {
+        ContactsExtras.showAccessibilitySettings(context)
+    }
+
+    fun openSettingsActivityInApp(context: Activity) {
+        ContactsExtras.openSettingsActivity(context)
+    }
+
+    fun openHelpActivityInApp(context: Activity) {
+        ContactsExtras.openHelpActivity(context)
+    }
+
+    fun openSetupActivityInApp(context: Activity, checkResult: Int) {
+        ContactsExtras.openSetupActivity(context, checkResult)
+    }
+
+    fun openGoogleMarketInApp(context: Activity) {
+        ContactsExtras.openGoogleMarket(context)
     }
 }

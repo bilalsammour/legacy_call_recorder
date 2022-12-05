@@ -23,7 +23,7 @@ import core.threebanders.recordr.MyService
 class ContactsListActivityMain : BaseActivity() {
     private var fm: FragmentManager? = null
     private var unassignedToInsert: Fragment? = null
-    private var viewModel: MainViewModel? = null
+    private lateinit var viewModel: MainViewModel
     private lateinit var toolbar: Toolbar
     private lateinit var title: TextView
     private lateinit var hamburger: ImageButton
@@ -49,8 +49,8 @@ class ContactsListActivityMain : BaseActivity() {
 
         viewModel = ViewModelProvider(this)[MainViewModel::class.java]
 
-        if (!ContactsExtras.isMyServiceRunning(this, MyService::class.java)) {
-            ContactsExtras.showAccessibilitySettings(this)
+        if (!viewModel.checkIfServiceIsRunning(this, MyService::class.java)) {
+            viewModel.showAccessibilitySettingsInApp(this)
         }
 
         prepareUi()
@@ -70,13 +70,13 @@ class ContactsListActivityMain : BaseActivity() {
         ) 0 else ContactsExtras.EULA_NOT_ACCEPTED
 
         permsNotGranted =
-            if (viewModel!!.checkPermissions(this)) 0 else ContactsExtras.PERMS_NOT_GRANTED
+            if (viewModel.checkPermissions(this)) 0 else ContactsExtras.PERMS_NOT_GRANTED
         powerOptimized =
-            if (viewModel!!.isIgnoringBatteryOptimizations(this)) 0 else ContactsExtras.POWER_OPTIMIZED
+            if (viewModel.isIgnoringBatteryOptimizations(this)) 0 else ContactsExtras.POWER_OPTIMIZED
 
         val checkResult = eulaNotAccepted or permsNotGranted or powerOptimized
         if (checkResult != 0) {
-            ContactsExtras.openSetupActivity(this, checkResult)
+            viewModel.openSetupActivityInApp(this, checkResult)
         } else {
             setupRecorderFragment()
         }
@@ -96,9 +96,9 @@ class ContactsListActivityMain : BaseActivity() {
         hamburger.setOnClickListener { drawer.openDrawer(GravityCompat.START) }
         navigationView.setNavigationItemSelectedListener { item: MenuItem ->
             when (item.itemId) {
-                R.id.settings -> ContactsExtras.openSettingsActivity(this)
-                R.id.help -> ContactsExtras.openHelpActivity(this)
-                R.id.rate_app -> ContactsExtras.openGoogleMarket(this)
+                R.id.settings -> viewModel.openSettingsActivityInApp(this)
+                R.id.help -> viewModel.openHelpActivityInApp(this)
+                R.id.rate_app -> viewModel.openGoogleMarketInApp(this)
             }
             drawer.closeDrawers()
             true
@@ -135,7 +135,7 @@ class ContactsListActivityMain : BaseActivity() {
     }
 
     override fun onBackPressed() {
-        ContactsExtras.showExitDialog(this) {
+        viewModel.showOnBackPressedDialog(this) {
             super@ContactsListActivityMain.onBackPressed()
         }
     }

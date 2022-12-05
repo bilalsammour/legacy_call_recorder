@@ -124,7 +124,7 @@ class UnassignedRecordingsFragment : ContactDetailFragment() {
                 selectedItems!![0]
             )
 
-            if (selectedItems!!.size > 1 || !recording!!.exists()) {
+            if (selectedItems!!.size > 1 || !recording.exists()) {
                 renameMenuItem.isEnabled = false
             }
 
@@ -133,7 +133,9 @@ class UnassignedRecordingsFragment : ContactDetailFragment() {
         val moveBtn = baseActivity!!.findViewById<ImageButton>(R.id.actionbar_select_move)
         registerForContextMenu(moveBtn)
 
-        moveBtn.setOnClickListener { obj: View -> obj.showContextMenu() }
+        moveBtn.setOnClickListener { obj: View ->
+            obj.showContextMenu()
+        }
         val selectAllBtn =
             baseActivity?.findViewById<ImageButton>(R.id.actionbar_select_all)
         selectAllBtn!!.setOnClickListener { onSelectAll() }

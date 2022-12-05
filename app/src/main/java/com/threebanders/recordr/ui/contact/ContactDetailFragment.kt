@@ -48,9 +48,7 @@ open class ContactDetailFragment : BaseFragment() {
         super.onCreate(savedInstanceState)
 
         adapter = RecordingAdapter(ArrayList(0))
-        mainViewModel = ViewModelProvider(mainActivity!!).get(
-            MainViewModel::class.java
-        )
+        mainViewModel = ViewModelProvider(mainActivity!!)[MainViewModel::class.java]
 
         if (savedInstanceState != null) {
             selectMode = savedInstanceState.getBoolean(SELECT_MODE_KEY)
@@ -69,10 +67,8 @@ open class ContactDetailFragment : BaseFragment() {
                 false
             ) as RelativeLayout
         recordingsRecycler = detailView!!.findViewById(R.id.recordings)
-        recordingsRecycler!!.setLayoutManager(
-            LinearLayoutManager(
-                mainActivity
-            )
+        recordingsRecycler!!.layoutManager = LinearLayoutManager(
+            mainActivity
         )
         recordingsRecycler!!.addItemDecoration(
             DividerItemDecoration(
@@ -88,9 +84,7 @@ open class ContactDetailFragment : BaseFragment() {
     override fun onResume() {
         super.onResume()
 
-        val mainViewModel = ViewModelProvider(mainActivity!!).get(
-            MainViewModel::class.java
-        )
+        val mainViewModel = ViewModelProvider(mainActivity!!)[MainViewModel::class.java]
         mainViewModel.loadRecordings()
     }
 
@@ -108,8 +102,8 @@ open class ContactDetailFragment : BaseFragment() {
             .positiveText(android.R.string.ok)
             .negativeText(android.R.string.cancel)
             .icon(mainActivity!!.resources.getDrawable(R.drawable.warning))
-            .onPositive { dialog: MaterialDialog, _: DialogAction ->
-                val result = mainViewModel!!.deleteRecordings(
+            .onPositive { _: MaterialDialog, _: DialogAction ->
+                val result = mainViewModel.deleteRecordings(
                     selectedRecordings
                 )
                 if (result != null) MaterialDialog.Builder(mainActivity!!)
@@ -193,11 +187,7 @@ open class ContactDetailFragment : BaseFragment() {
         try {
             val f = File(path!!)
             val uri = context?.let {
-                FileProvider.getUriForFile(
-                    it,
-                    "com.threebanders.recordr.CrApp.provider",
-                    f
-                )
+                FileProvider.getUriForFile(it, "com.threebanders.recordr.CrApp.provider", f)
             }
             val share = Intent(Intent.ACTION_SEND)
             share.putExtra(Intent.EXTRA_STREAM, uri)
@@ -370,7 +360,7 @@ open class ContactDetailFragment : BaseFragment() {
             .input(
                 mainActivity!!.resources.getString(R.string.rename_recording_input_text),
                 null, false
-            ) { dialog: MaterialDialog, input: CharSequence ->
+            ) { _: MaterialDialog, input: CharSequence ->
                 if (selectedItems!!.size != 1) {
                     CrLog.log(
                         CrLog.WARN,
@@ -378,7 +368,7 @@ open class ContactDetailFragment : BaseFragment() {
                     )
                     return@input
                 }
-                val result = mainViewModel!!.renameRecording(input, selectedRecordings[0])
+                val result = mainViewModel.renameRecording(input, selectedRecordings[0])
                 if (result != null) MaterialDialog.Builder(mainActivity!!)
                     .title(result.title)
                     .content(result.message)
@@ -395,7 +385,7 @@ open class ContactDetailFragment : BaseFragment() {
         for (position in notSelected) {
             selectedItems!!.add(position)
             adapter!!.notifyItemChanged(position)
-            //https://stackoverflow.com/questions/33784369/recyclerview-get-view-at-particular-position
+
             val selectedRecording = recordingsRecycler!!.layoutManager!!
                 .findViewByPosition(position)
             selectedRecording?.let { selectRecording(it) }
@@ -408,7 +398,7 @@ open class ContactDetailFragment : BaseFragment() {
             var totalSize: Long = 0
             for (position in selectedItems!!) {
                 val recording = adapter!!.getItem(position)
-                totalSize += recording!!.size
+                totalSize += recording.size
             }
             MaterialDialog.Builder(mainActivity!!)
                 .title(R.string.recordings_info_title)
@@ -429,14 +419,13 @@ open class ContactDetailFragment : BaseFragment() {
 
         //There should be only one if we are here:
         if (selectedItems!!.size != 1) {
-            CrLog.log(CrLog.WARN, "Calling onInfoClick when multiple recordings are selected")
             return
         }
         val recording = adapter!!.getItem(
             selectedItems!![0]
         )
         val date = dialog.view.findViewById<TextView>(R.id.info_date_data)
-        date.text = String.format("%s %s", recording!!.date, recording.time)
+        date.text = String.format("%s %s", recording.date, recording.time)
         val size = dialog.view.findViewById<TextView>(R.id.info_size_data)
         size.text = CoreUtil.getFileSizeHuman(recording.size)
         val source = dialog.view.findViewById<TextView>(R.id.info_source_data)
@@ -462,7 +451,7 @@ open class ContactDetailFragment : BaseFragment() {
 
     protected open fun setDetailsButtonsListeners() {
         val navigateBack = mainActivity!!.findViewById<ImageButton>(R.id.navigate_back)
-        navigateBack.setOnClickListener { view: View? ->
+        navigateBack.setOnClickListener {
             NavUtils.navigateUpFromSameTask(
                 mainActivity!!
             )
@@ -486,7 +475,7 @@ open class ContactDetailFragment : BaseFragment() {
             popupMenu.show()
         }
         val closeBtn = mainActivity!!.findViewById<ImageButton>(R.id.close_select_mode)
-        closeBtn.setOnClickListener { v: View? -> clearSelectMode() }
+        closeBtn.setOnClickListener { clearSelectMode() }
         val menuButtonSelectOn =
             mainActivity!!.findViewById<ImageButton>(R.id.contact_detail_selected_menu)
         menuButtonSelectOn.setOnClickListener { v: View ->
@@ -508,49 +497,56 @@ open class ContactDetailFragment : BaseFragment() {
             val recording = (recordingsRecycler!!.adapter as RecordingAdapter?)!!.getItem(
                 selectedItems!![0]
             )
-            if (selectedItems!!.size > 1 || !recording!!.exists()) renameMenuItem.isEnabled = false
+            if (selectedItems!!.size > 1 || !recording.exists()) renameMenuItem.isEnabled = false
             popupMenu.show()
         }
         val moveBtn = mainActivity!!.findViewById<ImageButton>(R.id.actionbar_select_move)
         registerForContextMenu(moveBtn)
-        //foarte necesar. Altfel meniul contextual va fi arătat numai la long click.
-        moveBtn.setOnClickListener { obj: View -> obj.showContextMenu() }
+
+        moveBtn.setOnClickListener { obj: View ->
+            obj.showContextMenu()
+        }
+
         val selectAllBtn = mainActivity!!.findViewById<ImageButton>(R.id.actionbar_select_all)
-        selectAllBtn.setOnClickListener { v: View? -> onSelectAll() }
+        selectAllBtn.setOnClickListener { onSelectAll() }
         val deleteBtn = mainActivity!!.findViewById<ImageButton>(R.id.delete_recording)
-        deleteBtn.setOnClickListener { v: View? -> onDeleteSelectedRecordings() }
+        deleteBtn.setOnClickListener { onDeleteSelectedRecordings() }
         val infoBtn = mainActivity!!.findViewById<ImageButton>(R.id.actionbar_info)
-        infoBtn.setOnClickListener { view: View? -> onRecordingInfo() }
-
-
+        infoBtn.setOnClickListener { onRecordingInfo() }
     }
 
 
     override fun onCreateContextMenu(menu: ContextMenu, v: View, menuInfo: ContextMenuInfo?) {
-
+        baseActivity?.menuInflater?.inflate(R.menu.storage_chooser_options, menu)
     }
 
     override fun onContextItemSelected(item: MenuItem): Boolean {
+        val textRes: Int = when (item.itemId) {
+            R.id.private_storage -> R.string.private_storage_selected
+            R.id.public_storage -> R.string.public_storage_selected
+            else -> R.string.app_name
+        }
+
+        Toast.makeText(
+            baseActivity?.baseContext,
+            getString(textRes),
+            Toast.LENGTH_SHORT
+        ).show()
+
         return false
     }
 
     inner class RecordingHolder(inflater: LayoutInflater, parent: ViewGroup?) :
         RecyclerView.ViewHolder(inflater.inflate(R.layout.recording, parent, false)),
         View.OnClickListener, OnLongClickListener {
-        var title: TextView
-        var recordingType: ImageView
-        var recordingAdorn: ImageView
-        val recordingshare: ImageView
-        var exclamation: ImageView
-        var checkBox: CheckBox
+        var title: TextView = itemView.findViewById(R.id.recording_title)
+        var recordingType: ImageView = itemView.findViewById(R.id.recording_type)
+        var recordingAdorn: ImageView = itemView.findViewById(R.id.recording_adorn)
+        val recordingShare: ImageView = itemView.findViewById(R.id.recording_share)
+        var exclamation: ImageView = itemView.findViewById(R.id.recording_exclamation)
+        var checkBox: CheckBox = itemView.findViewById(R.id.recording_checkbox)
 
         init {
-            recordingType = itemView.findViewById(R.id.recording_type)
-            recordingshare = itemView.findViewById(R.id.recording_share)
-            title = itemView.findViewById(R.id.recording_title)
-            checkBox = itemView.findViewById(R.id.recording_checkbox)
-            recordingAdorn = itemView.findViewById(R.id.recording_adorn)
-            exclamation = itemView.findViewById(R.id.recording_exclamation)
             itemView.setOnClickListener(this)
             itemView.setOnLongClickListener(this)
         }
@@ -567,9 +563,9 @@ open class ContactDetailFragment : BaseFragment() {
             if (selectMode) manageSelectRecording(
                 v,
                 this.adapterPosition,
-                recording!!.exists()
-            ) else { //usual short click
-                if (recording!!.exists()) {
+                recording.exists()
+            ) else {
+                if (recording.exists()) {
                     val playIntent = Intent(mainActivity, PlayerActivity::class.java)
                     playIntent.putExtra(RECORDING_EXTRA, recording)
                     startActivity(playIntent)
@@ -579,15 +575,13 @@ open class ContactDetailFragment : BaseFragment() {
         }
     }
 
-    //A devenit public pentru a funcționa adapter.replaceData() în UnassignedRecordingsFragment
     inner class RecordingAdapter internal constructor(private var recordings: MutableList<Recording>) :
         RecyclerView.Adapter<RecordingHolder>() {
         private var contactList: List<Contact?>? = null
-        fun getRecordings(): List<Recording?>? {
+        fun getRecordings(): List<Recording?> {
             return recordings
         }
 
-        //A devenit public pentru a funcționa adapter.replaceData() în UnassignedRecordingsFragment
         fun replaceData(recordings: MutableList<Recording>, contactList: List<Contact>) {
             this.recordings = recordings
             this.contactList = contactList
@@ -595,7 +589,7 @@ open class ContactDetailFragment : BaseFragment() {
         }
 
         fun removeItem(recording: Recording?) {
-            val position = recordings!!.indexOf(recording)
+            val position = recordings.indexOf(recording)
             recordings.remove(recording)
             notifyItemRemoved(position)
         }
@@ -605,20 +599,19 @@ open class ContactDetailFragment : BaseFragment() {
             return RecordingHolder(layoutInflater, parent)
         }
 
-        //A devenit public pentru a funcționa UnassignedRecordingsFragment
-        fun getItem(position: Int): Recording? {
+        fun getItem(position: Int): Recording {
             return recordings[position]
         }
 
         override fun onBindViewHolder(holder: RecordingHolder, position: Int) {
             val recording = recordings[position]
-            val adornRes: Int
-            adornRes = when (recording.format) {
+            val adornRes: Int = when (recording.format) {
                 Recorder.WAV_FORMAT -> if (mainActivity!!.settledTheme == BaseActivity.LIGHT_THEME) R.drawable.sound_symbol_wav_light else R.drawable.sound_symbol_wav_dark
                 Recorder.AAC_HIGH_FORMAT -> if (mainActivity!!.settledTheme == BaseActivity.LIGHT_THEME) R.drawable.sound_symbol_aac128_light else R.drawable.sound_symbol_aac128_dark
                 Recorder.AAC_BASIC_FORMAT -> if (mainActivity!!.settledTheme == BaseActivity.LIGHT_THEME) R.drawable.sound_symbol_aac32_light else R.drawable.sound_symbol_aac32_dark
                 else -> if (mainActivity!!.settledTheme == BaseActivity.LIGHT_THEME) R.drawable.sound_symbol_aac64_light else R.drawable.sound_symbol_aac64_dark
             }
+
             for (i in contactList!!.indices) {
                 if (contactList!![i]!!
                         .daytime.equals(recording.dateRecord, ignoreCase = true)
@@ -630,9 +623,10 @@ open class ContactDetailFragment : BaseFragment() {
                         contactList!![i]!!.phoneNumber
                 }
             }
+
             if (mainViewModel.contact.value == null || !mainViewModel.contact.value!!
                     .isPrivateNumber
-            ) holder.recordingType.setImageResource(if (recording.isIncoming) R.drawable.incoming else if (mainActivity!!.settledTheme == BaseActivity.Companion.LIGHT_THEME) R.drawable.outgoing_light else R.drawable.outgoing_dark)
+            ) holder.recordingType.setImageResource(if (recording.isIncoming) R.drawable.incoming else if (mainActivity!!.settledTheme == BaseActivity.LIGHT_THEME) R.drawable.outgoing_light else R.drawable.outgoing_dark)
             holder.recordingAdorn.setImageResource(adornRes)
             holder.checkBox.setOnClickListener { view: View ->
                 manageSelectRecording(
@@ -642,10 +636,8 @@ open class ContactDetailFragment : BaseFragment() {
                 )
             }
 
-            holder.recordingshare.setOnClickListener { view: View? ->
-                shareRecorde(
-                    recording.path
-                )
+            holder.recordingShare.setOnClickListener {
+                shareRecorde(recording.path)
             }
 
             if (!recording.exists()) markNonexistent(holder)
@@ -658,7 +650,7 @@ open class ContactDetailFragment : BaseFragment() {
         private fun markNonexistent(holder: RecordingHolder) {
             holder.exclamation.visibility = View.VISIBLE
             val filter =
-                if (mainActivity!!.settledTheme == BaseActivity.Companion.LIGHT_THEME) Color.argb(
+                if (mainActivity!!.settledTheme == BaseActivity.LIGHT_THEME) Color.argb(
                     255,
                     0,
                     0,
@@ -722,7 +714,7 @@ open class ContactDetailFragment : BaseFragment() {
                     CallLog.Calls.MISSED_TYPE -> dir = "MISSED"
                 }
 
-                var value: String? = ""
+                var value: String?
                 value = phName
                 if (phName == null || phName.isEmpty())
                     value = phNumber
@@ -750,7 +742,7 @@ open class ContactDetailFragment : BaseFragment() {
 
         fun newInstance(contact: Contact?): ContactDetailFragment {
             val args = Bundle()
-            args.putParcelable(ContactsListFragment.Companion.ARG_CONTACT, contact)
+            args.putParcelable(ContactsListFragment.ARG_CONTACT, contact)
             val fragment = ContactDetailFragment()
             fragment.arguments = args
 
