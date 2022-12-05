@@ -2,6 +2,7 @@ package com.threebanders.recordr.ui.setup
 
 import android.content.Intent
 import android.os.Bundle
+import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import com.threebanders.recordr.R
 import com.threebanders.recordr.common.Extras
@@ -33,6 +34,14 @@ class SetupActivity : BaseActivity() {
                     Extras.POWER_OPTIMIZED
         )
         insertFragment(R.id.setup_fragment_container)
+
+        // onBackPressed
+        onBackPressedDispatcher.addCallback(this , object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                // Back is pressed... Finishing the activity
+                cancelSetup()
+            }
+        })
     }
 
     fun cancelSetup() {
@@ -42,9 +51,8 @@ class SetupActivity : BaseActivity() {
         finish()
     }
 
-    override fun onBackPressed() {
-        cancelSetup()
-    }
+
+
 
     companion object {
         const val EXIT_APP = "exit_app"

@@ -28,9 +28,8 @@ class SetupEulaFragment : Fragment() {
         return inflater.inflate(R.layout.setup_eula_fragment, container, false)
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         val parentActivity = activity as SetupActivity?
         val checkResult = parentActivity!!.checkResult
 
@@ -58,8 +57,8 @@ class SetupEulaFragment : Fragment() {
                 showFragment(powerFragment, parentActivity)
             }
         })
-    }
 
+    }
     private fun prepareUi(parentActivity: SetupActivity) {
         version = parentActivity.findViewById(R.id.app_version)
         version.text = String.format(

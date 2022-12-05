@@ -138,10 +138,6 @@ class MainViewModel : ViewModel() {
         Extras.openHelpActivity(context)
     }
 
-    fun openSetupActivityInApp(context: Activity, checkResult: Int) {
-        Extras.openSetupActivity(context, checkResult)
-    }
-
     fun openGoogleMarketInApp(context: Activity) {
         Extras.openGoogleMarket(context)
     }

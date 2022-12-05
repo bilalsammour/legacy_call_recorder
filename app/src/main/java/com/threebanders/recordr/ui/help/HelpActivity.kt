@@ -12,6 +12,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
+import androidx.fragment.app.FragmentStatePagerAdapter
 import androidx.viewpager.widget.ViewPager
 import com.afollestad.materialdialogs.DialogAction
 import com.afollestad.materialdialogs.MaterialDialog
@@ -23,8 +24,8 @@ import core.threebanders.recordr.CoreUtil
 import core.threebanders.recordr.CrLog
 
 class HelpActivity : BaseActivity() {
-    var pager: ViewPager? = null
-    var adapter: HelpPagerAdapter? = null
+    private var pager: ViewPager? = null
+    private var adapter: HelpPagerAdapter? = null
 
     //am folosit R.raw pentru posibilitatea traducerii: res/raw-de/ for german
     override fun createFragment(): Fragment? {
@@ -69,9 +70,7 @@ class HelpActivity : BaseActivity() {
         actionBar?.setDisplayHomeAsUpEnabled(true)
     }
 
-    class HelpPagerAdapter(fm: FragmentManager?) : FragmentPagerAdapter(
-        fm!!, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT
-    ) {
+    class HelpPagerAdapter(fm: FragmentManager?) : FragmentPagerAdapter(fm!!, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
         override fun getCount(): Int {
             return NUM_PAGES
         }
@@ -86,7 +85,7 @@ class HelpActivity : BaseActivity() {
     }
 
     class HelpFragment : Fragment() {
-        var position = 0
+        private var position = 0
         override fun onCreate(savedInstanceState: Bundle?) {
             super.onCreate(savedInstanceState)
             position = if (arguments != null) requireArguments().getInt(ARG_POSITION) else 0

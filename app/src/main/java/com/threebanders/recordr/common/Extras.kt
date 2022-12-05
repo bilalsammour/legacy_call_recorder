@@ -52,7 +52,7 @@ import kotlin.random.Random
 
 object Extras {
 
-    const val SETUP_ACTIVITY = 3
+    //const val SETUP_ACTIVITY = 3
     const val HAS_ACCEPTED_EULA = "has_accepted_eula"
     const val EULA_NOT_ACCEPTED = 1
     const val PERMS_NOT_GRANTED = 2
@@ -65,19 +65,9 @@ object Extras {
     const val NOTIFICATION_STRING = "notification"
 
     // TODO : SHOW RECYCLER
-    fun showRecyclerView(
-        recordingsRecycler: RecyclerView?,
-        baseActivity: BaseActivity?,
-        context: Context,
-        recordingAdapter: ContactDetailFragment.RecordingAdapter
-    ) {
+    fun showRecyclerView(recordingsRecycler: RecyclerView?, baseActivity: BaseActivity?, context: Context, recordingAdapter: ContactDetailFragment.RecordingAdapter) {
         recordingsRecycler!!.layoutManager = LinearLayoutManager(baseActivity)
-        recordingsRecycler.addItemDecoration(
-            DividerItemDecoration(
-                context,
-                DividerItemDecoration.VERTICAL
-            )
-        )
+        recordingsRecycler.addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
         recordingsRecycler.adapter = recordingAdapter
     }
 
@@ -189,6 +179,7 @@ object Extras {
             .show()
     }
 
+    @SuppressWarnings("deprecation")
     fun isMyServiceRunning(context: Context, serviceClass: Class<*>): Boolean {
         val manager =
             context.getSystemService(AppCompatActivity.ACTIVITY_SERVICE) as ActivityManager
@@ -219,13 +210,6 @@ object Extras {
         )
     }
 
-    fun openSetupActivity(context: Activity, checkResult: Int) {
-        val setupIntent = Intent(context, SetupActivity::class.java)
-        setupIntent.putExtra(SETUP_ARGUMENT, checkResult)
-
-        context.startActivityForResult(setupIntent, SETUP_ACTIVITY)
-    }
-
     fun openGoogleMarket(context: Activity) {
         val uri = Uri.parse("market://details?id=${context.packageName}")
         val goToMarket = Intent(Intent.ACTION_VIEW, uri)
@@ -246,7 +230,6 @@ object Extras {
         }
     }
 
-
     /* ---------------------------- PERMISSIONS EXTRAS ------------------------ */
     fun getPermissionsList(): Array<String> {
         return arrayOf(
@@ -260,26 +243,18 @@ object Extras {
     }
 
     fun checkPermissions(context: Context): Boolean {
-        val phoneState =
-            (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_PHONE_STATE)
-                    == PackageManager.PERMISSION_GRANTED)
-        val recordAudio =
-            (ContextCompat.checkSelfPermission(context, Manifest.permission.RECORD_AUDIO)
-                    == PackageManager.PERMISSION_GRANTED)
-        val readContacts =
-            (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_CONTACTS)
-                    == PackageManager.PERMISSION_GRANTED)
-        val readStorage =
-            (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE)
-                    == PackageManager.PERMISSION_GRANTED)
-        val writeStorage =
-            (ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                    == PackageManager.PERMISSION_GRANTED)
-        val readCallsLog =
-            (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_CALL_LOG)
-                    == PackageManager.PERMISSION_GRANTED)
+        val phoneState = createPermission(Manifest.permission.READ_PHONE_STATE,context)
+        val recordAudio = createPermission(Manifest.permission.RECORD_AUDIO,context)
+        val readContacts = createPermission(Manifest.permission.READ_CONTACTS,context)
+        val readStorage = createPermission(Manifest.permission.READ_EXTERNAL_STORAGE,context)
+        val writeStorage = createPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE,context)
+        val readCallsLog = createPermission(Manifest.permission.READ_CALL_LOG,context)
 
         return phoneState && recordAudio && readContacts && readStorage && writeStorage && readCallsLog
+    }
+
+    private fun createPermission(permission : String, context : Context) : Boolean{
+        return ContextCompat.checkSelfPermission(context, permission) == PackageManager.PERMISSION_GRANTED
     }
 
     fun permissionsDialog(parentActivity: SetupActivity?, onNextScreen: () -> Unit) {

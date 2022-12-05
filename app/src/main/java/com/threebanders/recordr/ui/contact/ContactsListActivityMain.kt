@@ -5,6 +5,9 @@ import android.os.Bundle
 import android.view.MenuItem
 import android.widget.ImageButton
 import android.widget.TextView
+import androidx.activity.OnBackPressedCallback
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
@@ -38,7 +41,6 @@ class ContactsListActivityMain : BaseActivity() {
 
     override fun onResume() {
         super.onResume()
-
         checkIfThemeChanged()
     }
 
@@ -57,26 +59,41 @@ class ContactsListActivityMain : BaseActivity() {
         checkValidations()
         if (savedInstanceState == null) insertFragment(R.id.contacts_list_fragment_container)
         setUpNavigationView()
+
+        onBackPressedDispatcher.addCallback(this , object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                // Back is pressed... Finishing the activity
+                viewModel.showOnBackPressedDialog(this@ContactsListActivityMain) {
+                   finish()
+                }
+            }
+        })
+
+
     }
 
+    private val activityResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){ result ->
+        if (result.resultCode == RESULT_OK) {
+            setupRecorderFragment()
+            if (result.data!!.getBooleanExtra(SetupActivity.EXIT_APP, true)) {
+                finish()
+            }
+        }
+    }
 
     private fun checkValidations() {
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false)
         val settings = prefs
-        val eulaNotAccepted = if (settings.getBoolean(
-                Extras.HAS_ACCEPTED_EULA,
-                false
-            )
-        ) 0 else Extras.EULA_NOT_ACCEPTED
+        val eulaNotAccepted = if (settings.getBoolean(Extras.HAS_ACCEPTED_EULA, false)) 0 else Extras.EULA_NOT_ACCEPTED
 
-        permsNotGranted =
-            if (viewModel.checkPermissions(this)) 0 else Extras.PERMS_NOT_GRANTED
-        powerOptimized =
-            if (viewModel.isIgnoringBatteryOptimizations(this)) 0 else Extras.POWER_OPTIMIZED
+        permsNotGranted = if(viewModel.checkPermissions(this)) 0 else Extras.PERMS_NOT_GRANTED
+        powerOptimized = if (viewModel.isIgnoringBatteryOptimizations(this)) 0 else Extras.POWER_OPTIMIZED
 
         val checkResult = eulaNotAccepted or permsNotGranted or powerOptimized
         if (checkResult != 0) {
-            viewModel.openSetupActivityInApp(this, checkResult)
+            val setupIntent = Intent(this, SetupActivity::class.java)
+            setupIntent.putExtra(Extras.SETUP_ARGUMENT, checkResult)
+            activityResultLauncher.launch(setupIntent)
         } else {
             setupRecorderFragment()
         }
@@ -123,20 +140,5 @@ class ContactsListActivityMain : BaseActivity() {
         fm = supportFragmentManager
     }
 
-    public override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
 
-        if (resultCode == RESULT_OK && requestCode == Extras.SETUP_ACTIVITY) {
-            setupRecorderFragment()
-            if (data!!.getBooleanExtra(SetupActivity.EXIT_APP, true)) {
-                finish()
-            }
-        }
-    }
-
-    override fun onBackPressed() {
-        viewModel.showOnBackPressedDialog(this) {
-            super@ContactsListActivityMain.onBackPressed()
-        }
-    }
 }

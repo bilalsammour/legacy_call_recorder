@@ -66,7 +66,13 @@ class PlayerActivity : BaseActivity() {
             actionBar.setTitle(R.string.player_title)
             actionBar.setDisplayHomeAsUpEnabled(true)
         }
-        recording = intent.getParcelableExtra(ContactDetailFragment.RECORDING_EXTRA)
+
+        recording = if (Build.VERSION.SDK_INT >= 33) {
+            intent.getParcelableExtra(ContactDetailFragment.RECORDING_EXTRA, Recording::class.java)
+        } else {
+            intent.getParcelableExtra(ContactDetailFragment.RECORDING_EXTRA)
+        }
+
         visualizer = findViewById(R.id.visualizer)
         visualizer?.setColor(ContextCompat.getColor(this,R.color.colorAccentLighter))
         visualizer?.setDensity(

@@ -1,5 +1,6 @@
 package com.threebanders.recordr.ui.contact
 
+import android.os.Build
 import android.os.Bundle
 import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
@@ -24,7 +25,12 @@ class ContactDetailActivity : BaseActivity() {
         setTheme()
         setContentView(R.layout.contact_detail_activity)
         val intent = intent
-        contact = intent.getParcelableExtra(ContactsListFragment.ARG_CONTACT)
+        contact = if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
+            intent.getParcelableExtra(ContactsListFragment.ARG_CONTACT,Contact::class.java)
+        }
+        else {
+            intent.getParcelableExtra(ContactsListFragment.ARG_CONTACT)
+        }
         insertFragment(R.id.contact_detail_fragment_container)
         val toolbar = findViewById<Toolbar>(R.id.toolbar_detail)
         val title = findViewById<TextView>(R.id.actionbar_title)
