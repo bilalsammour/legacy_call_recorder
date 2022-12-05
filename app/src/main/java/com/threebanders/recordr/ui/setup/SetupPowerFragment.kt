@@ -10,7 +10,7 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.threebanders.recordr.R
-import com.threebanders.recordr.common.ContactsExtras
+import com.threebanders.recordr.common.Extras
 import com.threebanders.recordr.ui.MainViewModel
 
 class SetupPowerFragment : Fragment() {
@@ -31,7 +31,7 @@ class SetupPowerFragment : Fragment() {
 
         prepareUi()
 
-        if (parentActivity!!.checkResult and ContactsExtras.POWER_OPTIMIZED != 0) {
+        if (parentActivity!!.checkResult and Extras.POWER_OPTIMIZED != 0) {
             dozeInfo.visibility = View.VISIBLE
             val turnOffDoze = parentActivity!!.findViewById<Button>(R.id.turn_off_doze)
             turnOffDoze.setOnClickListener {

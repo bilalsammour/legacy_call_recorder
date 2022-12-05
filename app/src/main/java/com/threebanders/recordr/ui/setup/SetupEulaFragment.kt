@@ -11,7 +11,7 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.threebanders.recordr.CrApp
 import com.threebanders.recordr.R
-import com.threebanders.recordr.common.ContactsExtras
+import com.threebanders.recordr.common.Extras
 import org.acra.BuildConfig
 
 class SetupEulaFragment : Fragment() {
@@ -48,9 +48,9 @@ class SetupEulaFragment : Fragment() {
 
             val settings = (requireActivity().application as CrApp).core.prefs
             val editor = settings.edit()
-            editor.putBoolean(ContactsExtras.HAS_ACCEPTED_EULA, true)
+            editor.putBoolean(Extras.HAS_ACCEPTED_EULA, true)
             editor.apply()
-            if (checkResult and ContactsExtras.PERMS_NOT_GRANTED != 0) {
+            if (checkResult and Extras.PERMS_NOT_GRANTED != 0) {
                 val permissionsFragment = SetupPermissionsFragment()
                 showFragment(permissionsFragment, parentActivity)
             } else {

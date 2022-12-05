@@ -4,8 +4,8 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.threebanders.recordr.R
-import com.threebanders.recordr.common.ContactsExtras
-import com.threebanders.recordr.common.ContactsExtras.EULA_NOT_ACCEPTED
+import com.threebanders.recordr.common.Extras
+import com.threebanders.recordr.common.Extras.EULA_NOT_ACCEPTED
 import com.threebanders.recordr.ui.BaseActivity
 
 class SetupActivity : BaseActivity() {
@@ -15,9 +15,9 @@ class SetupActivity : BaseActivity() {
     override fun createFragment(): Fragment? {
         return if (checkResult and EULA_NOT_ACCEPTED != 0)
             SetupEulaFragment()
-        else if (checkResult and ContactsExtras.PERMS_NOT_GRANTED != 0)
+        else if (checkResult and Extras.PERMS_NOT_GRANTED != 0)
             SetupPermissionsFragment()
-        else if (checkResult and ContactsExtras.POWER_OPTIMIZED != 0)
+        else if (checkResult and Extras.POWER_OPTIMIZED != 0)
             SetupPowerFragment() else null
     }
 
@@ -27,10 +27,10 @@ class SetupActivity : BaseActivity() {
         setContentView(R.layout.setup_activity)
 
         checkResult = intent.getIntExtra(
-            ContactsExtras.SETUP_ARGUMENT,
+            Extras.SETUP_ARGUMENT,
             EULA_NOT_ACCEPTED
-                    and ContactsExtras.PERMS_NOT_GRANTED and
-                    ContactsExtras.POWER_OPTIMIZED
+                    and Extras.PERMS_NOT_GRANTED and
+                    Extras.POWER_OPTIMIZED
         )
         insertFragment(R.id.setup_fragment_container)
     }

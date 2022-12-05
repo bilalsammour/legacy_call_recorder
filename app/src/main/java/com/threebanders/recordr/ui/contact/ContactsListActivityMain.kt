@@ -14,7 +14,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.preference.PreferenceManager
 import com.google.android.material.navigation.NavigationView
 import com.threebanders.recordr.R
-import com.threebanders.recordr.common.ContactsExtras
+import com.threebanders.recordr.common.Extras
 import com.threebanders.recordr.ui.BaseActivity
 import com.threebanders.recordr.ui.MainViewModel
 import com.threebanders.recordr.ui.setup.SetupActivity
@@ -64,15 +64,15 @@ class ContactsListActivityMain : BaseActivity() {
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false)
         val settings = prefs
         val eulaNotAccepted = if (settings.getBoolean(
-                ContactsExtras.HAS_ACCEPTED_EULA,
+                Extras.HAS_ACCEPTED_EULA,
                 false
             )
-        ) 0 else ContactsExtras.EULA_NOT_ACCEPTED
+        ) 0 else Extras.EULA_NOT_ACCEPTED
 
         permsNotGranted =
-            if (viewModel.checkPermissions(this)) 0 else ContactsExtras.PERMS_NOT_GRANTED
+            if (viewModel.checkPermissions(this)) 0 else Extras.PERMS_NOT_GRANTED
         powerOptimized =
-            if (viewModel.isIgnoringBatteryOptimizations(this)) 0 else ContactsExtras.POWER_OPTIMIZED
+            if (viewModel.isIgnoringBatteryOptimizations(this)) 0 else Extras.POWER_OPTIMIZED
 
         val checkResult = eulaNotAccepted or permsNotGranted or powerOptimized
         if (checkResult != 0) {
@@ -126,7 +126,7 @@ class ContactsListActivityMain : BaseActivity() {
     public override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        if (resultCode == RESULT_OK && requestCode == ContactsExtras.SETUP_ACTIVITY) {
+        if (resultCode == RESULT_OK && requestCode == Extras.SETUP_ACTIVITY) {
             setupRecorderFragment()
             if (data!!.getBooleanExtra(SetupActivity.EXIT_APP, true)) {
                 finish()

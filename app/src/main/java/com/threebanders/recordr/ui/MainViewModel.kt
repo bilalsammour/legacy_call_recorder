@@ -6,10 +6,7 @@ import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.threebanders.recordr.R
-import com.threebanders.recordr.common.ContactsExtras
-import com.threebanders.recordr.common.DialogInfo
-import com.threebanders.recordr.common.PermissionsExtra
-import com.threebanders.recordr.common.SharedPrefsExtra
+import com.threebanders.recordr.common.*
 import com.threebanders.recordr.ui.setup.SetupActivity
 import core.threebanders.recordr.Core
 import core.threebanders.recordr.data.Contact
@@ -91,64 +88,61 @@ class MainViewModel : ViewModel() {
 
     // TODO : Shared Prefs
     fun getPrefs(context: Context): List<Recording?>? {
-        return SharedPrefsExtra.getDataFromSharedPreferences(context)
+        return Extras.getDataFromSharedPreferences(context)
     }
 
     fun setPrefs(context: Context, list: List<Recording?>) {
-        SharedPrefsExtra.setDataFromSharedPreferences(context, list)
+        Extras.setDataFromSharedPreferences(context, list)
     }
 
     fun checkPermissions(context: Context): Boolean {
-        return PermissionsExtra.checkPermissions(context)
+        return Extras.checkPermissions(context)
     }
 
-    fun requestAllPermissions(context: Context, permissionRequest: Int) {
-        PermissionsExtra.requestAllPermissions(context, permissionRequest)
-    }
 
     // TODO : Show Permissions Dialog
     fun showPermissionsDialog(parentActivity: SetupActivity?, onNextScreen: () -> Unit) {
-        PermissionsExtra.permissionsDialog(parentActivity, onNextScreen)
+        Extras.permissionsDialog(parentActivity, onNextScreen)
     }
 
     // TODO : Show Warning Dialog
     fun showWarningDialog(parentActivity: SetupActivity?, onFinish: () -> Unit) {
-        PermissionsExtra.warningDialog(parentActivity, onFinish)
+        Extras.warningDialog(parentActivity, onFinish)
     }
 
     fun changeBatteryOptimization(fragmentActivity: FragmentActivity) {
-        PermissionsExtra.changeBatteryOptimization(fragmentActivity)
+        Extras.changeBatteryOptimization(fragmentActivity)
     }
 
     fun isIgnoringBatteryOptimizations(activity: FragmentActivity): Boolean {
-        return PermissionsExtra.isIgnoringBatteryOptimizations(activity)
+        return Extras.isIgnoringBatteryOptimizations(activity)
     }
 
     fun showOnBackPressedDialog(context: Context, onBackPressed: () -> Unit) {
-        ContactsExtras.showExitDialog(context, onBackPressed)
+        Extras.showExitDialog(context, onBackPressed)
     }
 
     fun checkIfServiceIsRunning(context: Context, serviceClass: Class<*>): Boolean {
-        return ContactsExtras.isMyServiceRunning(context, serviceClass)
+        return Extras.isMyServiceRunning(context, serviceClass)
     }
 
     fun showAccessibilitySettingsInApp(context: Activity) {
-        ContactsExtras.showAccessibilitySettings(context)
+        Extras.showAccessibilitySettings(context)
     }
 
     fun openSettingsActivityInApp(context: Activity) {
-        ContactsExtras.openSettingsActivity(context)
+        Extras.openSettingsActivity(context)
     }
 
     fun openHelpActivityInApp(context: Activity) {
-        ContactsExtras.openHelpActivity(context)
+        Extras.openHelpActivity(context)
     }
 
     fun openSetupActivityInApp(context: Activity, checkResult: Int) {
-        ContactsExtras.openSetupActivity(context, checkResult)
+        Extras.openSetupActivity(context, checkResult)
     }
 
     fun openGoogleMarketInApp(context: Activity) {
-        ContactsExtras.openGoogleMarket(context)
+        Extras.openGoogleMarket(context)
     }
 }

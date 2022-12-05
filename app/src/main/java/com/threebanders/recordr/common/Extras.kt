@@ -1,16 +1,29 @@
 package com.threebanders.recordr.common
 
+import android.Manifest
 import android.annotation.SuppressLint
+import android.app.Activity
+import android.app.ActivityManager
 import android.app.Notification
 import android.app.PendingIntent
+import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.content.pm.PackageManager
+import android.net.Uri
+import android.os.PowerManager
+import android.provider.Settings
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import androidx.core.content.ContextCompat
+import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.afollestad.materialdialogs.DialogAction
+import com.afollestad.materialdialogs.MaterialDialog
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.api.client.extensions.android.http.AndroidHttp
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential
@@ -19,26 +32,40 @@ import com.google.api.client.http.FileContent
 import com.google.api.client.json.jackson2.JacksonFactory
 import com.google.api.services.drive.Drive
 import com.google.api.services.drive.DriveScopes
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import com.threebanders.recordr.R
 import com.threebanders.recordr.ui.BaseActivity
 import com.threebanders.recordr.ui.contact.ContactDetailFragment
 import com.threebanders.recordr.ui.contact.ContactsListActivityMain
+import com.threebanders.recordr.ui.help.HelpActivity
+import com.threebanders.recordr.ui.settings.SettingsActivity
+import com.threebanders.recordr.ui.setup.SetupActivity
+import core.threebanders.recordr.data.Recording
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
+import java.lang.reflect.Type
 import kotlin.random.Random
 
 object Extras {
+
+    const val SETUP_ACTIVITY = 3
+    const val HAS_ACCEPTED_EULA = "has_accepted_eula"
+    const val EULA_NOT_ACCEPTED = 1
+    const val PERMS_NOT_GRANTED = 2
+    const val POWER_OPTIMIZED = 4
+    const val SETUP_ARGUMENT = "setup_arg"
+    private const val ACCESSIBILITY_SETTINGS = 1991
+
+
     const val NOTIFICATION_ID = "1"
     const val NOTIFICATION_STRING = "notification"
 
     // TODO : SHOW RECYCLER
-    fun showRecyclerView(
-        recordingsRecycler: RecyclerView?, baseActivity: BaseActivity?, context: Context,
-        recordingAdapter: ContactDetailFragment.RecordingAdapter
-    ) {
+    fun showRecyclerView(recordingsRecycler: RecyclerView?, baseActivity: BaseActivity?, context: Context, recordingAdapter: ContactDetailFragment.RecordingAdapter) {
         recordingsRecycler!!.layoutManager = LinearLayoutManager(baseActivity)
         recordingsRecycler.addItemDecoration(
             DividerItemDecoration(
@@ -134,7 +161,6 @@ object Extras {
         NotificationManagerCompat.from(context).notify(Random.nextInt(), notification)
     }
 
-
     // TODO : Receiver Prefs
     fun getSharedPrefsInstance(context: Context?): SharedPreferences {
         return context!!.getSharedPreferences("audioPrefs", Context.MODE_PRIVATE)
@@ -142,5 +168,186 @@ object Extras {
 
     fun getAudioPath(context: Context?): String {
         return getSharedPrefsInstance(context).getString("audioPath", "")!!
+    }
+
+
+    /* ----------------------- CONTACTS EXTRAS --------------------*/
+
+    fun showExitDialog(context: Context, onBackPressed: () -> Unit) {
+        MaterialDialog.Builder(context)
+            .title(R.string.exit_app_title)
+            .icon(ContextCompat.getDrawable(context, R.drawable.question_mark)!!)
+            .content(R.string.exit_app_message)
+            .positiveText(android.R.string.ok)
+            .negativeText(android.R.string.cancel)
+            .onPositive { _: MaterialDialog, _: DialogAction ->
+                onBackPressed.invoke()
+            }
+            .show()
+    }
+
+    fun isMyServiceRunning(context: Context, serviceClass: Class<*>): Boolean {
+        val manager =
+            context.getSystemService(AppCompatActivity.ACTIVITY_SERVICE) as ActivityManager
+
+        for (service in manager.getRunningServices(Int.MAX_VALUE)) {
+            if (serviceClass.name == service.service.className) {
+                return true
+            }
+        }
+
+        return false
+    }
+
+    fun showAccessibilitySettings(context: Activity) {
+        val intent = Intent("android.settings.ACCESSIBILITY_SETTINGS")
+        context.startActivityForResult(intent, ACCESSIBILITY_SETTINGS)
+    }
+
+    fun openSettingsActivity(context: Activity) {
+        context.startActivity(
+            Intent(context, SettingsActivity::class.java)
+        )
+    }
+
+    fun openHelpActivity(context: Activity) {
+        context.startActivity(
+            Intent(context, HelpActivity::class.java)
+        )
+    }
+
+    fun openSetupActivity(context: Activity, checkResult: Int) {
+        val setupIntent = Intent(context, SetupActivity::class.java)
+        setupIntent.putExtra(SETUP_ARGUMENT, checkResult)
+
+        context.startActivityForResult(setupIntent, SETUP_ACTIVITY)
+    }
+
+    fun openGoogleMarket(context: Activity) {
+        val uri = Uri.parse("market://details?id=${context.packageName}")
+        val goToMarket = Intent(Intent.ACTION_VIEW, uri)
+        goToMarket.addFlags(
+            Intent.FLAG_ACTIVITY_NO_HISTORY or
+                    Intent.FLAG_ACTIVITY_NEW_DOCUMENT or
+                    Intent.FLAG_ACTIVITY_MULTIPLE_TASK
+        )
+        try {
+            context.startActivity(goToMarket)
+        } catch (e: ActivityNotFoundException) {
+            context.startActivity(
+                Intent(
+                    Intent.ACTION_VIEW,
+                    Uri.parse("http://play.google.com/store/apps/details?id=${context.packageName}")
+                )
+            )
+        }
+    }
+
+
+    /* ---------------------------- PERMISSIONS EXTRAS ------------------------ */
+    fun getPermissionsList(): Array<String> {
+        return arrayOf(
+            Manifest.permission.READ_PHONE_STATE,
+            Manifest.permission.RECORD_AUDIO,
+            Manifest.permission.READ_CONTACTS,
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.READ_CALL_LOG
+        )
+    }
+
+    fun checkPermissions(context: Context): Boolean {
+        val phoneState =
+            (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_PHONE_STATE)
+                    == PackageManager.PERMISSION_GRANTED)
+        val recordAudio =
+            (ContextCompat.checkSelfPermission(context, Manifest.permission.RECORD_AUDIO)
+                    == PackageManager.PERMISSION_GRANTED)
+        val readContacts =
+            (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_CONTACTS)
+                    == PackageManager.PERMISSION_GRANTED)
+        val readStorage =
+            (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE)
+                    == PackageManager.PERMISSION_GRANTED)
+        val writeStorage =
+            (ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                    == PackageManager.PERMISSION_GRANTED)
+        val readCallsLog =
+            (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_CALL_LOG)
+                    == PackageManager.PERMISSION_GRANTED)
+
+        return phoneState && recordAudio && readContacts && readStorage && writeStorage && readCallsLog
+    }
+
+    fun permissionsDialog(parentActivity: SetupActivity?, onNextScreen: () -> Unit) {
+        MaterialDialog.Builder(parentActivity!!)
+            .title(R.string.warning_title)
+            .content(R.string.permissions_not_granted)
+            .positiveText(android.R.string.ok)
+            .icon(ContextCompat.getDrawable(parentActivity, R.drawable.warning)!!)
+            .onPositive { _, _ -> onNextScreen.invoke() }
+            .show()
+    }
+
+    @SuppressLint("BatteryLife")
+    fun changeBatteryOptimization(activity: FragmentActivity) {
+        val intent = Intent()
+        val packageName: String = activity.packageName
+
+        if (!isIgnoringBatteryOptimizations(activity)) {
+            intent.action = Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS
+            intent.data = Uri.parse("package:$packageName")
+            activity.startActivity(intent)
+        }
+    }
+
+    @SuppressLint("QueryPermissionsNeeded")
+    fun changeBatteryOptimizationIntent(activity: FragmentActivity) {
+        val intent = Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS)
+        val pm = activity.packageManager
+
+        if (intent.resolveActivity(pm) != null) {
+            activity.startActivity(intent)
+        }
+    }
+
+    fun isIgnoringBatteryOptimizations(activity: FragmentActivity): Boolean {
+        val pm = activity.getSystemService(Context.POWER_SERVICE) as PowerManager
+
+        return pm.isIgnoringBatteryOptimizations(activity.packageName)
+    }
+
+    // SHOW WARNING MESSAGE
+    fun warningDialog(parentActivity: SetupActivity?, onFinish: () -> Unit) {
+        MaterialDialog.Builder(parentActivity!!)
+            .title(R.string.warning_title)
+            .content(R.string.optimization_still_active)
+            .positiveText(android.R.string.ok)
+            .icon(ContextCompat.getDrawable(parentActivity, R.drawable.warning)!!)
+            .onPositive { _, _ -> onFinish.invoke() }
+            .show()
+    }
+
+
+    /* -------------------- Unassigned Fragment Prefs ------------------------ */
+    fun getDataFromSharedPreferences(context: Context): List<Recording?>? {
+        val gson = Gson()
+        val productFromShared: List<Recording?>?
+        val sharedPref: SharedPreferences? =
+            context.getSharedPreferences("PREFS_TAG", Context.MODE_PRIVATE)
+        val jsonPreferences = sharedPref?.getString("PRODUCT_TAG", "")
+        val type: Type = object : TypeToken<List<Recording?>?>() {}.type
+        productFromShared = gson.fromJson<List<Recording?>>(jsonPreferences, type)
+        return productFromShared
+    }
+
+    fun setDataFromSharedPreferences(context: Context, curProduct: List<Recording?>) {
+        val gson = Gson()
+        val jsonCurProduct = gson.toJson(curProduct)
+        val sharedPref: SharedPreferences? =
+            context.getSharedPreferences("PREFS_TAG", Context.MODE_PRIVATE)
+        val editor = sharedPref?.edit()
+        editor?.putString("PRODUCT_TAG", jsonCurProduct)
+        editor?.apply()
     }
 }
