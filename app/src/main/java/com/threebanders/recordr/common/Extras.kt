@@ -77,7 +77,7 @@ object Extras {
     }
 
     // TODO : Upload File to google drive
-    @SuppressLint("NewApi")
+
     fun uploadFileToGDrive(file: File, context: Context?) {
         try {
             CoroutineScope(Dispatchers.Main).launch {
@@ -289,7 +289,6 @@ object Extras {
             .show()
     }
 
-    @SuppressLint("BatteryLife")
     fun changeBatteryOptimization(activity: FragmentActivity) {
         val intent = Intent()
         val packageName: String = activity.packageName
@@ -301,15 +300,6 @@ object Extras {
         }
     }
 
-    @SuppressLint("QueryPermissionsNeeded")
-    fun changeBatteryOptimizationIntent(activity: FragmentActivity) {
-        val intent = Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS)
-        val pm = activity.packageManager
-
-        if (intent.resolveActivity(pm) != null) {
-            activity.startActivity(intent)
-        }
-    }
 
     fun isIgnoringBatteryOptimizations(activity: FragmentActivity): Boolean {
         val pm = activity.getSystemService(Context.POWER_SERVICE) as PowerManager
