@@ -111,7 +111,7 @@
     <string name="turn_off_opt">Turn off optimization</string>
     <string name="finish">Finish</string>
     <string name="optimization_still_active">If you don\'t turn off the Android power optimization for this app it won\'t be able to function properly. You can turn off the power optimization at the next run.</string>
-    <string name="about_devname">Developer: Eugen Rădulescu</string>
+    <string name="about_devname">Developer: Bilal Sammour</string>
     <string name="about_appname_version">%s version %s</string>
     <string name="help_title1">Overview</string>
     <string name="help_title2">Recording calls</string>
