@@ -1,5 +1,6 @@
 package com.threebanders.recordr.ui.help
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -47,7 +48,7 @@ class HelpActivity : BaseActivity() {
         content[5] = CoreUtil.rawHtmlToString(R.raw.help_licences, this)
         for (i in content.indices) content[i] =
             content[i]?.replace(APP_NAME_PLACEHOLDER, res.getString(R.string.app_name))
-        if (settledTheme == BaseActivity.Companion.DARK_THEME) {
+        if (settledTheme == DARK_THEME) {
             for (i in content.indices) content[i] = content[i]?.replace("light", "dark")
         }
         contentTitles[0] = res.getString(R.string.help_title2)
@@ -59,7 +60,7 @@ class HelpActivity : BaseActivity() {
         setContentView(R.layout.help_activity)
         pager = findViewById(R.id.help_pager)
         adapter = HelpPagerAdapter(supportFragmentManager)
-        pager!!.setAdapter(adapter)
+        pager!!.adapter = adapter
         val tabLayout = findViewById<TabLayout>(R.id.help_tab_layout)
         tabLayout.setupWithViewPager(pager)
         val toolbar = findViewById<Toolbar>(R.id.toolbar_help)
@@ -91,6 +92,7 @@ class HelpActivity : BaseActivity() {
             position = if (arguments != null) requireArguments().getInt(ARG_POSITION) else 0
         }
 
+        @SuppressLint("SetJavaScriptEnabled")
         override fun onCreateView(
             inflater: LayoutInflater,
             container: ViewGroup?,
@@ -106,7 +108,7 @@ class HelpActivity : BaseActivity() {
                         .content(R.string.send_devs_question)
                         .positiveText(android.R.string.ok)
                         .negativeText(android.R.string.cancel)
-                        .onPositive { dialog: MaterialDialog, which: DialogAction ->
+                        .onPositive { _: MaterialDialog, _: DialogAction ->
                             CrLog.sendLogs(
                                 activity as AppCompatActivity?,
                                 "synapticwebb@gmail.com",

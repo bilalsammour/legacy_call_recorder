@@ -11,6 +11,7 @@ import android.widget.SeekBar
 import android.widget.SeekBar.OnSeekBarChangeListener
 import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.chibde.visualizer.LineBarVisualizer
 import com.google.firebase.analytics.FirebaseAnalytics
@@ -31,16 +32,16 @@ class PlayerActivity : BaseActivity() {
     var recording: Recording? = null
     var playPause: ImageButton? = null
     var resetPlaying: ImageButton? = null
-    var happy: ImageButton? = null
-    var sad: ImageButton? = null
+    private var happy: ImageButton? = null
+    private var sad: ImageButton? = null
     lateinit var recordingInfo: TextView
     var playSeekBar: SeekBar? = null
     var playedTime: TextView? = null
     var totalTime: TextView? = null
     var userIsSeeking = false
-    var visualizer: LineBarVisualizer? = null
-    var audioManager: AudioManager? = null
-    var phoneVolume = 0
+    private var visualizer: LineBarVisualizer? = null
+    private var audioManager: AudioManager? = null
+    private var phoneVolume = 0
     lateinit var gainControl: Croller
     lateinit var volumeControl: Croller
 
@@ -67,7 +68,7 @@ class PlayerActivity : BaseActivity() {
         }
         recording = intent.getParcelableExtra(ContactDetailFragment.RECORDING_EXTRA)
         visualizer = findViewById(R.id.visualizer)
-        visualizer?.setColor(resources.getColor(R.color.colorAccentLighter))
+        visualizer?.setColor(ContextCompat.getColor(this,R.color.colorAccentLighter))
         visualizer?.setDensity(
             if (resources.configuration.orientation ==
                 Configuration.ORIENTATION_PORTRAIT
@@ -88,19 +89,19 @@ class PlayerActivity : BaseActivity() {
         playPause?.setOnClickListener {
             if (player!!.playerState == PlayerAdapter.State.PLAYING) {
                 player!!.pause()
-                playPause?.background = resources.getDrawable(R.drawable.player_play)
+                playPause?.background = ContextCompat.getDrawable(this,R.drawable.player_play)
                 window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
             } else if (player!!.playerState == PlayerAdapter.State.PAUSED ||
                 player!!.playerState == PlayerAdapter.State.INITIALIZED
             ) {
                 player!!.play()
-                playPause?.background = resources.getDrawable(R.drawable.player_pause)
+                playPause?.background = ContextCompat.getDrawable(this,R.drawable.player_pause)
                 window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
             }
         }
         resetPlaying?.setOnClickListener {
             if (player!!.playerState == PlayerAdapter.State.PLAYING) playPause?.background =
-                resources.getDrawable(R.drawable.player_play)
+                ContextCompat.getDrawable(this,R.drawable.player_play)
             player!!.reset()
         }
         playSeekBar?.setOnSeekBarChangeListener(object : OnSeekBarChangeListener {
@@ -191,11 +192,11 @@ class PlayerActivity : BaseActivity() {
             return
         }
         if (isPlaying) {
-            playPause!!.background = resources.getDrawable(R.drawable.player_pause)
+            playPause!!.background = ContextCompat.getDrawable(this,R.drawable.player_pause)
             player!!.play()
             window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         } else {
-            playPause!!.background = resources.getDrawable(R.drawable.player_play)
+            playPause!!.background = ContextCompat.getDrawable(this,R.drawable.player_play)
             player!!.playerState = PlayerAdapter.State.PAUSED
         }
     }
@@ -242,19 +243,19 @@ class PlayerActivity : BaseActivity() {
 
         override fun onPlaybackCompleted() {
             playPause!!.post {
-                playPause!!.background = resources.getDrawable(R.drawable.player_play)
+                playPause!!.background = ContextCompat.getDrawable(this@PlayerActivity,R.drawable.player_play)
             }
             player!!.reset()
         }
 
         override fun onError() {
-            playPause!!.background = resources.getDrawable(R.drawable.player_play)
+            playPause!!.background = ContextCompat.getDrawable(this@PlayerActivity,R.drawable.player_play)
             playPause!!.isEnabled = false
             resetPlaying!!.isEnabled = false
             totalTime!!.text = getString(R.string.time_zero)
             playSeekBar!!.isEnabled = false
             recordingInfo.text = resources.getString(R.string.player_error)
-            recordingInfo.setTextColor(resources.getColor(R.color.red))
+            recordingInfo.setTextColor(ContextCompat.getColor(this@PlayerActivity,R.color.red))
             volumeControl.isEnabled = false
             gainControl.isEnabled = false
         }

@@ -12,7 +12,9 @@ import android.view.View.OnLongClickListener
 import android.widget.*
 import androidx.appcompat.widget.Toolbar
 import androidx.core.app.NavUtils
+import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
+import androidx.core.content.res.ResourcesCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -101,7 +103,7 @@ open class ContactDetailFragment : BaseFragment() {
             )
             .positiveText(android.R.string.ok)
             .negativeText(android.R.string.cancel)
-            .icon(mainActivity!!.resources.getDrawable(R.drawable.warning))
+            .icon(ResourcesCompat.getDrawable(resources,R.drawable.warning,null)!!)
             .onPositive { _: MaterialDialog, _: DialogAction ->
                 val result = mainViewModel.deleteRecordings(
                     selectedRecordings
@@ -109,7 +111,7 @@ open class ContactDetailFragment : BaseFragment() {
                 if (result != null) MaterialDialog.Builder(mainActivity!!)
                     .title(result.title)
                     .content(result.message)
-                    .icon(resources.getDrawable(result.icon))
+                    .icon(ResourcesCompat.getDrawable(resources,result.icon,null)!!)
                     .positiveText(android.R.string.ok)
                     .show() else {
                     if (adapter!!.itemCount == 0) {
@@ -338,7 +340,7 @@ open class ContactDetailFragment : BaseFragment() {
     private fun onShowStorageInfo() {
         var sizePrivate: Long = 0
         var sizePublic: Long = 0
-        for (recording in adapter!!.getRecordings()!!) {
+        for (recording in adapter!!.getRecordings()) {
             val size = File(recording!!.path).length()
             if (recording.isSavedInPrivateSpace(mainActivity)) sizePrivate += size else sizePublic += size
         }
@@ -372,7 +374,7 @@ open class ContactDetailFragment : BaseFragment() {
                 if (result != null) MaterialDialog.Builder(mainActivity!!)
                     .title(result.title)
                     .content(result.message)
-                    .icon(resources.getDrawable(result.icon))
+                    .icon(ResourcesCompat.getDrawable(resources,result.icon,null)!!)
                     .positiveText(android.R.string.ok)
                     .show() else adapter!!.notifyItemChanged(selectedItems!![0])
             }.show()
@@ -443,7 +445,7 @@ open class ContactDetailFragment : BaseFragment() {
                 path.text,
                 mainActivity!!.resources.getString(R.string.nonexistent_file)
             )
-            path.setTextColor(requireContext().resources.getColor(android.R.color.holo_red_light))
+            path.setTextColor(ContextCompat.getColor(requireContext(),android.R.color.holo_red_light))
         }
         dialog.show()
     }
@@ -553,16 +555,16 @@ open class ContactDetailFragment : BaseFragment() {
 
         override fun onLongClick(v: View): Boolean {
             if (!selectMode) putInSelectMode(true)
-            val recording = adapter!!.getItem(adapterPosition)
-            manageSelectRecording(v, this.adapterPosition, recording!!.exists())
+            val recording = adapter!!.getItem(bindingAdapterPosition)
+            manageSelectRecording(v, this.bindingAdapterPosition, recording.exists())
             return true
         }
 
         override fun onClick(v: View) {
-            val recording = adapter!!.getItem(adapterPosition)
+            val recording = adapter!!.getItem(bindingAdapterPosition)
             if (selectMode) manageSelectRecording(
                 v,
-                this.adapterPosition,
+                this.bindingAdapterPosition,
                 recording.exists()
             ) else {
                 if (recording.exists()) {

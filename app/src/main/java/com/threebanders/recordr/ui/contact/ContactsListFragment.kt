@@ -8,6 +8,7 @@ import android.graphics.PorterDuffColorFilter
 import android.os.Bundle
 import android.view.*
 import android.widget.*
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -22,7 +23,7 @@ import core.threebanders.recordr.data.Contact
 class ContactsListFragment : BaseFragment() {
     private var adapter: ContactsAdapter? = null
     private var contactsRecycler: RecyclerView? = null
-    lateinit var mainViewModel: MainViewModel
+    private lateinit var mainViewModel: MainViewModel
 
     /**
      * Poziția curentă în adapter. Necesară doar în DOUBLE_PANE. Este setată din
@@ -64,8 +65,7 @@ class ContactsListFragment : BaseFragment() {
     }
 
     private fun manageDetail() {
-        val detailFragment =
-            parentActivity!!.supportFragmentManager.findFragmentById(R.id.contact_detail_fragment_container)
+        parentActivity!!.supportFragmentManager.findFragmentById(R.id.contact_detail_fragment_container)
         //        if (adapter.getItemCount() > 0) {
 //            if (detailFragment == null || ((ContactDetailContract.View) detailFragment).isInvalid())
 //                mainViewModel.contact.setValue(adapter.getItem(currentPos));
@@ -74,7 +74,7 @@ class ContactsListFragment : BaseFragment() {
         setCurrentDetail()
     }
 
-    fun showContacts() {
+    private fun showContacts() {
         contactsRecycler!!.adapter = adapter
         adapter!!.notifyDataSetChanged()
         if (baseActivity!!.layoutType == LayoutType.DOUBLE_PANE) manageDetail()
@@ -90,10 +90,10 @@ class ContactsListFragment : BaseFragment() {
         if (contactSlot != null) {
             contactSlot.findViewById<View>(R.id.tablet_current_selection).visibility =
                 View.VISIBLE
-            if (parentActivity!!.settledTheme == BaseActivity.Companion.LIGHT_THEME) contactSlot.setBackgroundColor(
-                resources.getColor(R.color.slotLightSelected)
+            if (parentActivity!!.settledTheme == BaseActivity.LIGHT_THEME) contactSlot.setBackgroundColor(
+                ContextCompat.getColor(requireContext(),R.color.slotLightSelected)
             ) else contactSlot.setBackgroundColor(
-                resources.getColor(R.color.slotDarkSelected)
+                ContextCompat.getColor(requireContext(),R.color.slotDarkSelected)
             )
         }
     }
@@ -117,9 +117,9 @@ class ContactsListFragment : BaseFragment() {
         val contactSlot = contactsRecycler!!.layoutManager!!.findViewByPosition(position)
         if (contactSlot != null) {
             contactSlot.findViewById<View>(R.id.tablet_current_selection).visibility = View.GONE
-            if (parentActivity!!.settledTheme == BaseActivity.Companion.LIGHT_THEME) contactSlot.setBackgroundColor(
-                resources.getColor(R.color.slotLight)
-            ) else contactSlot.setBackgroundColor(resources.getColor(R.color.slotAndDetailHeaderDark))
+            if (parentActivity!!.settledTheme == BaseActivity.LIGHT_THEME) contactSlot.setBackgroundColor(
+                ContextCompat.getColor(requireContext(),R.color.slotLight)
+            ) else contactSlot.setBackgroundColor(ContextCompat.getColor(requireContext(),R.color.slotAndDetailHeaderDark))
         }
     }
 
@@ -128,7 +128,7 @@ class ContactsListFragment : BaseFragment() {
         if (savedInstanceState != null) {
             currentPos = savedInstanceState.getInt(CURRENT_POS_KEY)
         }
-        adapter = ContactsAdapter(mainViewModel!!.contacts.value)
+        adapter = ContactsAdapter(mainViewModel.contacts.value)
     }
 
     override fun onCreateView(
@@ -138,11 +138,9 @@ class ContactsListFragment : BaseFragment() {
     ): View? {
         val fragmentRoot = inflater.inflate(R.layout.list_contacts_fragment, container, false)
         contactsRecycler = fragmentRoot.findViewById(R.id.listened_phones)
-        contactsRecycler!!.setLayoutManager(LinearLayoutManager(parentActivity))
-        mainViewModel = ViewModelProvider(mainActivity!!).get(
-            MainViewModel::class.java
-        )
-        mainViewModel!!.contacts.observe(viewLifecycleOwner) { contacts: List<Contact?>? -> showContacts() }
+        contactsRecycler!!.layoutManager = LinearLayoutManager(parentActivity)
+        mainViewModel = ViewModelProvider(mainActivity!!)[MainViewModel::class.java]
+        mainViewModel.contacts.observe(viewLifecycleOwner) { showContacts() }
         showContacts()
         return fragmentRoot
     }
@@ -164,7 +162,7 @@ class ContactsListFragment : BaseFragment() {
 
         override fun onClick(view: View) {
             val previousPos = currentPos
-            currentPos = adapterPosition
+            currentPos = bindingAdapterPosition
             if (baseActivity!!.layoutType == LayoutType.SINGLE_PANE) {
                 val detailIntent = Intent(context, ContactDetailActivity::class.java)
                 detailIntent.putExtra(ARG_CONTACT, contact)
@@ -179,9 +177,9 @@ class ContactsListFragment : BaseFragment() {
 
     private fun setCurrentDetail() {
         val detailMenu = parentActivity!!.findViewById<ImageButton>(R.id.contact_detail_menu)
-        if (mainViewModel!!.contact.value != null) {
+        if (mainViewModel.contact.value != null) {
             val contactDetail: ContactDetailFragment =
-                ContactDetailFragment.Companion.newInstance(mainViewModel!!.contact.value)
+                ContactDetailFragment.newInstance(mainViewModel.contact.value)
             parentActivity!!.supportFragmentManager.beginTransaction()
                 .replace(R.id.contact_detail_fragment_container, contactDetail)
                 .commitAllowingStateLoss() //fără chestia asta îmi dă un Caused by:
@@ -259,9 +257,10 @@ class ContactsListFragment : BaseFragment() {
             }
         }
 
-        fun getItem(position: Int): Contact? {
-            return contacts[position]
-        }
+        // NOT USED
+//        fun getItem(position: Int): Contact? {
+//            return contacts[position]
+//        }
 
         override fun getItemCount(): Int {
             return contacts.size

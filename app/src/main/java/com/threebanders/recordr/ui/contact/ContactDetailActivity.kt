@@ -10,8 +10,8 @@ import core.threebanders.recordr.data.Contact
 
 class ContactDetailActivity : BaseActivity() {
     var contact: Contact? = null
-    override fun createFragment(): Fragment? {
-        return ContactDetailFragment.Companion.newInstance(contact)
+    override fun createFragment(): Fragment {
+        return ContactDetailFragment.newInstance(contact)
     }
 
     override fun onResume() {
@@ -24,7 +24,7 @@ class ContactDetailActivity : BaseActivity() {
         setTheme()
         setContentView(R.layout.contact_detail_activity)
         val intent = intent
-        contact = intent.getParcelableExtra(ContactsListFragment.Companion.ARG_CONTACT)
+        contact = intent.getParcelableExtra(ContactsListFragment.ARG_CONTACT)
         insertFragment(R.id.contact_detail_fragment_container)
         val toolbar = findViewById<Toolbar>(R.id.toolbar_detail)
         val title = findViewById<TextView>(R.id.actionbar_title)

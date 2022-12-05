@@ -12,8 +12,11 @@ import java.io.File
 class UploadFileReceiver : BroadcastReceiver() {
     private var prevState = TelephonyManager.EXTRA_STATE_IDLE
 
-    @SuppressLint("UnsafeProtectedBroadcastReceiver")
     override fun onReceive(context: Context?, intent: Intent?) {
+
+        if(!intent?.action.equals("android.intent.action.PHONE_STATE") && !intent?.action.equals("android.intent.action.NEW_OUTGOING_CALL")){
+            return
+        }
 
         val bundle = intent!!.extras ?: return
         val state = bundle.getString(TelephonyManager.EXTRA_STATE)

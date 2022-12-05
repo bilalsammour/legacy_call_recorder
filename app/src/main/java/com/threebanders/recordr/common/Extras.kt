@@ -292,6 +292,7 @@ object Extras {
             .show()
     }
 
+    @SuppressLint("BatteryLife")
     fun changeBatteryOptimization(activity: FragmentActivity) {
         val intent = Intent()
         val packageName: String = activity.packageName
