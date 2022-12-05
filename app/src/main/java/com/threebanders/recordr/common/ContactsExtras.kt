@@ -70,7 +70,7 @@ object ContactsExtras {
     fun openSetupActivity(context: Activity, checkResult: Int) {
         val setupIntent = Intent(context, SetupActivity::class.java)
         setupIntent.putExtra(SETUP_ARGUMENT, checkResult)
-        
+
         context.startActivityForResult(setupIntent, SETUP_ACTIVITY)
     }
 
