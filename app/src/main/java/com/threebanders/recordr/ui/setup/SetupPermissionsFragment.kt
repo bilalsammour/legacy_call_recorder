@@ -1,12 +1,16 @@
 package com.threebanders.recordr.ui.setup
 
+import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.threebanders.recordr.R
@@ -14,20 +18,16 @@ import com.threebanders.recordr.common.Extras
 import com.threebanders.recordr.ui.MainViewModel
 
 class SetupPermissionsFragment : Fragment() {
+    private var arePermissionsGranted = false
     private lateinit var mainViewModel: MainViewModel
     private var parentActivity: SetupActivity? = null
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.setup_permissions_fragment, container, false)
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         mainViewModel = ViewModelProvider(this)[MainViewModel::class.java]
         val res = resources
         parentActivity = activity as SetupActivity?
@@ -37,31 +37,35 @@ class SetupPermissionsFragment : Fragment() {
         val nextButton = parentActivity!!.findViewById<Button>(R.id.setup_perms_next)
 
         nextButton.setOnClickListener {
-            requestPermissions(Extras.getPermissionsList(), PERMISSION_REQUEST)
+            if(arePermissionsGranted){
+                permissionsNext()
+            } else {
+                requestPermission()
+            }
         }
     }
 
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<String>,
-        grantResults: IntArray
-    ) {
-        var notGranted = false
-        if (requestCode == PERMISSION_REQUEST) {
-            if (grantResults.isEmpty()) notGranted = true else {
-                for (result in grantResults) if (result != PackageManager.PERMISSION_GRANTED) {
-                    notGranted = true
-                    break
-                }
-            }
-            if (notGranted) {
-                mainViewModel.showPermissionsDialog(parentActivity) {
-                    permissionsNext()
-                }
-            } else {
-                permissionsNext()
-            }
+
+    private var requestMultiplePermissions   = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()){ permissions ->
+        if(permissions[Manifest.permission.READ_PHONE_STATE] == true && permissions[Manifest.permission.RECORD_AUDIO] == true &&
+            permissions[Manifest.permission.READ_CONTACTS] == true && permissions[Manifest.permission.READ_EXTERNAL_STORAGE] == true &&
+            permissions[Manifest.permission.WRITE_EXTERNAL_STORAGE] == true && permissions[Manifest.permission.READ_CALL_LOG] == true){
+            arePermissionsGranted = true
         }
+    }
+
+    private fun requestPermission()  {
+        if(checkPermission(Extras.getPermissionsList()[0]) && checkPermission(Extras.getPermissionsList()[1])
+            && checkPermission(Extras.getPermissionsList()[2]) && checkPermission(Extras.getPermissionsList()[3])
+            && checkPermission(Extras.getPermissionsList()[4]) && checkPermission(Extras.getPermissionsList()[5])){
+            Log.d("TAG","All Permissions are granted")
+        } else {
+            requestMultiplePermissions.launch(Extras.getPermissionsList())
+        }
+    }
+
+    private fun checkPermission(permission : String) : Boolean{
+        return ContextCompat.checkSelfPermission(requireContext(), permission) == PackageManager.PERMISSION_GRANTED
     }
 
     private fun permissionsNext() {
@@ -78,7 +82,4 @@ class SetupPermissionsFragment : Fragment() {
         }
     }
 
-    companion object {
-        private const val PERMISSION_REQUEST = 0
-    }
 }
