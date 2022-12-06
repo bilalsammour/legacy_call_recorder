@@ -2,6 +2,8 @@ package com.threebanders.recordr.ui
 
 import android.app.Activity
 import android.content.Context
+import androidx.activity.result.ActivityResult
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -126,8 +128,11 @@ class MainViewModel : ViewModel() {
         return Extras.isMyServiceRunning(context, serviceClass)
     }
 
-    fun showAccessibilitySettingsInApp(context: Activity) {
-        Extras.showAccessibilitySettings(context)
+    fun showAccessibilitySettingsInApp(
+        activity: AppCompatActivity,
+        block: (ActivityResult) -> Unit
+    ) {
+        Extras.showAccessibilitySettings(activity, block)
     }
 
     fun openSettingsActivityInApp(context: Activity) {

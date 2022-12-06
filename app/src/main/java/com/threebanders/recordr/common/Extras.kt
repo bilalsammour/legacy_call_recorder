@@ -14,6 +14,8 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.PowerManager
 import android.provider.Settings
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
@@ -199,9 +201,13 @@ object Extras {
         return false
     }
 
-    fun showAccessibilitySettings(context: Activity) {
+    fun showAccessibilitySettings(activity: AppCompatActivity, block: (ActivityResult) -> Unit) {
         val intent = Intent("android.settings.ACCESSIBILITY_SETTINGS")
-        context.startActivityForResult(intent, ACCESSIBILITY_SETTINGS)
+        activity.registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            if (it.resultCode == Activity.RESULT_OK) {
+                block(it)
+            }
+        }.launch(intent)
     }
 
     fun openSettingsActivity(context: Activity) {

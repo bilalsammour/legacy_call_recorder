@@ -6,7 +6,6 @@ import android.view.MenuItem
 import android.widget.ImageButton
 import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
-import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
@@ -52,7 +51,7 @@ class ContactsListActivityMain : BaseActivity() {
         viewModel = ViewModelProvider(this)[MainViewModel::class.java]
 
         if (!viewModel.checkIfServiceIsRunning(this, MyService::class.java)) {
-            viewModel.showAccessibilitySettingsInApp(this)
+            viewModel.showAccessibilitySettingsInApp(this) {}
         }
 
         prepareUi()
@@ -60,34 +59,38 @@ class ContactsListActivityMain : BaseActivity() {
         if (savedInstanceState == null) insertFragment(R.id.contacts_list_fragment_container)
         setUpNavigationView()
 
-        onBackPressedDispatcher.addCallback(this , object : OnBackPressedCallback(true) {
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 // Back is pressed... Finishing the activity
                 viewModel.showOnBackPressedDialog(this@ContactsListActivityMain) {
-                   finish()
+                    finish()
                 }
             }
         })
-
-
     }
 
-    private val activityResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){ result ->
-        if (result.resultCode == RESULT_OK) {
-            setupRecorderFragment()
-            if (result.data!!.getBooleanExtra(SetupActivity.EXIT_APP, true)) {
-                finish()
+    private val activityResultLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == RESULT_OK) {
+                setupRecorderFragment()
+                if (result.data!!.getBooleanExtra(SetupActivity.EXIT_APP, true)) {
+                    finish()
+                }
             }
         }
-    }
 
     private fun checkValidations() {
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false)
         val settings = prefs
-        val eulaNotAccepted = if (settings.getBoolean(Extras.HAS_ACCEPTED_EULA, false)) 0 else Extras.EULA_NOT_ACCEPTED
+        val eulaNotAccepted = if (settings.getBoolean(
+                Extras.HAS_ACCEPTED_EULA,
+                false
+            )
+        ) 0 else Extras.EULA_NOT_ACCEPTED
 
-        permsNotGranted = if(viewModel.checkPermissions(this)) 0 else Extras.PERMS_NOT_GRANTED
-        powerOptimized = if (viewModel.isIgnoringBatteryOptimizations(this)) 0 else Extras.POWER_OPTIMIZED
+        permsNotGranted = if (viewModel.checkPermissions(this)) 0 else Extras.PERMS_NOT_GRANTED
+        powerOptimized =
+            if (viewModel.isIgnoringBatteryOptimizations(this)) 0 else Extras.POWER_OPTIMIZED
 
         val checkResult = eulaNotAccepted or permsNotGranted or powerOptimized
         if (checkResult != 0) {
@@ -139,6 +142,4 @@ class ContactsListActivityMain : BaseActivity() {
         unassignedToInsert = UnassignedRecordingsFragment()
         fm = supportFragmentManager
     }
-
-
 }
