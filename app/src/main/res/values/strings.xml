@@ -26,7 +26,6 @@
     <string name="exit_app_message">Exit the application?</string>
     <string name="warning_title">Warning</string>
     <string name="information_title">Information</string>
-    <string name="permissions_not_granted">"The application was not granted the necessary permissions for proper functioning. You should grant these permissions on the next run."</string>
     <string name="huawei_protected_title">Huawei Protected Apps</string>
     <string name="huawei_protected_message">"%s requires to be enabled in 'Protected Apps' to function properly.%n</string>
     <string name="audio_file_missing">Cannot find the audio file</string>

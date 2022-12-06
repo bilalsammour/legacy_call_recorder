@@ -101,12 +101,6 @@ class MainViewModel : ViewModel() {
         return Extras.checkPermissions(context)
     }
 
-
-    // TODO : Show Permissions Dialog
-    fun showPermissionsDialog(parentActivity: SetupActivity?, onNextScreen: () -> Unit) {
-        Extras.permissionsDialog(parentActivity, onNextScreen)
-    }
-
     // TODO : Show Warning Dialog
     fun showWarningDialog(parentActivity: SetupActivity?, onFinish: () -> Unit) {
         Extras.warningDialog(parentActivity, onFinish)

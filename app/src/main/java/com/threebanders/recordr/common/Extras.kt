@@ -272,16 +272,6 @@ object Extras {
         ) == PackageManager.PERMISSION_GRANTED
     }
 
-    fun permissionsDialog(parentActivity: SetupActivity?, onNextScreen: () -> Unit) {
-        MaterialDialog.Builder(parentActivity!!)
-            .title(R.string.warning_title)
-            .content(R.string.permissions_not_granted)
-            .positiveText(android.R.string.ok)
-            .icon(ContextCompat.getDrawable(parentActivity, R.drawable.warning)!!)
-            .onPositive { _, _ -> onNextScreen.invoke() }
-            .show()
-    }
-
     @SuppressLint("BatteryLife")
     fun changeBatteryOptimization(activity: FragmentActivity) {
         val intent = Intent()
