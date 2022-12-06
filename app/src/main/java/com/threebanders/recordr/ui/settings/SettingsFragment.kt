@@ -49,9 +49,9 @@ class SettingsFragment : PreferenceFragmentCompat() {
     }
 
     private val launcher =
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            if (result.resultCode == Activity.RESULT_OK) {
-                handleSignData(result.data)
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            if (it.resultCode == Activity.RESULT_OK) {
+                handleSignData(it.data)
             }
         }
 
@@ -165,7 +165,6 @@ class SettingsFragment : PreferenceFragmentCompat() {
         launcher.launch(mGoogleApiClient!!.signInIntent)
     }
 
-
     private fun updateGoogleDriveToggle(newValue: Boolean) {
         val preferences = (requireActivity().application as CrApp).core.prefs
         val editor = preferences.edit()
@@ -189,7 +188,6 @@ class SettingsFragment : PreferenceFragmentCompat() {
             requireActivity()
         ) { Toast.makeText(requireContext(), R.string.signed_out, Toast.LENGTH_SHORT).show() }
     }
-
 
     companion object {
         const val APP_THEME = "theme"
