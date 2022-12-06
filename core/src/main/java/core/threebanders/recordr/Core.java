@@ -18,20 +18,18 @@ public class Core {
     private static int versionCode;
     private static String versionName;
     private static Repository repository;
-    private int iconSmallIcon;
 
     public Core(Builder builder) {
-        this.context = builder.context;
-        this.notificationIcon = builder.notificationIcon;
-        this.iconSmallIcon = builder.iconSmallIcon;
-        this.iconSpeakerOff = builder.iconSpeakerOff;
-        this.iconSpeakerOn = builder.iconSpeakerOn;
-        this.iconSuccess = builder.iconSuccess;
-        this.iconFailure = builder.iconFailure;
-        this.notifyGoToActivity = builder.notifyGoToActivity;
-        this.versionCode = builder.versionCode;
-        this.versionName = builder.versionName;
-        this.repository = builder.repository;
+        context = builder.context;
+        notificationIcon = builder.notificationIcon;
+        iconSpeakerOff = builder.iconSpeakerOff;
+        iconSpeakerOn = builder.iconSpeakerOn;
+        iconSuccess = builder.iconSuccess;
+        iconFailure = builder.iconFailure;
+        notifyGoToActivity = builder.notifyGoToActivity;
+        versionCode = builder.versionCode;
+        versionName = builder.versionName;
+        repository = builder.repository;
     }
 
     public static Context getContext() {
@@ -91,10 +89,8 @@ public class Core {
     }
 
     public static class Builder {
-
         private Context context;
         private int notificationIcon;
-        private int iconSmallIcon;
         private int iconSpeakerOff;
         private int iconSpeakerOn;
         private int iconSuccess;

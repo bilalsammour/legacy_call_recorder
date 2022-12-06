@@ -8,7 +8,6 @@ import android.media.MediaCodec;
 import android.media.MediaExtractor;
 import android.media.MediaFormat;
 import android.media.MediaMetadataRetriever;
-import android.os.Build;
 
 import androidx.annotation.NonNull;
 
@@ -35,7 +34,7 @@ public class AudioPlayer extends Thread implements PlayerAdapter {
     private final static String ACRA_FORMAT = "format";
     private int state;
     private String mediaPath;
-    private PlaybackListenerInterface playbackListener;
+    private final PlaybackListenerInterface playbackListener;
     private ScheduledExecutorService executor;
     private Runnable seekbarPositionUpdateTask;
     private MediaCodec decoder;
@@ -390,10 +389,7 @@ public class AudioPlayer extends Thread implements PlayerAdapter {
                 inputBufId = decoder.dequeueInputBuffer(timeOutUs);
                 if (inputBufId >= 0) {
                     ByteBuffer inputBuffer;
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
-                        inputBuffer = decoder.getInputBuffer(inputBufId);
-                    else
-                        inputBuffer = decoderInputBuffers[inputBufId];
+                    inputBuffer = decoder.getInputBuffer(inputBufId);
                     if (inputBuffer == null)
                         throw new PlayerException("Codec returned null input buffer");
                     int sampleSize = extractor.readSampleData(inputBuffer, 0 /* offset */);
@@ -415,10 +411,7 @@ public class AudioPlayer extends Thread implements PlayerAdapter {
             outputBufId = decoder.dequeueOutputBuffer(bufInfo, timeOutUs);
             if (outputBufId >= 0) {
                 ByteBuffer outputBuffer;
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
-                    outputBuffer = decoder.getOutputBuffer(outputBufId);
-                else
-                    outputBuffer = decoderOutputBuffers[outputBufId];
+                outputBuffer = decoder.getOutputBuffer(outputBufId);
                 if (outputBuffer == null)
                     throw new PlayerException("Codec returned null output buffer.");
                 byte[] audioData = new byte[bufInfo.size];

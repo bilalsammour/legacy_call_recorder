@@ -1,5 +1,6 @@
 package core.threebanders.recordr.data;
 
+import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -7,15 +8,13 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import androidx.annotation.VisibleForTesting;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-
+@SuppressLint("Range")
 public class RepositoryImpl implements Repository {
-    private SQLiteDatabase database;
+    private final SQLiteDatabase database;
 
     public RepositoryImpl(Context context, String dbname) {
         SQLiteOpenHelper helper = new CallRecorderDbHelper(context, dbname);
@@ -48,62 +47,11 @@ public class RepositoryImpl implements Repository {
         return contacts;
     }
 
-//    @Override
-//    public List<Contact> getAllContacts() {
-//        List<Contact> contacts = new ArrayList<>();
-//        ContentResolver cr = context.getContentResolver();
-//        Cursor cur = cr.query(ContactsContract.Contacts.CONTENT_URI,
-//                null, null, null, null);
-//
-//        if ((cur != null ? cur.getCount() : 0) > 0) {
-//            while (cur != null && cur.moveToNext()) {
-//                String id = cur.getString(
-//                        cur.getColumnIndex(ContactsContractLocal.Contacts._ID));
-//                String name = cur.getString(cur.getColumnIndex(
-//                        ContactsContract.Contacts.DISPLAY_NAME));
-//
-//                if (cur.getInt(cur.getColumnIndex(
-//                        ContactsContract.Contacts.HAS_PHONE_NUMBER)) > 0) {
-//                    Cursor pCur = cr.query(
-//                            ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
-//                            null,
-//                            ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?",
-//                            new String[]{id}, null);
-//                    while (pCur.moveToNext()) {
-//                        String phoneNo = pCur.getString(pCur.getColumnIndex(
-//                                ContactsContract.CommonDataKinds.Phone.NUMBER));
-//                        Log.i("", "Name: " + name);
-//                        Log.i("", "Phone Number: " + phoneNo);
-//                        contacts.add(populateContact(pCur));
-//                    }
-//                    pCur.close();
-//                }
-//            }
-//        }
-//        if (cur != null) {
-//            cur.close();
-//        }
-//        return contacts;
-//    }
-
     @Override
     public void getAllContacts(LoadContactsCallback callback) {
         List<Contact> contacts = getAllContacts();
         Collections.sort(contacts);
         callback.onContactsLoaded(contacts);
-    }
-
-
-    @VisibleForTesting
-    Contact getContact(Long id) {
-        Cursor cursor = database.query(ContactsContractLocal.Contacts.TABLE_NAME, null, ContactsContractLocal.Contacts._ID +
-                "=" + id, null, null, null, null);
-
-        Contact contact = null;
-        if (cursor != null && cursor.moveToFirst()) {
-            contact = populateContact(cursor);
-        }
-        return contact;
     }
 
     @Override
@@ -194,18 +142,6 @@ public class RepositoryImpl implements Repository {
         callback.onRecordingsLoaded(getRecordings(contact));
     }
 
-    @VisibleForTesting
-    Recording getRecording(Long id) {
-        Cursor cursor = database.query(RecordingsContract.Recordings.TABLE_NAME, null, RecordingsContract.Recordings._ID +
-                "=" + id, null, null, null, null);
-
-        Recording recording = null;
-        if (cursor != null && cursor.moveToFirst()) {
-            recording = populateRecording(cursor);
-        }
-        return recording;
-    }
-
     private ContentValues createRecordingContentValues(Recording recording) {
         ContentValues values = new ContentValues();
 
@@ -248,10 +184,5 @@ public class RepositoryImpl implements Repository {
                 RecordingsContract.Recordings._ID + "=" + recording.getId(), null);
         if (deletedRows != 1)
             throw new SQLException("The return value of deleting this recording was " + deletedRows);
-    }
-
-    @VisibleForTesting
-    void closeDb() {
-        database.close();
     }
 }
