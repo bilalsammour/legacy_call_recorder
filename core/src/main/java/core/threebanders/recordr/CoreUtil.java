@@ -1,9 +1,6 @@
 package core.threebanders.recordr;
 
 import android.content.Context;
-import android.os.Build;
-import android.text.Html;
-import android.text.Spanned;
 
 import androidx.annotation.NonNull;
 
@@ -20,9 +17,7 @@ import java.util.concurrent.TimeUnit;
 
 public class CoreUtil {
     public static final int UNKNOWN_TYPE_PHONE_CODE = -1;
-    //https://stackoverflow.com/questions/2760995/arraylist-initialization-equivalent-to-array-initialization
 
-    //http://tools.medialab.sciences-po.fr/iwanthue/
     public static final List<Integer> colorList = new ArrayList<>(Arrays.asList(
             0xFF7b569b,
             0xFFb8ad38,
@@ -59,10 +54,10 @@ public class CoreUtil {
     }
 
     public static String getFileSizeHuman(long size) {
-        double numUnits = size / 1024;
+        double numUnits = size >> 10;
         String unit = "KB";
         if (numUnits > 1000) {
-            numUnits = (int) size / 1048576;
+            numUnits = (int) size >> 20;
             unit = "MB";
             double diff = (size - numUnits * 1048576) / 1048576;
             numUnits = numUnits + diff;
@@ -74,18 +69,6 @@ public class CoreUtil {
             }
         }
         return new DecimalFormat("#.#").format(numUnits) + " " + unit;
-    }
-
-    //https://stackoverflow.com/questions/4605527/converting-pixels-to-dp
-    public static int pxFromDp(final Context context, final int dp) {
-        return (int) (dp * context.getResources().getDisplayMetrics().density);
-    }
-
-    public static Spanned getSpannedText(String text, Html.ImageGetter getter) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            return Html.fromHtml(text, Html.FROM_HTML_MODE_LEGACY, getter, null);
-        } else
-            return Html.fromHtml(text, getter, null);
     }
 
     public static String rawHtmlToString(int fileRes, Context context) {
@@ -106,9 +89,8 @@ public class CoreUtil {
     }
 
     public static class PhoneTypeContainer {
-
-        private int typeCode;
-        private String typeName;
+        private final int typeCode;
+        private final String typeName;
 
         PhoneTypeContainer(int code, String name) {
             typeCode = code;
@@ -123,18 +105,6 @@ public class CoreUtil {
 
         public int getTypeCode() {
             return typeCode;
-        }
-
-        public void setTypeCode(int typeCode) {
-            this.typeCode = typeCode;
-        }
-
-        public String getTypeName() {
-            return typeName;
-        }
-
-        public void setTypeName(String typeName) {
-            this.typeName = typeName;
         }
     }
 }

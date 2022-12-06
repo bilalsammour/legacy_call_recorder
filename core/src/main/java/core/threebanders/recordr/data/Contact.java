@@ -2,7 +2,6 @@ package core.threebanders.recordr.data;
 
 import android.annotation.SuppressLint;
 import android.content.ContentResolver;
-import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.net.Uri;
@@ -114,16 +113,6 @@ public class Contact implements Comparable<Contact>, Parcelable {
         repository.insertContact(this);
     }
 
-    public void delete(Repository repository, Context context) throws SQLException {
-        List<Recording> recordings = repository.getRecordings(this);
-        for (Recording recording : recordings)
-            recording.delete(repository);
-
-        if (getPhotoUri() != null) //întotdeauna este poza noastră.
-            context.getContentResolver().delete(getPhotoUri(), null, null);
-        repository.deleteContact(this);
-    }
-
     public boolean isPrivateNumber() {
         return phoneNumber == null;
     }
@@ -146,22 +135,6 @@ public class Contact implements Comparable<Contact>, Parcelable {
 
     public int getPhoneTypeCode() {
         return phoneType;
-    }
-
-    public String getPhoneTypeName() {
-        for (CoreUtil.PhoneTypeContainer typeContainer : Const.PHONE_TYPES)
-            if (typeContainer.getTypeCode() == this.phoneType)
-                return typeContainer.getTypeName();
-        return null;
-    }
-
-    public void setPhoneType(String phoneType) {
-        for (CoreUtil.PhoneTypeContainer typeContainer : Const.PHONE_TYPES)
-            if (typeContainer.getTypeName().equals(phoneType)) {
-                this.phoneType = typeContainer.getTypeCode();
-                break;
-            }
-
     }
 
     public void setPhoneType(int phoneTypeCode) {
@@ -191,10 +164,6 @@ public class Contact implements Comparable<Contact>, Parcelable {
             this.photoUri = Uri.parse(photoUriStr);
         else
             this.photoUri = null;
-    }
-
-    public void setPhotoUri(Uri photoUri) {
-        this.photoUri = photoUri;
     }
 
     public Long getId() { //Trebuie Long ptr că id poate să fie null

@@ -13,7 +13,7 @@ public class Cache {
     public static final String MODE = "mode";
     public static final String STORAGE = "storage";
     public static final String STORAGE_PATH = "public_storage_path";
-    public static final String RECORDINGS_LIST = "RECORDINGS_LIST";
+
     private static Cache cache;
     private SharedPreferences prefs;
 

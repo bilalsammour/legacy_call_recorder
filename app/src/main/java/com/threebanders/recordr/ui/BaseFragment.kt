@@ -8,6 +8,4 @@ open class BaseFragment : Fragment() {
         get() = activity as ContactsListActivityMain?
     val baseActivity: BaseActivity?
         get() = activity as BaseActivity?
-//    var mainViewModel: MainViewModel? = null
-//        get() = mainActivity?.viewModel
 }
