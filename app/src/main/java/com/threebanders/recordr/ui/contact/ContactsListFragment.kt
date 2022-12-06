@@ -47,19 +47,6 @@ class ContactsListFragment : BaseFragment() {
         parentActivity = null
     }
 
-    /**
-     * Apelată din ContactDetailFragment după ștergerea unui contact.
-     */
-    //    @Override
-    //    public void resetCurrentPosition() {
-    //        currentPos = 0;
-    //    }
-    override fun onResume() {
-        super.onResume()
-        //        if (ContactsListActivityMain.PERMS_NOT_GRANTED == 0)
-//            presenter.loadContacts();
-    }
-
     override fun onSaveInstanceState(outState: Bundle) {
         outState.putInt(CURRENT_POS_KEY, currentPos)
     }

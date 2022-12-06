@@ -3,8 +3,8 @@
     <item
         android:id="@+id/rename_recording"
         android:title="@string/rename_recording_popup_text"
-        android:visible="false"></item>
+        android:visible="false" />
     <item
         android:id="@+id/delete_recording"
-        android:title="@string/delete_recording_popup_text"></item>
+        android:title="@string/delete_recording_popup_text" />
 </menu>

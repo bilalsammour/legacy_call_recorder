@@ -212,7 +212,7 @@ public class AudioPlayer extends Thread implements PlayerAdapter {
             inputWav.seek(DATA_SIZE_ADDRESS);
             inputWav.read(dataSizeBytes);
             inputWav.seek(CHANNEL_COUNT_ADDRESS);
-            channelCount = (int) inputWav.readByte();
+            channelCount = inputWav.readByte();
             inputWav.seek(0);
             if (inputWav.skipBytes(WAV_HEADER_SIZE) < WAV_HEADER_SIZE)
                 throw new PlayerException("Initialization error: Wav file corrupted");
