@@ -41,7 +41,7 @@ open class ContactDetailFragment : BaseFragment() {
     protected var recordingsRecycler: RecyclerView? = null
     private var detailView: RelativeLayout? = null
     protected var selectMode = false
-    private lateinit var mainViewModel: MainViewModel
+    lateinit var mainViewModel: MainViewModel
     protected var selectedItems: MutableList<Int>? = ArrayList()
 
     private var selectedItemsDeleted = 0
