@@ -51,8 +51,6 @@ import java.lang.reflect.Type
 import kotlin.random.Random
 
 object Extras {
-
-    //const val SETUP_ACTIVITY = 3
     const val HAS_ACCEPTED_EULA = "has_accepted_eula"
     const val EULA_NOT_ACCEPTED = 1
     const val PERMS_NOT_GRANTED = 2
@@ -60,14 +58,23 @@ object Extras {
     const val SETUP_ARGUMENT = "setup_arg"
     private const val ACCESSIBILITY_SETTINGS = 1991
 
-
     const val NOTIFICATION_ID = "1"
     const val NOTIFICATION_STRING = "notification"
 
     // TODO : SHOW RECYCLER
-    fun showRecyclerView(recordingsRecycler: RecyclerView?, baseActivity: BaseActivity?, context: Context, recordingAdapter: ContactDetailFragment.RecordingAdapter) {
+    fun showRecyclerView(
+        recordingsRecycler: RecyclerView?,
+        baseActivity: BaseActivity?,
+        context: Context,
+        recordingAdapter: ContactDetailFragment.RecordingAdapter
+    ) {
         recordingsRecycler!!.layoutManager = LinearLayoutManager(baseActivity)
-        recordingsRecycler.addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
+        recordingsRecycler.addItemDecoration(
+            DividerItemDecoration(
+                context,
+                DividerItemDecoration.VERTICAL
+            )
+        )
         recordingsRecycler.adapter = recordingAdapter
     }
 
@@ -163,7 +170,6 @@ object Extras {
         return getSharedPrefsInstance(context).getString("audioPath", "")!!
     }
 
-
     /* ----------------------- CONTACTS EXTRAS --------------------*/
 
     fun showExitDialog(context: Context, onBackPressed: () -> Unit) {
@@ -243,18 +249,21 @@ object Extras {
     }
 
     fun checkPermissions(context: Context): Boolean {
-        val phoneState = createPermission(Manifest.permission.READ_PHONE_STATE,context)
-        val recordAudio = createPermission(Manifest.permission.RECORD_AUDIO,context)
-        val readContacts = createPermission(Manifest.permission.READ_CONTACTS,context)
-        val readStorage = createPermission(Manifest.permission.READ_EXTERNAL_STORAGE,context)
-        val writeStorage = createPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE,context)
-        val readCallsLog = createPermission(Manifest.permission.READ_CALL_LOG,context)
+        val phoneState = createPermission(Manifest.permission.READ_PHONE_STATE, context)
+        val recordAudio = createPermission(Manifest.permission.RECORD_AUDIO, context)
+        val readContacts = createPermission(Manifest.permission.READ_CONTACTS, context)
+        val readStorage = createPermission(Manifest.permission.READ_EXTERNAL_STORAGE, context)
+        val writeStorage = createPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE, context)
+        val readCallsLog = createPermission(Manifest.permission.READ_CALL_LOG, context)
 
         return phoneState && recordAudio && readContacts && readStorage && writeStorage && readCallsLog
     }
 
-    private fun createPermission(permission : String, context : Context) : Boolean{
-        return ContextCompat.checkSelfPermission(context, permission) == PackageManager.PERMISSION_GRANTED
+    private fun createPermission(permission: String, context: Context): Boolean {
+        return ContextCompat.checkSelfPermission(
+            context,
+            permission
+        ) == PackageManager.PERMISSION_GRANTED
     }
 
     fun permissionsDialog(parentActivity: SetupActivity?, onNextScreen: () -> Unit) {
@@ -279,7 +288,6 @@ object Extras {
         }
     }
 
-
     fun isIgnoringBatteryOptimizations(activity: FragmentActivity): Boolean {
         val pm = activity.getSystemService(Context.POWER_SERVICE) as PowerManager
 
@@ -296,7 +304,6 @@ object Extras {
             .onPositive { _, _ -> onFinish.invoke() }
             .show()
     }
-
 
     /* -------------------- Unassigned Fragment Prefs ------------------------ */
     fun getDataFromSharedPreferences(context: Context): List<Recording?>? {
