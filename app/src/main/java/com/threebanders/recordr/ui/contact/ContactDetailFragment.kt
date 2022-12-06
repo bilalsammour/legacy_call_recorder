@@ -103,7 +103,7 @@ open class ContactDetailFragment : BaseFragment() {
             )
             .positiveText(android.R.string.ok)
             .negativeText(android.R.string.cancel)
-            .icon(ResourcesCompat.getDrawable(resources,R.drawable.warning,null)!!)
+            .icon(ResourcesCompat.getDrawable(resources, R.drawable.warning, null)!!)
             .onPositive { _: MaterialDialog, _: DialogAction ->
                 val result = mainViewModel.deleteRecordings(
                     selectedRecordings
@@ -111,7 +111,7 @@ open class ContactDetailFragment : BaseFragment() {
                 if (result != null) MaterialDialog.Builder(mainActivity!!)
                     .title(result.title)
                     .content(result.message)
-                    .icon(ResourcesCompat.getDrawable(resources,result.icon,null)!!)
+                    .icon(ResourcesCompat.getDrawable(resources, result.icon, null)!!)
                     .positiveText(android.R.string.ok)
                     .show() else {
                     if (adapter!!.itemCount == 0) {
@@ -137,10 +137,18 @@ open class ContactDetailFragment : BaseFragment() {
 
     open fun paintViews() {
         adapter!!.replaceData(mainViewModel.records.value!!, callDetails)
-        if (selectMode) putInSelectMode(false) else toggleSelectModeActionBar(false)
+        if (selectMode) {
+            putInSelectMode(false)
+        } else {
+            toggleSelectModeActionBar(false)
+        }
         val noContent = detailView!!.findViewById<TextView>(R.id.no_content_detail)
-        if (mainViewModel.records.value!!.size > 0) noContent.visibility =
-            View.GONE else noContent.visibility = View.VISIBLE
+        if (mainViewModel.records.value!!.size > 0) {
+            noContent.visibility =
+                View.GONE
+        } else {
+            noContent.visibility = View.VISIBLE
+        }
     }
 
     fun removeRecording() {
@@ -166,22 +174,56 @@ open class ContactDetailFragment : BaseFragment() {
         if (mainActivity!!.layoutType == LayoutType.SINGLE_PANE) if (selectMode) hideView(
             navigateBackBtn,
             animate
-        ) else showView(navigateBackBtn, animate)
-        if (selectMode) showView(closeBtn, animate) else hideView(closeBtn, animate)
-        if (selectMode) showView(moveBtn, animate) else hideView(moveBtn, animate)
-        if (selectMode) {
-            if (checkIfSelectedRecordingsDeleted()) disableMoveBtn() else enableMoveBtn()
+        ) else {
+            showView(navigateBackBtn, animate)
         }
-        if (selectMode) showView(selectAllBtn, animate) else hideView(selectAllBtn, animate)
-        if (selectMode) showView(infoBtn, animate) else hideView(infoBtn, animate)
-        if (selectMode) showView(menuRightSelectedBtn, animate) else hideView(
-            menuRightSelectedBtn,
-            animate
-        )
-        if (selectMode) hideView(menuRightBtn, animate) else showView(menuRightBtn, animate)
+        if (selectMode) {
+            showView(closeBtn, animate)
+        } else {
+            hideView(closeBtn, animate)
+        }
+        if (selectMode) {
+            showView(moveBtn, animate)
+        } else {
+            hideView(moveBtn, animate)
+        }
+        if (selectMode) {
+            if (checkIfSelectedRecordingsDeleted()) {
+                disableMoveBtn()
+            } else {
+                enableMoveBtn()
+            }
+        }
+        if (selectMode) {
+            showView(selectAllBtn, animate)
+        } else {
+            hideView(selectAllBtn, animate)
+        }
+        if (selectMode) {
+            showView(infoBtn, animate)
+        } else {
+            hideView(infoBtn, animate)
+        }
+        if (selectMode) {
+            showView(menuRightSelectedBtn, animate)
+        } else {
+            hideView(
+                menuRightSelectedBtn,
+                animate
+            )
+        }
+        if (selectMode) {
+            hideView(menuRightBtn, animate)
+        } else {
+            showView(menuRightBtn, animate)
+        }
         if (mainActivity!!.layoutType == LayoutType.DOUBLE_PANE) {
             val hamburger = mainActivity!!.findViewById<ImageButton>(R.id.hamburger)
-            if (selectMode) hideView(hamburger, animate) else showView(hamburger, animate)
+            if (selectMode) {
+                hideView(hamburger, animate)
+            } else {
+                showView(hamburger, animate)
+            }
         }
     }
 
@@ -374,7 +416,7 @@ open class ContactDetailFragment : BaseFragment() {
                 if (result != null) MaterialDialog.Builder(mainActivity!!)
                     .title(result.title)
                     .content(result.message)
-                    .icon(ResourcesCompat.getDrawable(resources,result.icon,null)!!)
+                    .icon(ResourcesCompat.getDrawable(resources, result.icon, null)!!)
                     .positiveText(android.R.string.ok)
                     .show() else adapter!!.notifyItemChanged(selectedItems!![0])
             }.show()
@@ -445,7 +487,12 @@ open class ContactDetailFragment : BaseFragment() {
                 path.text,
                 mainActivity!!.resources.getString(R.string.nonexistent_file)
             )
-            path.setTextColor(ContextCompat.getColor(requireContext(),android.R.color.holo_red_light))
+            path.setTextColor(
+                ContextCompat.getColor(
+                    requireContext(),
+                    android.R.color.holo_red_light
+                )
+            )
         }
         dialog.show()
     }

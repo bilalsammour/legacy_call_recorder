@@ -25,10 +25,9 @@ class ContactDetailActivity : BaseActivity() {
         setTheme()
         setContentView(R.layout.contact_detail_activity)
         val intent = intent
-        contact = if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
-            intent.getParcelableExtra(ContactsListFragment.ARG_CONTACT,Contact::class.java)
-        }
-        else {
+        contact = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            intent.getParcelableExtra(ContactsListFragment.ARG_CONTACT, Contact::class.java)
+        } else {
             intent.getParcelableExtra(ContactsListFragment.ARG_CONTACT)
         }
         insertFragment(R.id.contact_detail_fragment_container)

@@ -59,6 +59,7 @@ class SetupEulaFragment : Fragment() {
         })
 
     }
+
     private fun prepareUi(parentActivity: SetupActivity) {
         version = parentActivity.findViewById(R.id.app_version)
         version.text = String.format(

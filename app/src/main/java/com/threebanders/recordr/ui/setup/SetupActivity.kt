@@ -35,10 +35,8 @@ class SetupActivity : BaseActivity() {
         )
         insertFragment(R.id.setup_fragment_container)
 
-        // onBackPressed
-        onBackPressedDispatcher.addCallback(this , object : OnBackPressedCallback(true) {
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                // Back is pressed... Finishing the activity
                 cancelSetup()
             }
         })
@@ -50,9 +48,6 @@ class SetupActivity : BaseActivity() {
         setResult(RESULT_OK, intent)
         finish()
     }
-
-
-
 
     companion object {
         const val EXIT_APP = "exit_app"

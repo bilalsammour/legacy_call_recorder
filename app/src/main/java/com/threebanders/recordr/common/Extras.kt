@@ -42,7 +42,6 @@ import com.threebanders.recordr.ui.contact.ContactDetailFragment
 import com.threebanders.recordr.ui.contact.ContactsListActivityMain
 import com.threebanders.recordr.ui.help.HelpActivity
 import com.threebanders.recordr.ui.settings.SettingsActivity
-import com.threebanders.recordr.ui.setup.SetupActivity
 import core.threebanders.recordr.data.Recording
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -58,7 +57,6 @@ object Extras {
     const val PERMS_NOT_GRANTED = 2
     const val POWER_OPTIMIZED = 4
     const val SETUP_ARGUMENT = "setup_arg"
-    private const val ACCESSIBILITY_SETTINGS = 1991
 
     const val NOTIFICATION_ID = "1"
     const val NOTIFICATION_STRING = "notification"
@@ -80,7 +78,6 @@ object Extras {
         recordingsRecycler.adapter = recordingAdapter
     }
 
-    // TODO : Upload File to google drive
     fun uploadFileToGDrive(file: File, context: Context?) {
         try {
             CoroutineScope(Dispatchers.Main).launch {
@@ -187,7 +184,7 @@ object Extras {
             .show()
     }
 
-    @SuppressWarnings("deprecation")
+    @Suppress("DEPRECATION")
     fun isMyServiceRunning(context: Context, serviceClass: Class<*>): Boolean {
         val manager =
             context.getSystemService(AppCompatActivity.ACTIVITY_SERVICE) as ActivityManager
@@ -242,7 +239,6 @@ object Extras {
         }
     }
 
-    /* ---------------------------- PERMISSIONS EXTRAS ------------------------ */
     fun getPermissionsList(): Array<String> {
         return arrayOf(
             Manifest.permission.READ_PHONE_STATE,
@@ -290,18 +286,16 @@ object Extras {
         return pm.isIgnoringBatteryOptimizations(activity.packageName)
     }
 
-    // SHOW WARNING MESSAGE
-    fun warningDialog(parentActivity: SetupActivity?, onFinish: () -> Unit) {
-        MaterialDialog.Builder(parentActivity!!)
+    fun warningDialog(activity: FragmentActivity, onFinish: () -> Unit) {
+        MaterialDialog.Builder(activity)
             .title(R.string.warning_title)
             .content(R.string.optimization_still_active)
             .positiveText(android.R.string.ok)
-            .icon(ContextCompat.getDrawable(parentActivity, R.drawable.warning)!!)
+            .icon(ContextCompat.getDrawable(activity, R.drawable.warning)!!)
             .onPositive { _, _ -> onFinish.invoke() }
             .show()
     }
 
-    /* -------------------- Unassigned Fragment Prefs ------------------------ */
     fun getDataFromSharedPreferences(context: Context): List<Recording?>? {
         val gson = Gson()
         val productFromShared: List<Recording?>?

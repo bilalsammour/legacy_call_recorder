@@ -1,6 +1,5 @@
 package com.threebanders.recordr.receiver
 
-import android.annotation.SuppressLint
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -13,8 +12,7 @@ class UploadFileReceiver : BroadcastReceiver() {
     private var prevState = TelephonyManager.EXTRA_STATE_IDLE
 
     override fun onReceive(context: Context?, intent: Intent?) {
-
-        if(!intent?.action.equals("android.intent.action.PHONE_STATE") && !intent?.action.equals("android.intent.action.NEW_OUTGOING_CALL")){
+        if (!intent?.action.equals("android.intent.action.PHONE_STATE") && !intent?.action.equals("android.intent.action.NEW_OUTGOING_CALL")) {
             return
         }
 
@@ -29,5 +27,4 @@ class UploadFileReceiver : BroadcastReceiver() {
         }
         prevState = state
     }
-
 }

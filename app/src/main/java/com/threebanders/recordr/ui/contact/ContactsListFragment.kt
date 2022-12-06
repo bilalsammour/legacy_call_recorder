@@ -91,9 +91,9 @@ class ContactsListFragment : BaseFragment() {
             contactSlot.findViewById<View>(R.id.tablet_current_selection).visibility =
                 View.VISIBLE
             if (parentActivity!!.settledTheme == BaseActivity.LIGHT_THEME) contactSlot.setBackgroundColor(
-                ContextCompat.getColor(requireContext(),R.color.slotLightSelected)
+                ContextCompat.getColor(requireContext(), R.color.slotLightSelected)
             ) else contactSlot.setBackgroundColor(
-                ContextCompat.getColor(requireContext(),R.color.slotDarkSelected)
+                ContextCompat.getColor(requireContext(), R.color.slotDarkSelected)
             )
         }
     }
@@ -118,8 +118,13 @@ class ContactsListFragment : BaseFragment() {
         if (contactSlot != null) {
             contactSlot.findViewById<View>(R.id.tablet_current_selection).visibility = View.GONE
             if (parentActivity!!.settledTheme == BaseActivity.LIGHT_THEME) contactSlot.setBackgroundColor(
-                ContextCompat.getColor(requireContext(),R.color.slotLight)
-            ) else contactSlot.setBackgroundColor(ContextCompat.getColor(requireContext(),R.color.slotAndDetailHeaderDark))
+                ContextCompat.getColor(requireContext(), R.color.slotLight)
+            ) else contactSlot.setBackgroundColor(
+                ContextCompat.getColor(
+                    requireContext(),
+                    R.color.slotAndDetailHeaderDark
+                )
+            )
         }
     }
 

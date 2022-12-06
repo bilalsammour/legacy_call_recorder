@@ -8,8 +8,8 @@ import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.threebanders.recordr.R
-import com.threebanders.recordr.common.*
-import com.threebanders.recordr.ui.setup.SetupActivity
+import com.threebanders.recordr.common.DialogInfo
+import com.threebanders.recordr.common.Extras
 import core.threebanders.recordr.Core
 import core.threebanders.recordr.data.Contact
 import core.threebanders.recordr.data.Recording
@@ -86,9 +86,6 @@ class MainViewModel : ViewModel() {
         return null
     }
 
-    /* ------------------- CLEAN UP CODE --------------------*/
-
-    // TODO : Shared Prefs
     fun getPrefs(context: Context): List<Recording?>? {
         return Extras.getDataFromSharedPreferences(context)
     }
@@ -101,9 +98,8 @@ class MainViewModel : ViewModel() {
         return Extras.checkPermissions(context)
     }
 
-    // TODO : Show Warning Dialog
-    fun showWarningDialog(parentActivity: SetupActivity?, onFinish: () -> Unit) {
-        Extras.warningDialog(parentActivity, onFinish)
+    fun showWarningDialog(activity: FragmentActivity, onFinish: () -> Unit) {
+        Extras.warningDialog(activity, onFinish)
     }
 
     fun changeBatteryOptimization(fragmentActivity: FragmentActivity) {
