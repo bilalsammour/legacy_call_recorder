@@ -26,7 +26,7 @@ class UnassignedRecordingsFragment : ContactDetailFragment() {
         rootView = inflater.inflate(R.layout.unassigned_recordings_fragment, container, false)
 
         recordingsRecycler = rootView.findViewById(R.id.unassigned_recordings)
-        Extras.showRecyclerView(recordingsRecycler, baseActivity, requireContext(), adapter!!)
+        Extras.showRecyclerView(recordingsRecycler, baseActivity, adapter!!)
         record = Recorder(context)
 
         lifecycleScope.launch {

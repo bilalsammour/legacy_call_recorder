@@ -61,17 +61,15 @@ object Extras {
     const val NOTIFICATION_ID = "1"
     const val NOTIFICATION_STRING = "notification"
 
-    // TODO : SHOW RECYCLER
     fun showRecyclerView(
         recordingsRecycler: RecyclerView?,
-        baseActivity: BaseActivity?,
-        context: Context,
+        activity: BaseActivity?,
         recordingAdapter: ContactDetailFragment.RecordingAdapter
     ) {
-        recordingsRecycler!!.layoutManager = LinearLayoutManager(baseActivity)
+        recordingsRecycler!!.layoutManager = LinearLayoutManager(activity)
         recordingsRecycler.addItemDecoration(
             DividerItemDecoration(
-                context,
+                activity,
                 DividerItemDecoration.VERTICAL
             )
         )
