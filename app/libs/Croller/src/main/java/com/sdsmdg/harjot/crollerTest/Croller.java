@@ -21,7 +21,8 @@ public class Croller extends View {
     RectF oval;
     private float midx, midy;
     private Paint textPaint, circlePaint, circlePaint2, linePaint;
-    private float currdeg = 0, deg = 3, downdeg = 0;
+    private float deg = 3;
+    private float downdeg = 0;
     private boolean isContinuous = false;
     private int backCircleColor = Color.parseColor("#222222");
     private int mainCircleColor = Color.parseColor("#000000");
@@ -50,7 +51,6 @@ public class Croller extends View {
     private int labelColor = Color.WHITE;
     private int labelDisabledColor = Color.BLACK;
     private int startOffset = 30;
-    private int startOffset2 = 0;
     private int sweepAngle = -1;
     private boolean isEnabled = true;
     private boolean isAntiClockwise = false;
@@ -79,12 +79,7 @@ public class Croller extends View {
         this.mProgressChangeListener = mProgressChangeListener;
     }
 
-    public void setOnCrollerChangeListener(OnCrollerChangeListener mCrollerChangeListener) {
-        this.mCrollerChangeListener = mCrollerChangeListener;
-    }
-
     private void init() {
-
         textPaint = new Paint();
         textPaint.setAntiAlias(true);
         textPaint.setStyle(Paint.Style.FILL);
@@ -237,8 +232,8 @@ public class Croller extends View {
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
 
-        midx = getWidth() / 2;
-        midy = getHeight() / 2;
+        midx = getWidth() >> 1;
+        midy = getHeight() >> 1;
     }
 
     @Override
@@ -265,7 +260,7 @@ public class Croller extends View {
 
         if (!isContinuous) {
 
-            startOffset2 = startOffset - 15;
+            int startOffset2 = startOffset - 15;
 
             linePaint.setStrokeWidth(indicatorWidth);
             textPaint.setTextSize(labelSize);
@@ -408,7 +403,6 @@ public class Croller extends View {
 
     @Override
     public boolean onTouchEvent(MotionEvent e) {
-
         if (!isEnabled)
             return false;
 
@@ -441,7 +435,7 @@ public class Croller extends View {
         if (e.getAction() == MotionEvent.ACTION_MOVE) {
             float dx = e.getX() - midx;
             float dy = e.getY() - midy;
-            currdeg = (float) ((Math.atan2(dy, dx) * 180) / Math.PI);
+            float currdeg = (float) ((Math.atan2(dy, dx) * 180) / Math.PI);
             currdeg -= 90;
             if (currdeg < 0) {
                 currdeg += 360;
@@ -528,17 +522,9 @@ public class Croller extends View {
         invalidate();
     }
 
-    public String getLabel() {
-        return label;
-    }
-
     public void setLabel(String txt) {
         label = txt;
         invalidate();
-    }
-
-    public int getBackCircleColor() {
-        return backCircleColor;
     }
 
     public void setBackCircleColor(int backCircleColor) {
@@ -546,17 +532,9 @@ public class Croller extends View {
         invalidate();
     }
 
-    public int getMainCircleColor() {
-        return mainCircleColor;
-    }
-
     public void setMainCircleColor(int mainCircleColor) {
         this.mainCircleColor = mainCircleColor;
         invalidate();
-    }
-
-    public int getIndicatorColor() {
-        return indicatorColor;
     }
 
     public void setIndicatorColor(int indicatorColor) {
@@ -564,17 +542,9 @@ public class Croller extends View {
         invalidate();
     }
 
-    public int getProgressPrimaryColor() {
-        return progressPrimaryColor;
-    }
-
     public void setProgressPrimaryColor(int progressPrimaryColor) {
         this.progressPrimaryColor = progressPrimaryColor;
         invalidate();
-    }
-
-    public int getProgressSecondaryColor() {
-        return progressSecondaryColor;
     }
 
     public void setProgressSecondaryColor(int progressSecondaryColor) {
@@ -582,17 +552,9 @@ public class Croller extends View {
         invalidate();
     }
 
-    public int getBackCircleDisabledColor() {
-        return backCircleDisabledColor;
-    }
-
     public void setBackCircleDisabledColor(int backCircleDisabledColor) {
         this.backCircleDisabledColor = backCircleDisabledColor;
         invalidate();
-    }
-
-    public int getMainCircleDisabledColor() {
-        return mainCircleDisabledColor;
     }
 
     public void setMainCircleDisabledColor(int mainCircleDisabledColor) {
@@ -600,17 +562,9 @@ public class Croller extends View {
         invalidate();
     }
 
-    public int getIndicatorDisabledColor() {
-        return indicatorDisabledColor;
-    }
-
     public void setIndicatorDisabledColor(int indicatorDisabledColor) {
         this.indicatorDisabledColor = indicatorDisabledColor;
         invalidate();
-    }
-
-    public int getProgressPrimaryDisabledColor() {
-        return progressPrimaryDisabledColor;
     }
 
     public void setProgressPrimaryDisabledColor(int progressPrimaryDisabledColor) {
@@ -618,17 +572,9 @@ public class Croller extends View {
         invalidate();
     }
 
-    public int getProgressSecondaryDisabledColor() {
-        return progressSecondaryDisabledColor;
-    }
-
     public void setProgressSecondaryDisabledColor(int progressSecondaryDisabledColor) {
         this.progressSecondaryDisabledColor = progressSecondaryDisabledColor;
         invalidate();
-    }
-
-    public float getLabelSize() {
-        return labelSize;
     }
 
     public void setLabelSize(float labelSize) {
@@ -636,17 +582,9 @@ public class Croller extends View {
         invalidate();
     }
 
-    public int getLabelColor() {
-        return labelColor;
-    }
-
     public void setLabelColor(int labelColor) {
         this.labelColor = labelColor;
         invalidate();
-    }
-
-    public int getlabelDisabledColor() {
-        return labelDisabledColor;
     }
 
     public void setlabelDisabledColor(int labelDisabledColor) {
@@ -674,17 +612,9 @@ public class Croller extends View {
         invalidate();
     }
 
-    public float getIndicatorWidth() {
-        return indicatorWidth;
-    }
-
     public void setIndicatorWidth(float indicatorWidth) {
         this.indicatorWidth = indicatorWidth;
         invalidate();
-    }
-
-    public boolean isContinuous() {
-        return isContinuous;
     }
 
     public void setIsContinuous(boolean isContinuous) {
@@ -692,17 +622,9 @@ public class Croller extends View {
         invalidate();
     }
 
-    public float getProgressPrimaryCircleSize() {
-        return progressPrimaryCircleSize;
-    }
-
     public void setProgressPrimaryCircleSize(float progressPrimaryCircleSize) {
         this.progressPrimaryCircleSize = progressPrimaryCircleSize;
         invalidate();
-    }
-
-    public float getProgressSecondaryCircleSize() {
-        return progressSecondaryCircleSize;
     }
 
     public void setProgressSecondaryCircleSize(float progressSecondaryCircleSize) {
@@ -710,17 +632,9 @@ public class Croller extends View {
         invalidate();
     }
 
-    public float getProgressPrimaryStrokeWidth() {
-        return progressPrimaryStrokeWidth;
-    }
-
     public void setProgressPrimaryStrokeWidth(float progressPrimaryStrokeWidth) {
         this.progressPrimaryStrokeWidth = progressPrimaryStrokeWidth;
         invalidate();
-    }
-
-    public float getProgressSecondaryStrokeWidth() {
-        return progressSecondaryStrokeWidth;
     }
 
     public void setProgressSecondaryStrokeWidth(float progressSecondaryStrokeWidth) {
@@ -728,17 +642,9 @@ public class Croller extends View {
         invalidate();
     }
 
-    public int getSweepAngle() {
-        return sweepAngle;
-    }
-
     public void setSweepAngle(int sweepAngle) {
         this.sweepAngle = sweepAngle;
         invalidate();
-    }
-
-    public int getStartOffset() {
-        return startOffset;
     }
 
     public void setStartOffset(int startOffset) {
@@ -746,45 +652,16 @@ public class Croller extends View {
         invalidate();
     }
 
-    public int getMax() {
-        return max;
-    }
-
     public void setMax(int max) {
-        if (max < min) {
-            this.max = min;
-        } else {
-            this.max = max;
-        }
+        this.max = Math.max(max, min);
         invalidate();
-    }
-
-    public int getMin() {
-        return min;
     }
 
     public void setMin(int min) {
         if (min < 0) {
             this.min = 0;
-        } else if (min > max) {
-            this.min = max;
-        } else {
-            this.min = min;
-        }
+        } else this.min = Math.min(min, max);
         invalidate();
-    }
-
-    public float getMainCircleRadius() {
-        return mainCircleRadius;
-    }
-
-    public void setMainCircleRadius(float mainCircleRadius) {
-        this.mainCircleRadius = mainCircleRadius;
-        invalidate();
-    }
-
-    public float getBackCircleRadius() {
-        return backCircleRadius;
     }
 
     public void setBackCircleRadius(float backCircleRadius) {
@@ -792,17 +669,9 @@ public class Croller extends View {
         invalidate();
     }
 
-    public float getProgressRadius() {
-        return progressRadius;
-    }
-
     public void setProgressRadius(float progressRadius) {
         this.progressRadius = progressRadius;
         invalidate();
-    }
-
-    public boolean isAntiClockwise() {
-        return isAntiClockwise;
     }
 
     public void setAntiClockwise(boolean antiClockwise) {

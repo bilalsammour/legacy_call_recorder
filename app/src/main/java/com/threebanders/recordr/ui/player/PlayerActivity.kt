@@ -132,7 +132,7 @@ class PlayerActivity : BaseActivity() {
         gainControl.setOnProgressChangedListener { progress: Int -> player!!.setGain(progress.toFloat()) }
         volumeControl = findViewById(R.id.volume_control)
         if (audioManager != null) {
-            volumeControl.max = audioManager!!.getStreamMaxVolume(AudioManager.STREAM_MUSIC)
+            volumeControl.setMax(audioManager!!.getStreamMaxVolume(AudioManager.STREAM_MUSIC))
             phoneVolume = audioManager!!.getStreamVolume(AudioManager.STREAM_MUSIC)
             volumeControl.progress = phoneVolume
         }
