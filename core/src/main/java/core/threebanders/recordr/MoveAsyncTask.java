@@ -3,9 +3,6 @@ package core.threebanders.recordr;
 import android.app.Activity;
 import android.os.AsyncTask;
 
-import androidx.annotation.NonNull;
-
-import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 
 import java.lang.ref.WeakReference;
@@ -39,12 +36,7 @@ public class MoveAsyncTask extends AsyncTask<Recording, Integer, Boolean> {
                 .content("Moving recordings&#8230;")
                 .progress(false, 100, true)
                 .negativeText("Cancel")
-                .onNegative(new MaterialDialog.SingleButtonCallback() {
-                    @Override
-                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        cancel(true);
-                    }
-                })
+                .onNegative((dialog, which) -> cancel(true))
                 .build();
         dialog.setCancelable(false);
         dialog.show();
