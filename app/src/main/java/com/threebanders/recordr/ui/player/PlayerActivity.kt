@@ -146,7 +146,7 @@ class PlayerActivity : BaseActivity() {
         recordingInfo = findViewById(R.id.recording_info)
         recordingInfo.text = String.format(
             resources.getString(R.string.recording_info),
-            recording!!.name, recording!!.getHumanReadingFormat(applicationContext)
+            recording!!.name, recording!!.getHumanReadingFormat()
         )
 
         happy = findViewById(R.id.happy)

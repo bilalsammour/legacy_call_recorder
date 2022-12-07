@@ -1,27 +1,14 @@
 package core.threebanders.recordr.data;
 
-import android.content.Context;
-import android.content.res.Resources;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import androidx.annotation.Nullable;
-
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 import java.util.Objects;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import core.threebanders.recordr.MoveAsyncTask;
 
 public class Recording implements Parcelable {
     public static final Creator<Recording> CREATOR = new Creator<Recording>() {
@@ -35,6 +22,7 @@ public class Recording implements Parcelable {
             return new Recording[size];
         }
     };
+
     private Long id = 0L;
     private Long contactId;
     private String path;
@@ -75,19 +63,8 @@ public class Recording implements Parcelable {
         this.source = in.readString();
     }
 
-    public static boolean hasIllegalChar(CharSequence fileName) {
-        Pattern pattern = Pattern.compile("[^a-zA-Z0-9.\\- ]");
-        Matcher matcher = pattern.matcher(fileName);
-        return matcher.find();
-    }
-
     public boolean exists() {
         return new File(path).isFile();
-    }
-
-    public boolean isSavedInPrivateSpace(Context context) {
-        return new File(path).getParentFile().
-                compareTo(context.getFilesDir()) == 0;
     }
 
     public long getLength() {
@@ -126,41 +103,19 @@ public class Recording implements Parcelable {
     }
 
     public String getTime() {
-        return new SimpleDateFormat("h:mm a", Locale.US).format(new Date(startTimestamp)); //3:45 PM
+        return new SimpleDateFormat("h:mm a", Locale.US).format(new Date(startTimestamp));
     }
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     public void delete(Repository repository) throws SecurityException {
         repository.deleteRecording(this);
+
         new File(path).delete();
     }
 
-    public void move(Repository repository, String folderPath, @Nullable MoveAsyncTask asyncTask, long totalSize)
-            throws IOException {
-        String fileName = new File(path).getName();
-        InputStream in = new FileInputStream(path);
-        OutputStream out = new FileOutputStream(new File(folderPath, fileName));
-
-        byte[] buffer = new byte[1048576]; //dacă folosesc 1024 merge foarte încet
-        int read;
-        while ((read = in.read(buffer)) != -1) {
-            out.write(buffer, 0, read);
-            if (asyncTask != null) {
-                asyncTask.alreadyCopied += read;
-                asyncTask.callPublishProgress(Math.round(100 * asyncTask.alreadyCopied / totalSize));
-                if (asyncTask.isCancelled())
-                    break;
-            }
-        }
-        in.close();
-        out.flush();
-        new File(path).delete();
-        path = new File(folderPath, fileName).getAbsolutePath();
-        repository.updateRecording(this);
-    }
-
-    public String getHumanReadingFormat(Context context) {
+    public String getHumanReadingFormat() {
         final int wavBitrate = 705, aacHighBitrate = 128, aacMedBitrate = 64, aacBasBitrate = 32;
-        Resources res = context.getResources();
+
         switch (format) {
             case "wav":
                 return "Lossless quality" + " (WAV), 44khz 16bit WAV " + (mode.equals("mono") ? wavBitrate : wavBitrate * 2)
@@ -222,10 +177,6 @@ public class Recording implements Parcelable {
         return contactId;
     }
 
-    public void setContactId(long contactId) {
-        this.contactId = contactId;
-    }
-
     public void setContactId(Long contactId) {
         this.contactId = contactId;
     }
@@ -262,9 +213,6 @@ public class Recording implements Parcelable {
         this.mode = mode;
     }
 
-    /**
-     * Necesară pentru comparațiile din teste.
-     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
