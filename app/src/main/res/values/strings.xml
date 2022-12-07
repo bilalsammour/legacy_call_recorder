@@ -78,8 +78,6 @@
     <string name="edit_photo_remove">Remove photo</string>
     <string name="edit_photo_select_new">Select new photo</string>
     <string name="edit_photo_take">Take new photo</string>
-    <string name="storage_options_move_private">Move to private application storage</string>
-    <string name="storage_options_move_public">Move to public storage</string>
     <string name="settings_storage_names_private">Private (files are visible only to this app)</string>
     <string name="settings_storage_names_public">Public (files are visible to all apps)</string>
     <string name="settings_theme_dark">Dark</string>
@@ -163,7 +161,5 @@
     <string name="time_zero">00:00</string>
     <string name="uploading">Uploading</string>
     <string name="uploading_file_to_google_drive">Uploading File to google drive</string>
-    <string name="private_storage_selected">Private Storage Selected</string>
-    <string name="public_storage_selected">Public Storage Selected</string>
 
 </resources>

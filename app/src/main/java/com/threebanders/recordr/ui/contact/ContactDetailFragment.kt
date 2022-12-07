@@ -7,7 +7,6 @@ import android.os.Bundle
 import android.provider.CallLog
 import android.text.InputType
 import android.view.*
-import android.view.ContextMenu.ContextMenuInfo
 import android.view.View.OnLongClickListener
 import android.widget.*
 import androidx.appcompat.widget.Toolbar
@@ -28,7 +27,6 @@ import com.threebanders.recordr.ui.BaseFragment
 import com.threebanders.recordr.ui.MainViewModel
 import com.threebanders.recordr.ui.player.PlayerActivity
 import core.threebanders.recordr.CoreUtil
-import core.threebanders.recordr.CrLog
 import core.threebanders.recordr.data.Contact
 import core.threebanders.recordr.data.Recording
 import core.threebanders.recordr.recorder.Recorder
@@ -353,10 +351,18 @@ open class ContactDetailFragment : BaseFragment() {
             }
         } else {
             deselectRecording(recording)
-            if (!exists) selectedItemsDeleted--
-            if (selectedItemsDeleted == 0) enableMoveBtn()
+            if (!exists) {
+                selectedItemsDeleted--
+            }
+            if (selectedItemsDeleted == 0) {
+                enableMoveBtn()
+            }
         }
-        if (selectedItems!!.isEmpty()) clearSelectMode() else toggleTitle()
+        if (selectedItems!!.isEmpty()) {
+            clearSelectMode()
+        } else {
+            toggleTitle()
+        }
     }
 
     private val selectedRecordings: List<Recording?>
@@ -406,10 +412,6 @@ open class ContactDetailFragment : BaseFragment() {
                 null, false
             ) { _: MaterialDialog, input: CharSequence ->
                 if (selectedItems!!.size != 1) {
-                    CrLog.log(
-                        CrLog.WARN,
-                        "Calling onRenameClick when multiple recordings are selected"
-                    )
                     return@input
                 }
                 val result = mainViewModel.renameRecording(input, selectedRecordings[0])
@@ -461,7 +463,6 @@ open class ContactDetailFragment : BaseFragment() {
             .customView(R.layout.info_dialog, false)
             .positiveText(android.R.string.ok).build()
 
-        //There should be only one if we are here:
         if (selectedItems!!.size != 1) {
             return
         }
@@ -496,7 +497,6 @@ open class ContactDetailFragment : BaseFragment() {
         }
         dialog.show()
     }
-
 
     protected open fun setDetailsButtonsListeners() {
         val navigateBack = mainActivity!!.findViewById<ImageButton>(R.id.navigate_back)
@@ -562,27 +562,6 @@ open class ContactDetailFragment : BaseFragment() {
         deleteBtn.setOnClickListener { onDeleteSelectedRecordings() }
         val infoBtn = mainActivity!!.findViewById<ImageButton>(R.id.actionbar_info)
         infoBtn.setOnClickListener { onRecordingInfo() }
-    }
-
-
-    override fun onCreateContextMenu(menu: ContextMenu, v: View, menuInfo: ContextMenuInfo?) {
-        baseActivity?.menuInflater?.inflate(R.menu.storage_chooser_options, menu)
-    }
-
-    override fun onContextItemSelected(item: MenuItem): Boolean {
-        val textRes: Int = when (item.itemId) {
-            R.id.private_storage -> R.string.private_storage_selected
-            R.id.public_storage -> R.string.public_storage_selected
-            else -> R.string.app_name
-        }
-
-        Toast.makeText(
-            baseActivity?.baseContext,
-            getString(textRes),
-            Toast.LENGTH_SHORT
-        ).show()
-
-        return false
     }
 
     inner class RecordingHolder(inflater: LayoutInflater, parent: ViewGroup?) :
