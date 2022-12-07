@@ -97,6 +97,10 @@ class MainViewModel : ViewModel() {
         Extras.setDataFromSharedPreferences(context, list)
     }
 
+    fun requestAllPermissions(activity: FragmentActivity) {
+        Extras.requestAllPermissions(activity)
+    }
+
     fun checkPermissions(context: Context): Boolean {
         return Extras.checkPermissions(context)
     }

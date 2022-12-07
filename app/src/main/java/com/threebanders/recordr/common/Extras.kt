@@ -17,6 +17,7 @@ import android.provider.Settings
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
@@ -52,6 +53,7 @@ import java.lang.reflect.Type
 import kotlin.random.Random
 
 object Extras {
+    private const val PERMISSION_REQUEST_CODE = 1001
     const val HAS_ACCEPTED_EULA = "has_accepted_eula"
     const val EULA_NOT_ACCEPTED = 1
     const val PERMS_NOT_GRANTED = 2
@@ -237,13 +239,19 @@ object Extras {
         }
     }
 
-    fun getPermissionsList(): Array<String> {
+    fun requestAllPermissions(activity: FragmentActivity) {
+        ActivityCompat.requestPermissions(
+            activity,
+            getPermissionsList(),
+            PERMISSION_REQUEST_CODE
+        )
+    }
+
+    private fun getPermissionsList(): Array<String> {
         return arrayOf(
             Manifest.permission.READ_PHONE_STATE,
             Manifest.permission.RECORD_AUDIO,
             Manifest.permission.READ_CONTACTS,
-            Manifest.permission.READ_EXTERNAL_STORAGE,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE,
             Manifest.permission.READ_CALL_LOG
         )
     }
@@ -252,11 +260,9 @@ object Extras {
         val phoneState = createPermission(Manifest.permission.READ_PHONE_STATE, context)
         val recordAudio = createPermission(Manifest.permission.RECORD_AUDIO, context)
         val readContacts = createPermission(Manifest.permission.READ_CONTACTS, context)
-        val readStorage = createPermission(Manifest.permission.READ_EXTERNAL_STORAGE, context)
-        val writeStorage = createPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE, context)
         val readCallsLog = createPermission(Manifest.permission.READ_CALL_LOG, context)
 
-        return phoneState && recordAudio && readContacts && readStorage && writeStorage && readCallsLog
+        return phoneState && recordAudio && readContacts && readCallsLog
     }
 
     private fun createPermission(permission: String, context: Context): Boolean {
