@@ -59,7 +59,6 @@ class UnassignedRecordingsFragment : ContactDetailFragment() {
 
     public override fun toggleSelectModeActionBar(animate: Boolean) {
         val closeBtn = baseActivity?.findViewById<ImageButton>(R.id.close_select_mode)
-        val moveBtn = baseActivity?.findViewById<ImageButton>(R.id.actionbar_select_move)
         val selectAllBtn =
             baseActivity?.findViewById<ImageButton>(R.id.actionbar_select_all)
         val infoBtn = baseActivity?.findViewById<ImageButton>(R.id.actionbar_info)
@@ -73,10 +72,6 @@ class UnassignedRecordingsFragment : ContactDetailFragment() {
             hideView(menuRightBtn!!, animate)
         }
         if (selectMode) showView(closeBtn, animate) else hideView(closeBtn, animate)
-        if (selectMode) showView(moveBtn, animate) else hideView(moveBtn, animate)
-        if (selectMode) {
-            if (checkIfSelectedRecordingsDeleted()) disableMoveBtn() else enableMoveBtn()
-        }
         if (selectMode) showView(selectAllBtn, animate) else hideView(selectAllBtn, animate)
         if (selectMode) showView(infoBtn, animate) else hideView(infoBtn, animate)
         if (selectMode) showView(menuRightSelectedBtn, animate) else hideView(
@@ -106,10 +101,6 @@ class UnassignedRecordingsFragment : ContactDetailFragment() {
             )
             popupMenu.setOnMenuItemClickListener { item: MenuItem ->
                 when (item.itemId) {
-                    R.id.rename_recording -> {
-                        onRenameRecording()
-                        return@setOnMenuItemClickListener true
-                    }
                     R.id.delete_recording -> {
                         onDeleteSelectedRecordings()
                         return@setOnMenuItemClickListener true
@@ -119,23 +110,13 @@ class UnassignedRecordingsFragment : ContactDetailFragment() {
             }
             val inflater = popupMenu.menuInflater
             inflater.inflate(R.menu.recording_selected_popup, popupMenu.menu)
-            val renameMenuItem = popupMenu.menu.findItem(R.id.rename_recording)
-            val recording = (recordingsRecycler!!.adapter as RecordingAdapter?)!!.getItem(
+            (recordingsRecycler!!.adapter as RecordingAdapter?)!!.getItem(
                 selectedItems!![0]
             )
 
-            if (selectedItems!!.size > 1 || !recording.exists()) {
-                renameMenuItem.isEnabled = false
-            }
-
             popupMenu.show()
         }
-        val moveBtn = baseActivity!!.findViewById<ImageButton>(R.id.actionbar_select_move)
-        registerForContextMenu(moveBtn)
 
-        moveBtn.setOnClickListener { obj: View ->
-            obj.showContextMenu()
-        }
         val selectAllBtn =
             baseActivity?.findViewById<ImageButton>(R.id.actionbar_select_all)
         selectAllBtn!!.setOnClickListener { onSelectAll() }

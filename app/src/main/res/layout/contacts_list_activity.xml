@@ -58,19 +58,6 @@
                 android:src="@drawable/baseline_more_vert_white_24"
                 android:visibility="gone" />
 
-
-            <ImageButton
-                android:id="@+id/actionbar_select_move"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="end"
-                android:layout_marginEnd="20dp"
-                android:alpha="0"
-                android:background="@android:color/transparent"
-                android:contentDescription="@string/app_name"
-                android:src="@drawable/select_export"
-                android:visibility="gone" />
-
             <ImageButton
                 android:id="@+id/actionbar_select_all"
                 android:layout_width="wrap_content"

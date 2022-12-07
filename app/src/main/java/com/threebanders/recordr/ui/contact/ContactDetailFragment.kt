@@ -5,7 +5,6 @@ import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.provider.CallLog
-import android.text.InputType
 import android.view.*
 import android.view.View.OnLongClickListener
 import android.widget.*
@@ -162,7 +161,6 @@ open class ContactDetailFragment : BaseFragment() {
     protected open fun toggleSelectModeActionBar(animate: Boolean) {
         val navigateBackBtn = mainActivity!!.findViewById<ImageButton>(R.id.navigate_back)
         val closeBtn = mainActivity!!.findViewById<ImageButton>(R.id.close_select_mode)
-        val moveBtn = mainActivity!!.findViewById<ImageButton>(R.id.actionbar_select_move)
         val selectAllBtn = mainActivity!!.findViewById<ImageButton>(R.id.actionbar_select_all)
         val infoBtn = mainActivity!!.findViewById<ImageButton>(R.id.actionbar_info)
         val menuRightBtn = mainActivity!!.findViewById<ImageButton>(R.id.contact_detail_menu)
@@ -179,18 +177,6 @@ open class ContactDetailFragment : BaseFragment() {
             showView(closeBtn, animate)
         } else {
             hideView(closeBtn, animate)
-        }
-        if (selectMode) {
-            showView(moveBtn, animate)
-        } else {
-            hideView(moveBtn, animate)
-        }
-        if (selectMode) {
-            if (checkIfSelectedRecordingsDeleted()) {
-                disableMoveBtn()
-            } else {
-                enableMoveBtn()
-            }
         }
         if (selectMode) {
             showView(selectAllBtn, animate)
@@ -325,18 +311,6 @@ open class ContactDetailFragment : BaseFragment() {
         checkBox.isChecked = false
     }
 
-    protected fun enableMoveBtn() {
-        val moveBtn = mainActivity!!.findViewById<ImageButton>(R.id.actionbar_select_move)
-        moveBtn.isEnabled = true
-        moveBtn.imageAlpha = 255
-    }
-
-    protected fun disableMoveBtn() {
-        val moveBtn = mainActivity!!.findViewById<ImageButton>(R.id.actionbar_select_move)
-        moveBtn.isEnabled = false
-        moveBtn.imageAlpha = 75
-    }
-
     private fun redrawRecordings() {
         for (i in 0 until adapter!!.itemCount) adapter!!.notifyItemChanged(i)
     }
@@ -347,15 +321,11 @@ open class ContactDetailFragment : BaseFragment() {
             selectRecording(recording)
             if (!exists) {
                 selectedItemsDeleted++
-                disableMoveBtn()
             }
         } else {
             deselectRecording(recording)
             if (!exists) {
                 selectedItemsDeleted--
-            }
-            if (selectedItemsDeleted == 0) {
-                enableMoveBtn()
             }
         }
         if (selectedItems!!.isEmpty()) {
@@ -374,15 +344,9 @@ open class ContactDetailFragment : BaseFragment() {
 
     private fun removeIfPresentInSelectedItems(adapterPosition: Int): Boolean {
         return if (selectedItems!!.contains(adapterPosition)) {
-            selectedItems!!.remove(adapterPosition) //fără casting îl interpretează ca poziție
-            //în selectedItems
+            selectedItems!!.remove(adapterPosition)
             true
         } else false
-    }
-
-    protected fun checkIfSelectedRecordingsDeleted(): Boolean {
-        for (recording in selectedRecordings) if (!recording!!.exists()) return true
-        return false
     }
 
     private fun onShowStorageInfo() {
@@ -401,27 +365,6 @@ open class ContactDetailFragment : BaseFragment() {
         val publicStorage = dialog.view.findViewById<TextView>(R.id.info_storage_public_data)
         publicStorage.text = CoreUtil.getFileSizeHuman(sizePublic)
         dialog.show()
-    }
-
-    protected fun onRenameRecording() {
-        MaterialDialog.Builder(mainActivity!!)
-            .title(R.string.rename_recording_title)
-            .inputType(InputType.TYPE_CLASS_TEXT)
-            .input(
-                mainActivity!!.resources.getString(R.string.rename_recording_input_text),
-                null, false
-            ) { _: MaterialDialog, input: CharSequence ->
-                if (selectedItems!!.size != 1) {
-                    return@input
-                }
-                val result = mainViewModel.renameRecording(input, selectedRecordings[0])
-                if (result != null) MaterialDialog.Builder(mainActivity!!)
-                    .title(result.title)
-                    .content(result.message)
-                    .icon(ResourcesCompat.getDrawable(resources, result.icon, null)!!)
-                    .positiveText(android.R.string.ok)
-                    .show() else adapter!!.notifyItemChanged(selectedItems!![0])
-            }.show()
     }
 
     protected fun onSelectAll() {
@@ -533,27 +476,15 @@ open class ContactDetailFragment : BaseFragment() {
             )
             popupMenu.setOnMenuItemClickListener { item: MenuItem ->
                 when (item.itemId) {
-                    R.id.rename_recording -> {
-                        onRenameRecording()
-                        return@setOnMenuItemClickListener true
-                    }
                     else -> return@setOnMenuItemClickListener false
                 }
             }
             val inflater = popupMenu.menuInflater
             inflater.inflate(R.menu.recording_selected_popup, popupMenu.menu)
-            val renameMenuItem = popupMenu.menu.findItem(R.id.rename_recording)
-            val recording = (recordingsRecycler!!.adapter as RecordingAdapter?)!!.getItem(
+            (recordingsRecycler!!.adapter as RecordingAdapter?)!!.getItem(
                 selectedItems!![0]
             )
-            if (selectedItems!!.size > 1 || !recording.exists()) renameMenuItem.isEnabled = false
             popupMenu.show()
-        }
-        val moveBtn = mainActivity!!.findViewById<ImageButton>(R.id.actionbar_select_move)
-        registerForContextMenu(moveBtn)
-
-        moveBtn.setOnClickListener { obj: View ->
-            obj.showContextMenu()
         }
 
         val selectAllBtn = mainActivity!!.findViewById<ImageButton>(R.id.actionbar_select_all)

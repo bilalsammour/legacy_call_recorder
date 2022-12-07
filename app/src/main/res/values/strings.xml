@@ -15,12 +15,10 @@
     <string name="discard_edit_message">Discard your changes?</string>
     <string name="delete_recording_confirm_title">Delete recordings</string>
     <string name="delete_recording_confirm_message" tools:ignore="PluralsCandidate">Delete %1$d recording(s)? This action cannot be undone.</string>
-    <string name="move_heading">Choose where to move the selected recording(s).</string>
     <string name="make_system_title">Make %1$s app</string>
     <string name="number_invalid_message">This phone number is not valid.</string>
     <string name="number_exists_message">This phone number already exists in the application\'s database.</string>
     <string name="delete_recording_popup_text">Delete</string>
-    <string name="rename_recording_popup_text">Rename</string>
     <string name="storage_info">Storage info</string>
     <string name="exit_app_title">Confirm</string>
     <string name="exit_app_message">Exit the application?</string>
@@ -29,10 +27,6 @@
     <string name="huawei_protected_title">Huawei Protected Apps</string>
     <string name="huawei_protected_message">"%s requires to be enabled in 'Protected Apps' to function properly.%n</string>
     <string name="audio_file_missing">Cannot find the audio file</string>
-    <string name="rename_recording_title">Rename recording</string>
-    <string name="rename_recording_input_text">Enter new recording name</string>
-    <string name="rename_illegal_chars">The recording name you entered contains illegal characters. The recording was not renamed</string>
-    <string name="rename_already_used">This file name is already used. The recording was not renamed.</string>
     <string name="error_title">Error</string>
     <string name="rename_error">An error occurred while renaming the recording.</string>
     <string name="recording_info_title">Recording info</string>
@@ -44,13 +38,8 @@
     <string name="bas_quality">Basic quality</string>
     <string name="private_storage">Private application storage</string>
     <string name="nonexistent_file">\n(The file does not exist)</string>
-    <string name="move_destination_same">The specified destination directory is the same with the current directory of one of the selected recordings. No recordings were moved.</string>
     <string name="progress_title">Progress</string>
     <string name="progress_text">Moving recordings&#8230;</string>
-    <string name="canceled_move">The move was canceled. Some files might be corrupted or missing.</string>
-    <string name="success_move_title">Success</string>
-    <string name="success_move_text">The recording(s) were successfully moved.</string>
-    <string name="error_move">An error occurred while moving the recording(s). Some files might be corrupted or missing.</string>
     <string name="playing">Playing </string>
     <string name="recording_speaker_off">Recording&#8230; (speaker off)</string>
     <string name="start_speaker">Start speaker</string>

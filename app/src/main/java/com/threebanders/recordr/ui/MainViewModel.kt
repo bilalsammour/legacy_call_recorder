@@ -15,7 +15,6 @@ import core.threebanders.recordr.Core
 import core.threebanders.recordr.data.Contact
 import core.threebanders.recordr.data.Recording
 import core.threebanders.recordr.data.Repository
-import java.io.File
 
 class MainViewModel : ViewModel() {
     private val repository: Repository = Core.getRepository()
@@ -58,33 +57,6 @@ class MainViewModel : ViewModel() {
                     R.drawable.error
                 )
             }
-        }
-        return null
-    }
-
-    fun renameRecording(input: CharSequence, recording: Recording?): DialogInfo? {
-        if (Recording.hasIllegalChar(input)) return DialogInfo(
-            R.string.information_title,
-            R.string.rename_illegal_chars,
-            R.drawable.info
-        )
-        val parent = File(recording!!.path).parent
-        val oldFileName = File(recording.path).name
-        val ext = oldFileName.substring(oldFileName.length - 3)
-        val newFileName = "$input.$ext"
-        if (File(parent, newFileName).exists()) return DialogInfo(
-            R.string.information_title,
-            R.string.rename_already_used,
-            R.drawable.info
-        )
-        try {
-            if (File(recording.path).renameTo(File(parent, newFileName))) {
-                recording.path = File(parent, newFileName).absolutePath
-                recording.isNameSet = true
-                recording.update(repository)
-            } else throw Exception("File.renameTo() has returned false.")
-        } catch (e: Exception) {
-            return DialogInfo(R.string.error_title, R.string.rename_error, R.drawable.error)
         }
         return null
     }
