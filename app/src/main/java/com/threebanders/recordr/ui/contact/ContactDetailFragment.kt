@@ -349,24 +349,6 @@ open class ContactDetailFragment : BaseFragment() {
         } else false
     }
 
-    private fun onShowStorageInfo() {
-        var sizePrivate: Long = 0
-        var sizePublic: Long = 0
-        for (recording in adapter!!.getRecordings()) {
-            val size = File(recording!!.path).length()
-            if (recording.isSavedInPrivateSpace(mainActivity)) sizePrivate += size else sizePublic += size
-        }
-        val dialog = MaterialDialog.Builder(mainActivity!!)
-            .title(R.string.storage_info)
-            .customView(R.layout.info_storage_dialog, false)
-            .positiveText(android.R.string.ok).build()
-        val privateStorage = dialog.view.findViewById<TextView>(R.id.info_storage_private_data)
-        privateStorage.text = CoreUtil.getFileSizeHuman(sizePrivate)
-        val publicStorage = dialog.view.findViewById<TextView>(R.id.info_storage_public_data)
-        publicStorage.text = CoreUtil.getFileSizeHuman(sizePublic)
-        dialog.show()
-    }
-
     protected fun onSelectAll() {
         val notSelected: MutableList<Int> = ArrayList()
         for (i in 0 until adapter!!.itemCount) notSelected.add(i)
@@ -423,8 +405,7 @@ open class ContactDetailFragment : BaseFragment() {
         val length = dialog.view.findViewById<TextView>(R.id.info_length_data)
         length.text = CoreUtil.getDurationHuman(recording.length, true)
         val path = dialog.view.findViewById<TextView>(R.id.info_path_data)
-        path.text =
-            if (recording.isSavedInPrivateSpace(mainActivity)) mainActivity!!.resources.getString(R.string.private_storage) else recording.path
+
         if (!recording.exists()) {
             path.text = String.format(
                 "%s%s",
@@ -455,17 +436,11 @@ open class ContactDetailFragment : BaseFragment() {
             )
             popupMenu.setOnMenuItemClickListener { item: MenuItem ->
                 when (item.itemId) {
-                    R.id.storage_info -> {
-                        onShowStorageInfo()
-                        return@setOnMenuItemClickListener false
-                    }
                     else -> return@setOnMenuItemClickListener false
                 }
             }
-            val inflater = popupMenu.menuInflater
-            inflater.inflate(R.menu.contact_popup, popupMenu.menu)
-            popupMenu.show()
         }
+
         val closeBtn = mainActivity!!.findViewById<ImageButton>(R.id.close_select_mode)
         closeBtn.setOnClickListener { clearSelectMode() }
         val menuButtonSelectOn =
@@ -537,9 +512,6 @@ open class ContactDetailFragment : BaseFragment() {
     inner class RecordingAdapter internal constructor(private var recordings: MutableList<Recording>) :
         RecyclerView.Adapter<RecordingHolder>() {
         private var contactList: List<Contact?>? = null
-        fun getRecordings(): List<Recording?> {
-            return recordings
-        }
 
         fun replaceData(recordings: MutableList<Recording>, contactList: List<Contact>) {
             this.recordings = recordings

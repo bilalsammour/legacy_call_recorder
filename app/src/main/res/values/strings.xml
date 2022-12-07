@@ -19,7 +19,6 @@
     <string name="number_invalid_message">This phone number is not valid.</string>
     <string name="number_exists_message">This phone number already exists in the application\'s database.</string>
     <string name="delete_recording_popup_text">Delete</string>
-    <string name="storage_info">Storage info</string>
     <string name="exit_app_title">Confirm</string>
     <string name="exit_app_message">Exit the application?</string>
     <string name="warning_title">Warning</string>
@@ -28,7 +27,6 @@
     <string name="huawei_protected_message">"%s requires to be enabled in 'Protected Apps' to function properly.%n</string>
     <string name="audio_file_missing">Cannot find the audio file</string>
     <string name="error_title">Error</string>
-    <string name="rename_error">An error occurred while renaming the recording.</string>
     <string name="recording_info_title">Recording info</string>
     <string name="recordings_info_title">Recordings info</string>
     <string name="recordings_info_text">Total size: %s \n\nTo get detailed info about a specific recording you must select only that recording. </string>
@@ -36,10 +34,8 @@
     <string name="hi_quality">High quality</string>
     <string name="med_quality">Medium quality</string>
     <string name="bas_quality">Basic quality</string>
-    <string name="private_storage">Private application storage</string>
     <string name="nonexistent_file">\n(The file does not exist)</string>
     <string name="progress_title">Progress</string>
-    <string name="progress_text">Moving recordings&#8230;</string>
     <string name="playing">Playing </string>
     <string name="recording_speaker_off">Recording&#8230; (speaker off)</string>
     <string name="start_speaker">Start speaker</string>
@@ -48,7 +44,6 @@
     <string name="recording_answer_call">Recording will begin when you answer the call.</string>
     <string name="start_recording_notification">Start recording</string>
     <string name="start_recording_notification_text">Press \"Start recording\" to begin recording.</string>
-    <string name="choose_recordings_storage">Choose where to store recordings</string>
     <string name="no_recordings">No recordings are currently associated with this contact</string>
     <string name="no_contacts">There are currently no contacts.</string>
     <string name="edit_contact_name">Contact name:</string>
@@ -58,24 +53,18 @@
     <string name="info_dialog_duration">Duration: </string>
     <string name="info_dialog_size">Size: </string>
     <string name="info_dialog_format">Format: </string>
-    <string name="info_dialog_location">Location: </string>
-    <string name="info_storage_private">Private space:&#160;</string>
-    <string name="info_storage_public">Public filesystem:&#160;</string>
     <string name="settings_name">Settings</string>
     <string name="about_name">About</string>
     <string name="share">Share</string>
     <string name="edit_photo_remove">Remove photo</string>
     <string name="edit_photo_select_new">Select new photo</string>
     <string name="edit_photo_take">Take new photo</string>
-    <string name="settings_storage_names_private">Private (files are visible only to this app)</string>
-    <string name="settings_storage_names_public">Public (files are visible to all apps)</string>
     <string name="settings_theme_dark">Dark</string>
     <string name="settings_theme_light">Light</string>
     <string name="auth_record_priv_title">Hidden numbers calls</string>
     <string name="auth_record_priv_sum">Automatically record calls from hidden numbers</string>
     <string name="enabled_title">Record calls</string>
     <string name="enabled_sum">Call recording enabled</string>
-    <string name="prefs_storage_title">Recordings storage</string>
     <string name="prefs_speaker_title">Speaker use</string>
     <string name="prefs_speaker_sum">Put device on speaker while recording calls</string>
     <string name="prefs_format_title">Recording format</string>
@@ -123,7 +112,6 @@
     <string name="no_unassigned">There are no unassigned recordings.</string>
     <string name="unknown_number">Unknown phone number</string>
     <string name="assign_contact_popup_text">Assign to phone contact</string>
-    <string name="assign_private_popup_text">Assign to hidden phone number</string>
     <string name="assign_to_contact_ok">The recording(s) were successfully assigned to contact.</string>
     <string name="assign_to_contact_err">An error occurred while assigning the recording(s) to contact.</string>
     <string name="assign_to_same_contact">You cannot assign the recording to the same contact.</string>
@@ -140,9 +128,7 @@
     <string name="accessibility_service_description">RECORDR details</string>
     <string name="prefs_google_drive">Google drive use</string>
     <string name="prefs_google_drive_sum">Put Sync on Google drive</string>
-    <string name="google_drive_successfully">Backup upload successfully</string>
     <string name="signed_out">Signed Out</string>
-    <string name="recordings_associated">The recordings associated with this contact consume storage as follows:</string>
     <string name="missed_by">Missed by</string>
     <string name="did_you_like_the_recording">Did you like the recording?</string>
     <string name="happy">Happy</string>

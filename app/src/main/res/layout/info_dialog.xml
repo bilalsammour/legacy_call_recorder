@@ -124,13 +124,6 @@
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/info_path_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/info_dialog_location"
-            android:textStyle="bold" />
-
-        <TextView
             android:id="@+id/info_path_data"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
