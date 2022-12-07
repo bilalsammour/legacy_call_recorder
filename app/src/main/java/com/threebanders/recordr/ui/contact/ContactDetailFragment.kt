@@ -401,7 +401,7 @@ open class ContactDetailFragment : BaseFragment() {
         val source = dialog.view.findViewById<TextView>(R.id.info_source_data)
         source.text = recording.source
         val format = dialog.view.findViewById<TextView>(R.id.info_format_data)
-        format.text = recording.getHumanReadingFormat()
+        format.text = recording.humanReadingFormat
         val length = dialog.view.findViewById<TextView>(R.id.info_length_data)
         length.text = CoreUtil.getDurationHuman(recording.length, true)
         val path = dialog.view.findViewById<TextView>(R.id.info_path_data)

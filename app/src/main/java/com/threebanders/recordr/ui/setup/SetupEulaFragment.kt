@@ -16,7 +16,7 @@ import com.threebanders.recordr.common.Extras
 import com.threebanders.recordr.ui.MainViewModel
 
 class SetupEulaFragment : Fragment() {
-    lateinit var viewModel: MainViewModel
+    private lateinit var viewModel: MainViewModel
 
     private lateinit var version: TextView
     private lateinit var showEula: Button
