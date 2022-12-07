@@ -89,7 +89,6 @@
     <string name="enabled_title">Record calls</string>
     <string name="enabled_sum">Call recording enabled</string>
     <string name="prefs_storage_title">Recordings storage</string>
-    <string name="prefs_storage_path_title">Where to store recordings</string>
     <string name="prefs_speaker_title">Speaker use</string>
     <string name="prefs_speaker_sum">Put device on speaker while recording calls</string>
     <string name="prefs_format_title">Recording format</string>

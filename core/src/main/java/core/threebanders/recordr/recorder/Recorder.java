@@ -59,16 +59,7 @@ public class Recorder {
         if (isRunning())
             stopRecording();
         String extension = format.equals(WAV_FORMAT) ? ".wav" : ".aac";
-        File recordingsDir;
-
-        if (Core.getInstance().getCache().storage().equals("private"))
-            recordingsDir = context.getFilesDir();
-        else {
-            String filePath = Core.getInstance().getCache().storagePath();
-            recordingsDir = (filePath == null) ? context.getExternalFilesDir(null) : new File(filePath);
-            if (recordingsDir == null)
-                recordingsDir = context.getFilesDir();
-        }
+        File recordingsDir = context.getFilesDir();
 
         phoneNumber = phoneNumber.replaceAll("[()/.,* ;+]", "_");
         String fileName = "Recording" + phoneNumber +

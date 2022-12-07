@@ -8,15 +8,12 @@
         android:summary="@string/enabled_sum"
         android:title="@string/enabled_title" />
 
-    <Preference
-        android:key="public_storage_path"
-        android:title="@string/prefs_storage_path_title" />
-
     <SwitchPreference
         android:defaultValue="false"
         android:key="put_on_speaker"
         android:summary="@string/prefs_speaker_sum"
         android:title="@string/prefs_speaker_title" />
+
     <SwitchPreference
         android:defaultValue="false"
         android:key="put_on_drive"
@@ -45,7 +42,6 @@
         android:entryValues="@array/mode_values"
         android:key="mode"
         android:title="@string/prefs_mode_title" />
-
 
     <ListPreference
         android:defaultValue="light_theme"

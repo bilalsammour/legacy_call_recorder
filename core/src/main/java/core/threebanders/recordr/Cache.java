@@ -11,8 +11,6 @@ public class Cache {
     public static final String SOURCE = "source";
     public static final String FORMAT = "format";
     public static final String MODE = "mode";
-    public static final String STORAGE = "storage";
-    public static final String STORAGE_PATH = "public_storage_path";
 
     private static Cache cache;
     private SharedPreferences prefs;
@@ -48,18 +46,6 @@ public class Cache {
 
     public String mode() {
         return prefs.getString(MODE, "");
-    }
-
-    public void storage(String format) {
-        prefs.edit().putString(STORAGE, format).apply();
-    }
-
-    public String storage() {
-        return prefs.getString(STORAGE, "");
-    }
-
-    public String storagePath() {
-        return prefs.getString(STORAGE_PATH, null);
     }
 
     public void source(String format) {

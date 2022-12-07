@@ -11,8 +11,6 @@ import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.recyclerview.widget.DividerItemDecoration
-import com.codekidlabs.storagechooser.Content
-import com.codekidlabs.storagechooser.StorageChooser
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -26,27 +24,6 @@ class SettingsFragment : PreferenceFragmentCompat() {
     private var parentActivity: BaseActivity? = null
     private var preferences: SharedPreferences? = null
     private var mGoogleApiClient: GoogleSignInClient? = null
-
-    override fun onResume() {
-        super.onResume()
-
-        val storagePath = findPreference<Preference>(STORAGE_PATH)
-        val storage = findPreference<ListPreference>(STORAGE)
-        storagePath?.let { storage?.let { manageStoragePathSummary(it) } }
-    }
-
-    private fun manageStoragePathSummary(storagePath: Preference) {
-        storagePath.isEnabled = true
-        var path = preferences!!.getString(STORAGE_PATH, null)
-        if (path == null) {
-            val externalDir = requireActivity().getExternalFilesDir(null)
-            if (externalDir != null) path = externalDir.absolutePath
-            val editor = preferences!!.edit()
-            editor.putString(STORAGE_PATH, path)
-            editor.apply()
-        }
-        storagePath.summary = path
-    }
 
     private val launcher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
@@ -80,7 +57,6 @@ class SettingsFragment : PreferenceFragmentCompat() {
         val format = findPreference<Preference>(FORMAT)
         val mode = findPreference<Preference>(MODE)
         val storage = findPreference<Preference>(STORAGE)
-        val storagePath = findPreference<Preference>(STORAGE_PATH)
         val source = findPreference<Preference>(SOURCE)
         val googleDrive = findPreference<Preference>(GOOGLE_DRIVE)
 
@@ -92,43 +68,6 @@ class SettingsFragment : PreferenceFragmentCompat() {
                     signOut()
                 }
 
-                true
-            }
-
-        storagePath?.onPreferenceClickListener =
-            Preference.OnPreferenceClickListener { preference ->
-                val content = Content()
-                content.overviewHeading =
-                    requireContext().resources.getString(R.string.choose_recordings_storage)
-                val theme = StorageChooser.Theme(activity)
-                theme.scheme =
-                    if (parentActivity?.settledTheme == BaseActivity.LIGHT_THEME) parentActivity!!.resources.getIntArray(
-                        R.array.storage_chooser_theme_light
-                    ) else parentActivity!!.resources.getIntArray(R.array.storage_chooser_theme_dark)
-                val chooser = StorageChooser.Builder()
-                    .withActivity(activity)
-                    .withFragmentManager(parentActivity!!.fragmentManager)
-                    .allowCustomPath(true)
-                    .setType(StorageChooser.DIRECTORY_CHOOSER)
-                    .withMemoryBar(true)
-                    .allowAddFolder(true)
-                    .showHidden(true)
-                    .withContent(content)
-                    .setTheme(theme)
-                    .build()
-                chooser.show()
-                chooser.setOnSelectListener(StorageChooser.OnSelectListener { path ->
-                    if (activity == null) {
-                        return@OnSelectListener
-                    }
-
-                    val preferences =
-                        (requireActivity().application as CrApp).core.prefs
-                    val editor = preferences.edit()
-                    editor.putString(STORAGE_PATH, path)
-                    editor.apply()
-                    preference.summary = path
-                })
                 true
             }
 
@@ -192,7 +131,6 @@ class SettingsFragment : PreferenceFragmentCompat() {
     companion object {
         const val APP_THEME = "theme"
         const val STORAGE = "storage"
-        const val STORAGE_PATH = "public_storage_path"
         const val FORMAT = "format"
         const val MODE = "mode"
         const val SOURCE = "source"
