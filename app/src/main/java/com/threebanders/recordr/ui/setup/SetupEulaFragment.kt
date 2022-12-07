@@ -71,10 +71,7 @@ class SetupEulaFragment : Fragment() {
 
     private fun prepareUi(parentActivity: SetupActivity) {
         version = parentActivity.findViewById(R.id.app_version)
-        version.text = String.format(
-            parentActivity.resources.getString(R.string.version_eula_screen),
-            viewModel.getVersion()
-        )
+        version.text = String.format(parentActivity.resources.getString(R.string.version_eula_screen), viewModel.getVersion())
         showEula = parentActivity.findViewById(R.id.show_eula)
 
         cancelButton = parentActivity.findViewById(R.id.setup_confirm_cancel)

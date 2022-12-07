@@ -20,6 +20,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.afollestad.materialdialogs.DialogAction
 import com.afollestad.materialdialogs.MaterialDialog
 import com.threebanders.recordr.R
+import com.threebanders.recordr.common.Extras.EFFECT_TIME
+import com.threebanders.recordr.common.Extras.RECORDING_EXTRA
+import com.threebanders.recordr.common.Extras.SELECTED_ITEMS_KEY
+import com.threebanders.recordr.common.Extras.SELECT_MODE_KEY
 import com.threebanders.recordr.ui.BaseActivity
 import com.threebanders.recordr.ui.BaseActivity.LayoutType
 import com.threebanders.recordr.ui.BaseFragment
@@ -55,28 +59,10 @@ open class ContactDetailFragment : BaseFragment() {
         }
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        detailView =
-            inflater.inflate(
-                R.layout.contact_detail_fragment, container,
-                false
-            ) as RelativeLayout
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        detailView = inflater.inflate(R.layout.contact_detail_fragment, container, false) as RelativeLayout
         recordingsRecycler = detailView!!.findViewById(R.id.recordings)
-        recordingsRecycler!!.layoutManager = LinearLayoutManager(
-            mainActivity
-        )
-        recordingsRecycler!!.addItemDecoration(
-            DividerItemDecoration(
-                context,
-                DividerItemDecoration.VERTICAL
-            )
-        )
-        recordingsRecycler!!.adapter = adapter
-
+        mainViewModel.init(adapter!!,recordingsRecycler!!,mainActivity!!)
         return detailView
     }
 
@@ -88,42 +74,22 @@ open class ContactDetailFragment : BaseFragment() {
     }
 
     protected fun onDeleteSelectedRecordings() {
-        MaterialDialog.Builder(mainActivity!!)
-            .title(R.string.delete_recording_confirm_title)
-            .content(
-                String.format(
-                    resources.getString(
-                        R.string.delete_recording_confirm_message
-                    ),
-                    selectedItems!!.size
-                )
-            )
-            .positiveText(android.R.string.ok)
-            .negativeText(android.R.string.cancel)
-            .icon(ResourcesCompat.getDrawable(resources, R.drawable.warning, null)!!)
-            .onPositive { _: MaterialDialog, _: DialogAction ->
-                val result = mainViewModel.deleteRecordings(
-                    selectedRecordings
-                )
-                if (result != null) MaterialDialog.Builder(mainActivity!!)
-                    .title(result.title)
-                    .content(result.message)
-                    .icon(ResourcesCompat.getDrawable(resources, result.icon, null)!!)
-                    .positiveText(android.R.string.ok)
-                    .show() else {
-                    if (adapter!!.itemCount == 0) {
-                        val noContent = mainActivity!!.findViewById<View>(R.id.no_content_detail)
-                        if (noContent != null) noContent.visibility = View.VISIBLE
-                    }
-                    clearSelectMode()
+        mainViewModel.showDeleteDialog(mainActivity!!,selectedItems!!.size) {
+            val result = mainViewModel.deleteRecordings(selectedRecordings)
+            if (result != null)
+                mainViewModel.showSecondaryDialog(mainActivity!!,result)
+            else {
+                if (adapter!!.itemCount == 0) {
+                    val noContent = mainActivity!!.findViewById<View>(R.id.no_content_detail)
+                    if (noContent != null) noContent.visibility = View.VISIBLE
                 }
+                clearSelectMode()
             }
-            .show()
+        }
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         setDetailsButtonsListeners()
     }
 
@@ -155,7 +121,7 @@ open class ContactDetailFragment : BaseFragment() {
     protected fun putInSelectMode(animate: Boolean) {
         selectMode = true
         toggleSelectModeActionBar(animate)
-        redrawRecordings()
+        mainViewModel.redrawRecordings(adapter!!)
     }
 
     protected open fun toggleSelectModeActionBar(animate: Boolean) {
@@ -211,22 +177,6 @@ open class ContactDetailFragment : BaseFragment() {
         }
     }
 
-    protected open fun shareRecorde(path: String?) {
-        try {
-            val f = File(path!!)
-            val uri = context?.let {
-                FileProvider.getUriForFile(it, "com.threebanders.recordr.CrApp.provider", f)
-            }
-            val share = Intent(Intent.ACTION_SEND)
-            share.putExtra(Intent.EXTRA_STREAM, uri)
-            share.type = "audio/*"
-            share.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-            startActivity(Intent.createChooser(share, "Share audio File"))
-        } catch (e: java.lang.Exception) {
-            e.printStackTrace()
-        }
-    }
-
     protected open fun toggleTitle() {
         val title = mainActivity!!.findViewById<TextView>(R.id.actionbar_title)
         if (mainActivity!!.layoutType == LayoutType.DOUBLE_PANE) {
@@ -240,30 +190,15 @@ open class ContactDetailFragment : BaseFragment() {
         }
     }
 
-    private fun fadeEffect(view: View, finalAlpha: Float, finalVisibility: Int) {
-        view.animate()
-            .alpha(finalAlpha)
-            .setDuration(EFFECT_TIME.toLong())
-            .setListener(object : Animator.AnimatorListener {
-                override fun onAnimationStart(animator: Animator) {}
-                override fun onAnimationEnd(animator: Animator) {
-                    view.visibility = finalVisibility
-                }
-
-                override fun onAnimationCancel(animator: Animator) {}
-                override fun onAnimationRepeat(animator: Animator) {}
-            })
-    }
-
     protected fun hideView(v: View?, animate: Boolean) {
-        if (animate) fadeEffect(v!!, 0.0f, View.GONE) else {
+        if (animate) mainViewModel.fadeEffect(v!!, 0.0f, View.GONE,EFFECT_TIME) else {
             v!!.alpha = 0.0f //poate lipsi?
             v.visibility = View.GONE
         }
     }
 
     protected fun showView(vw: View?, animate: Boolean) {
-        if (animate) fadeEffect(vw!!, 1f, View.VISIBLE) else {
+        if (animate) mainViewModel.fadeEffect(vw!!, 1f, View.VISIBLE, EFFECT_TIME) else {
             vw?.alpha = 1f //poate lipsi?
             vw?.visibility = View.VISIBLE
         }
@@ -272,58 +207,19 @@ open class ContactDetailFragment : BaseFragment() {
     protected fun clearSelectMode() {
         selectMode = false
         toggleSelectModeActionBar(true)
-        redrawRecordings()
+        mainViewModel.redrawRecordings(adapter!!)
         selectedItems!!.clear()
-    }
-
-    private fun modifyMargins(recording: View) {
-        val checkBox = recording.findViewById<CheckBox>(R.id.recording_checkbox)
-        val res = requireContext().resources
-        checkBox.visibility = if (selectMode) View.VISIBLE else View.GONE
-        val lpCheckBox = checkBox.layoutParams as RelativeLayout.LayoutParams
-        lpCheckBox.marginStart =
-            if (selectMode) res.getDimension(R.dimen.recording_checkbox_visible_start_margin)
-                .toInt() else res.getDimension(R.dimen.recording_checkbox_gone_start_margin).toInt()
-        checkBox.layoutParams = lpCheckBox
-        val recordingAdorn = recording.findViewById<ImageView>(R.id.recording_adorn)
-        val lpRecAdorn = recordingAdorn.layoutParams as RelativeLayout.LayoutParams
-        lpRecAdorn.marginStart =
-            if (selectMode) res.getDimension(R.dimen.recording_adorn_selected_margin_start)
-                .toInt() else res.getDimension(R.dimen.recording_adorn_unselected_margin_start)
-                .toInt()
-        recordingAdorn.layoutParams = lpRecAdorn
-        val title = recording.findViewById<TextView>(R.id.recording_title)
-        val lpTitle = title.layoutParams as RelativeLayout.LayoutParams
-        lpTitle.marginStart =
-            if (selectMode) res.getDimension(R.dimen.recording_title_selected_margin_start)
-                .toInt() else res.getDimension(R.dimen.recording_title_unselected_margin_start)
-                .toInt()
-        title.layoutParams = lpTitle
-    }
-
-    private fun selectRecording(recording: View) {
-        val checkBox = recording.findViewById<CheckBox>(R.id.recording_checkbox)
-        checkBox.isChecked = true
-    }
-
-    private fun deselectRecording(recording: View) {
-        val checkBox = recording.findViewById<CheckBox>(R.id.recording_checkbox)
-        checkBox.isChecked = false
-    }
-
-    private fun redrawRecordings() {
-        for (i in 0 until adapter!!.itemCount) adapter!!.notifyItemChanged(i)
     }
 
     private fun manageSelectRecording(recording: View, adapterPosition: Int, exists: Boolean) {
         if (!removeIfPresentInSelectedItems(adapterPosition)) {
             selectedItems!!.add(adapterPosition)
-            selectRecording(recording)
+            mainViewModel.selectRecording(recording)
             if (!exists) {
                 selectedItemsDeleted++
             }
         } else {
-            deselectRecording(recording)
+            mainViewModel.deselectRecording(recording)
             if (!exists) {
                 selectedItemsDeleted--
             }
@@ -359,7 +255,7 @@ open class ContactDetailFragment : BaseFragment() {
 
             val selectedRecording = recordingsRecycler!!.layoutManager!!
                 .findViewByPosition(position)
-            selectedRecording?.let { selectRecording(it) }
+            selectedRecording?.let { mainViewModel.selectRecording(it) }
         }
         toggleTitle()
     }
@@ -568,44 +464,19 @@ open class ContactDetailFragment : BaseFragment() {
             }
 
             holder.recordingShare.setOnClickListener {
-                shareRecorde(recording.path)
+                mainViewModel.shareRecording(recording.path,context)
             }
 
-            if (!recording.exists()) markNonexistent(holder)
-            modifyMargins(holder.itemView)
-            if (selectedItems!!.contains(position)) selectRecording(holder.itemView) else deselectRecording(
+            if (!recording.exists()) mainViewModel.markNonexistent(holder,mainActivity!!)
+            mainViewModel.modifyMargins(holder.itemView,requireContext(),selectMode)
+            if (selectedItems!!.contains(position)) mainViewModel.selectRecording(holder.itemView) else mainViewModel.deselectRecording(
                 holder.itemView
             )
         }
 
-        private fun markNonexistent(holder: RecordingHolder) {
-            holder.exclamation.visibility = View.VISIBLE
-            val filter =
-                if (mainActivity!!.settledTheme == BaseActivity.LIGHT_THEME) Color.argb(
-                    255,
-                    0,
-                    0,
-                    0
-                ) else Color.argb(255, 255, 255, 255)
-            holder.recordingAdorn.setColorFilter(filter)
-            holder.recordingType.setColorFilter(filter)
-            holder.recordingAdorn.imageAlpha = 100
-            holder.recordingType.imageAlpha = 100
-            holder.title.alpha = 0.5f
-        }
-
-        private fun unMarkNonexistent(holder: RecordingHolder) {
-            holder.exclamation.visibility = View.GONE
-            holder.recordingAdorn.colorFilter = null
-            holder.recordingType.colorFilter = null
-            holder.recordingType.imageAlpha = 255
-            holder.recordingAdorn.imageAlpha = 255
-            holder.title.alpha = 1f
-        }
-
         override fun onViewRecycled(holder: RecordingHolder) {
             super.onViewRecycled(holder)
-            unMarkNonexistent(holder)
+            mainViewModel.unMarkNonexistent(holder)
         }
 
         override fun getItemCount(): Int {
@@ -666,10 +537,6 @@ open class ContactDetailFragment : BaseFragment() {
         }
 
     companion object {
-        private const val SELECT_MODE_KEY = "select_mode_key"
-        private const val SELECTED_ITEMS_KEY = "selected_items_key"
-        private const val EFFECT_TIME = 250
-        const val RECORDING_EXTRA = "recording_extra"
 
         fun newInstance(contact: Contact?): ContactDetailFragment {
             val args = Bundle()

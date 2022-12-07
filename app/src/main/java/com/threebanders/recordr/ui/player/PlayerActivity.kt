@@ -19,6 +19,7 @@ import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.ktx.Firebase
 import com.sdsmdg.harjot.crollerTest.Croller
 import com.threebanders.recordr.R
+import com.threebanders.recordr.common.Extras.RECORDING_EXTRA
 import com.threebanders.recordr.ui.BaseActivity
 import com.threebanders.recordr.ui.contact.ContactDetailFragment
 import core.threebanders.recordr.CoreUtil
@@ -68,9 +69,9 @@ class PlayerActivity : BaseActivity() {
         }
 
         recording = if (Build.VERSION.SDK_INT >= 33) {
-            intent.getParcelableExtra(ContactDetailFragment.RECORDING_EXTRA, Recording::class.java)
+            intent.getParcelableExtra(RECORDING_EXTRA, Recording::class.java)
         } else {
-            intent.getParcelableExtra(ContactDetailFragment.RECORDING_EXTRA)
+            intent.getParcelableExtra(RECORDING_EXTRA)
         }
 
         visualizer = findViewById(R.id.visualizer)
