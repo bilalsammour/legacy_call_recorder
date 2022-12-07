@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.threebanders.recordr.BuildConfig
 import com.threebanders.recordr.R
 import com.threebanders.recordr.common.DialogInfo
 import com.threebanders.recordr.common.Extras
@@ -29,6 +30,8 @@ class MainViewModel : ViewModel() {
     init {
         setupAllContacts()
     }
+
+    fun getVersion(): String = BuildConfig.VERSION_NAME
 
     private fun setupAllContacts() {
         contactList = repository.allContacts

@@ -9,16 +9,25 @@ import android.widget.Button
 import android.widget.CheckBox
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import com.threebanders.recordr.CrApp
 import com.threebanders.recordr.R
 import com.threebanders.recordr.common.Extras
-import org.acra.BuildConfig
+import com.threebanders.recordr.ui.MainViewModel
 
 class SetupEulaFragment : Fragment() {
+    lateinit var viewModel: MainViewModel
+
     private lateinit var version: TextView
     private lateinit var showEula: Button
     private lateinit var cancelButton: Button
     private lateinit var nextButton: Button
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        viewModel = ViewModelProvider(requireActivity())[MainViewModel::class.java]
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -64,7 +73,7 @@ class SetupEulaFragment : Fragment() {
         version = parentActivity.findViewById(R.id.app_version)
         version.text = String.format(
             parentActivity.resources.getString(R.string.version_eula_screen),
-            BuildConfig.VERSION_NAME
+            viewModel.getVersion()
         )
         showEula = parentActivity.findViewById(R.id.show_eula)
 
