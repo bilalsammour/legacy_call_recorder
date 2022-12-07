@@ -76,7 +76,6 @@
     <string name="perms_phone">The permission to <b>make and manage phone calls</b> is requested because recording phone calls requires that the app knows when the device is making or receiving a phone call.</string>
     <string name="perms_record">The permission to <b>record audio</b> is requested because the applications records phone calls.</string>
     <string name="perms_contacts">The permission to <b>access contacts</b> is requested because assigning the recordings to a phone number requires reading the device\'s contacts database.</string>
-    <string name="perms_files">The permission to <b>access photos, media and files</b> is requested because the recordings are written and read from the device\'s storage and also because the app contacts are personalized with photos.</string>
     <string name="setup_power_title">Setup power management</string>
     <string name="doze_info">%s cannot function properly if Android power management optimization is in effect. For proper functioning you will have to manually turn off the power optimization for this application.</string>
     <string name="other_power_optimizations">Some custom versions of Android operating system have power management methods implemented by their vendors, like \"Protected apps\" on Huawei phones. Proper functioning of %s requires that any power optimization that affects this application be turned off.\nPlease consult your operating system documentation to find if there are such power optimizations.</string>

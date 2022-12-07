@@ -54,12 +54,6 @@
                 android:layout_height="wrap_content"
                 android:text="@string/perms_contacts" />
 
-            <TextView
-                style="@style/setupParagraphs"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/perms_files" />
-
         </LinearLayout>
 
     </ScrollView>

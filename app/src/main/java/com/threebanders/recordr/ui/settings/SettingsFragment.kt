@@ -56,7 +56,6 @@ class SettingsFragment : PreferenceFragmentCompat() {
         val themeOption = findPreference<Preference>(APP_THEME)
         val format = findPreference<Preference>(FORMAT)
         val mode = findPreference<Preference>(MODE)
-        val storage = findPreference<Preference>(STORAGE)
         val source = findPreference<Preference>(SOURCE)
         val googleDrive = findPreference<Preference>(GOOGLE_DRIVE)
 
@@ -71,8 +70,6 @@ class SettingsFragment : PreferenceFragmentCompat() {
                 true
             }
 
-        storage?.summaryProvider =
-            Preference.SummaryProvider { preference: Preference -> (preference as ListPreference).entry }
         themeOption?.summaryProvider =
             Preference.SummaryProvider<ListPreference> { preference -> preference.entry }
         themeOption?.onPreferenceChangeListener =
@@ -130,7 +127,6 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
     companion object {
         const val APP_THEME = "theme"
-        const val STORAGE = "storage"
         const val FORMAT = "format"
         const val MODE = "mode"
         const val SOURCE = "source"
