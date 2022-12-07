@@ -5,9 +5,6 @@
         android:icon="@drawable/baseline_settings_black_36"
         android:title="@string/settings_name" />
 
-    <!--<item android:id="@+id/make_system"-->
-    <!--android:icon="@drawable/baseline_android_black_36"/>-->
-
     <item
         android:id="@+id/help"
         android:icon="@drawable/help"
