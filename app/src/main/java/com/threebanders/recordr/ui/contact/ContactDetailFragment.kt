@@ -44,7 +44,6 @@ open class ContactDetailFragment : BaseFragment() {
     protected var selectMode = false
     lateinit var mainViewModel: MainViewModel
     protected var selectedItems: MutableList<Int>? = ArrayList()
-
     private var selectedItemsDeleted = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -76,9 +75,7 @@ open class ContactDetailFragment : BaseFragment() {
     protected fun onDeleteSelectedRecordings() {
         mainViewModel.showDeleteDialog(mainActivity!!,selectedItems!!.size) {
             val result = mainViewModel.deleteRecordings(selectedRecordings)
-            if (result != null)
-                mainViewModel.showSecondaryDialog(mainActivity!!,result)
-            else {
+            if (result != null) mainViewModel.showSecondaryDialog(mainActivity!!,result) else {
                 if (adapter!!.itemCount == 0) {
                     val noContent = mainActivity!!.findViewById<View>(R.id.no_content_detail)
                     if (noContent != null) noContent.visibility = View.VISIBLE
@@ -130,8 +127,7 @@ open class ContactDetailFragment : BaseFragment() {
         val selectAllBtn = mainActivity!!.findViewById<ImageButton>(R.id.actionbar_select_all)
         val infoBtn = mainActivity!!.findViewById<ImageButton>(R.id.actionbar_info)
         val menuRightBtn = mainActivity!!.findViewById<ImageButton>(R.id.contact_detail_menu)
-        val menuRightSelectedBtn =
-            mainActivity!!.findViewById<ImageButton>(R.id.contact_detail_selected_menu)
+        val menuRightSelectedBtn = mainActivity!!.findViewById<ImageButton>(R.id.contact_detail_selected_menu)
         toggleTitle()
         if (mainActivity!!.layoutType == LayoutType.SINGLE_PANE) if (selectMode) hideView(
             navigateBackBtn,
@@ -212,7 +208,7 @@ open class ContactDetailFragment : BaseFragment() {
     }
 
     private fun manageSelectRecording(recording: View, adapterPosition: Int, exists: Boolean) {
-        if (!removeIfPresentInSelectedItems(adapterPosition)) {
+        if (!mainViewModel.removeIfPresentInSelectedItems(adapterPosition,selectedItems!!)) {
             selectedItems!!.add(adapterPosition)
             mainViewModel.selectRecording(recording)
             if (!exists) {
@@ -238,12 +234,6 @@ open class ContactDetailFragment : BaseFragment() {
             return list
         }
 
-    private fun removeIfPresentInSelectedItems(adapterPosition: Int): Boolean {
-        return if (selectedItems!!.contains(adapterPosition)) {
-            selectedItems!!.remove(adapterPosition)
-            true
-        } else false
-    }
 
     protected fun onSelectAll() {
         val notSelected: MutableList<Int> = ArrayList()
@@ -536,15 +526,4 @@ open class ContactDetailFragment : BaseFragment() {
             ArrayList()
         }
 
-    companion object {
-
-        fun newInstance(contact: Contact?): ContactDetailFragment {
-            val args = Bundle()
-            args.putParcelable(ContactsListFragment.ARG_CONTACT, contact)
-            val fragment = ContactDetailFragment()
-            fragment.arguments = args
-
-            return fragment
-        }
-    }
 }

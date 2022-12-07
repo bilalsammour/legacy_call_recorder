@@ -14,6 +14,7 @@ import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.net.Uri
+import android.os.Bundle
 import android.os.PowerManager
 import android.provider.Settings
 import android.view.MenuItem
@@ -50,8 +51,10 @@ import com.threebanders.recordr.ui.BaseActivity
 import com.threebanders.recordr.ui.MainViewModel
 import com.threebanders.recordr.ui.contact.ContactDetailFragment
 import com.threebanders.recordr.ui.contact.ContactsListActivityMain
+import com.threebanders.recordr.ui.contact.ContactsListFragment
 import com.threebanders.recordr.ui.help.HelpActivity
 import com.threebanders.recordr.ui.settings.SettingsActivity
+import core.threebanders.recordr.data.Contact
 import core.threebanders.recordr.data.Recording
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -59,6 +62,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
 import java.lang.reflect.Type
+import java.util.ArrayList
 import kotlin.random.Random
 
 object Extras {
@@ -452,5 +456,20 @@ object Extras {
         holder.recordingType.imageAlpha = 255
         holder.recordingAdorn.imageAlpha = 255
         holder.title.alpha = 1f
+    }
+
+    fun removeIfPresentInSelectedItems(adapterPosition: Int,selectedItems : MutableList<Int>): Boolean {
+        return if (selectedItems.contains(adapterPosition)) {
+            selectedItems.remove(adapterPosition)
+            true
+        } else false
+    }
+    fun newInstance(contact: Contact?): ContactDetailFragment {
+        val args = Bundle()
+        args.putParcelable(ContactsListFragment.ARG_CONTACT, contact)
+        val fragment = ContactDetailFragment()
+        fragment.arguments = args
+
+        return fragment
     }
 }

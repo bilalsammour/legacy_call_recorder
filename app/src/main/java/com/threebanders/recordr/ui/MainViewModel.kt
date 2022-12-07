@@ -161,4 +161,12 @@ class MainViewModel : ViewModel() {
     fun unMarkNonexistent(holder: ContactDetailFragment.RecordingHolder){
         Extras.unMarkNonexistent(holder)
     }
+
+     fun removeIfPresentInSelectedItems(adapterPosition: Int,selectedItems : MutableList<Int>): Boolean {
+        return Extras.removeIfPresentInSelectedItems(adapterPosition, selectedItems)
+    }
+
+     fun newInstance(contact: Contact?): ContactDetailFragment {
+         return  Extras.newInstance(contact)
+     }
 }

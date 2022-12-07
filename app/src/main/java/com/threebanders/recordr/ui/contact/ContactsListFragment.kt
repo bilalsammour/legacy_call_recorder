@@ -13,6 +13,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.threebanders.recordr.R
+import com.threebanders.recordr.common.Extras
 import com.threebanders.recordr.ui.BaseActivity
 import com.threebanders.recordr.ui.BaseActivity.LayoutType
 import com.threebanders.recordr.ui.BaseFragment
@@ -171,7 +172,7 @@ class ContactsListFragment : BaseFragment() {
         val detailMenu = parentActivity!!.findViewById<ImageButton>(R.id.contact_detail_menu)
         if (mainViewModel.contact.value != null) {
             val contactDetail: ContactDetailFragment =
-                ContactDetailFragment.newInstance(mainViewModel.contact.value)
+                mainViewModel.newInstance(mainViewModel.contact.value)
             parentActivity!!.supportFragmentManager.beginTransaction()
                 .replace(R.id.contact_detail_fragment_container, contactDetail)
                 .commitAllowingStateLoss() //fără chestia asta îmi dă un Caused by:
