@@ -14,7 +14,7 @@ abstract class RecordingThread {
     final int channels;
     final int bufferSize;
     final AudioRecord audioRecord;
-    protected Context context;
+    protected final Context context;
 
     RecordingThread(Context context, String mode, Recorder recorder) throws RecordingException {
         this.context = context;

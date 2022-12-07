@@ -157,7 +157,7 @@ public class CrLog {
     }
 
     static class SendLogs implements Runnable {
-        AfterZip afterZip;
+        private final AfterZip afterZip;
 
         SendLogs(AfterZip afterZip) {
             this.afterZip = afterZip;
