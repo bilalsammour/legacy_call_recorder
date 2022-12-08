@@ -13,7 +13,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.threebanders.recordr.CrApp
 import com.threebanders.recordr.R
 import com.threebanders.recordr.common.Extras
-import com.threebanders.recordr.ui.MainViewModel
+import com.threebanders.recordr.viewmodels.MainViewModel
 
 class SetupEulaFragment : Fragment() {
     private lateinit var viewModel: MainViewModel

@@ -10,7 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.threebanders.recordr.R
 import com.threebanders.recordr.common.Extras
-import com.threebanders.recordr.ui.MainViewModel
+import com.threebanders.recordr.viewmodels.MainViewModel
 
 class SetupPermissionsFragment : Fragment() {
     private lateinit var mainViewModel: MainViewModel

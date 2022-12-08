@@ -13,11 +13,11 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.threebanders.recordr.R
-import com.threebanders.recordr.common.Extras
 import com.threebanders.recordr.ui.BaseActivity
 import com.threebanders.recordr.ui.BaseActivity.LayoutType
 import com.threebanders.recordr.ui.BaseFragment
-import com.threebanders.recordr.ui.MainViewModel
+import com.threebanders.recordr.viewmodels.ContactDetailsViewModel
+import com.threebanders.recordr.viewmodels.MainViewModel
 import core.threebanders.recordr.CoreUtil
 import core.threebanders.recordr.data.Contact
 
@@ -25,6 +25,7 @@ class ContactsListFragment : BaseFragment() {
     private var adapter: ContactsAdapter? = null
     private var contactsRecycler: RecyclerView? = null
     private lateinit var mainViewModel: MainViewModel
+    private lateinit var contactDetailsViewModel: ContactDetailsViewModel
 
     /**
      * Poziția curentă în adapter. Necesară doar în DOUBLE_PANE. Este setată din
@@ -135,6 +136,7 @@ class ContactsListFragment : BaseFragment() {
         mainViewModel = ViewModelProvider(mainActivity!!)[MainViewModel::class.java]
         mainViewModel.contacts.observe(viewLifecycleOwner) { showContacts() }
         showContacts()
+        contactDetailsViewModel  = ViewModelProvider(mainActivity!!)[ContactDetailsViewModel::class.java]
         return fragmentRoot
     }
 
@@ -172,7 +174,7 @@ class ContactsListFragment : BaseFragment() {
         val detailMenu = parentActivity!!.findViewById<ImageButton>(R.id.contact_detail_menu)
         if (mainViewModel.contact.value != null) {
             val contactDetail: ContactDetailFragment =
-                mainViewModel.newInstance(mainViewModel.contact.value)
+                contactDetailsViewModel.newInstance(mainViewModel.contact.value)
             parentActivity!!.supportFragmentManager.beginTransaction()
                 .replace(R.id.contact_detail_fragment_container, contactDetail)
                 .commitAllowingStateLoss() //fără chestia asta îmi dă un Caused by:

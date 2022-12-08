@@ -17,14 +17,12 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.PowerManager
 import android.provider.Settings
-import android.view.MenuItem
 import android.view.View
 import android.widget.*
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
-import androidx.core.app.NavUtils
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
@@ -48,7 +46,6 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.threebanders.recordr.R
 import com.threebanders.recordr.ui.BaseActivity
-import com.threebanders.recordr.ui.MainViewModel
 import com.threebanders.recordr.ui.contact.ContactDetailFragment
 import com.threebanders.recordr.ui.contact.ContactsListActivityMain
 import com.threebanders.recordr.ui.contact.ContactsListFragment
@@ -62,7 +59,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
 import java.lang.reflect.Type
-import java.util.ArrayList
 import kotlin.random.Random
 
 object Extras {
