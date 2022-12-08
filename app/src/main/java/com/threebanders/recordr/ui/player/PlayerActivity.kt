@@ -21,7 +21,6 @@ import com.sdsmdg.harjot.crollerTest.Croller
 import com.threebanders.recordr.R
 import com.threebanders.recordr.common.Extras.RECORDING_EXTRA
 import com.threebanders.recordr.ui.BaseActivity
-import com.threebanders.recordr.ui.contact.ContactDetailFragment
 import core.threebanders.recordr.CoreUtil
 import core.threebanders.recordr.data.Recording
 import core.threebanders.recordr.player.AudioPlayer

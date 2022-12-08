@@ -1,8 +1,6 @@
 package com.threebanders.recordr.ui.contact
 
-import android.animation.Animator
 import android.content.Intent
-import android.graphics.Color
 import android.os.Bundle
 import android.provider.CallLog
 import android.view.*
@@ -11,13 +9,8 @@ import android.widget.*
 import androidx.appcompat.widget.Toolbar
 import androidx.core.app.NavUtils
 import androidx.core.content.ContextCompat
-import androidx.core.content.FileProvider
-import androidx.core.content.res.ResourcesCompat
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.DividerItemDecoration
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.afollestad.materialdialogs.DialogAction
 import com.afollestad.materialdialogs.MaterialDialog
 import com.threebanders.recordr.R
 import com.threebanders.recordr.common.Extras.EFFECT_TIME
@@ -33,7 +26,6 @@ import core.threebanders.recordr.CoreUtil
 import core.threebanders.recordr.data.Contact
 import core.threebanders.recordr.data.Recording
 import core.threebanders.recordr.recorder.Recorder
-import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -58,10 +50,15 @@ open class ContactDetailFragment : BaseFragment() {
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        detailView = inflater.inflate(R.layout.contact_detail_fragment, container, false) as RelativeLayout
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        detailView =
+            inflater.inflate(R.layout.contact_detail_fragment, container, false) as RelativeLayout
         recordingsRecycler = detailView!!.findViewById(R.id.recordings)
-        mainViewModel.init(adapter!!,recordingsRecycler!!,mainActivity!!)
+        mainViewModel.init(adapter!!, recordingsRecycler!!, mainActivity!!)
         return detailView
     }
 
@@ -73,9 +70,9 @@ open class ContactDetailFragment : BaseFragment() {
     }
 
     protected fun onDeleteSelectedRecordings() {
-        mainViewModel.showDeleteDialog(mainActivity!!,selectedItems!!.size) {
+        mainViewModel.showDeleteDialog(mainActivity!!, selectedItems!!.size) {
             val result = mainViewModel.deleteRecordings(selectedRecordings)
-            if (result != null) mainViewModel.showSecondaryDialog(mainActivity!!,result) else {
+            if (result != null) mainViewModel.showSecondaryDialog(mainActivity!!, result) else {
                 if (adapter!!.itemCount == 0) {
                     val noContent = mainActivity!!.findViewById<View>(R.id.no_content_detail)
                     if (noContent != null) noContent.visibility = View.VISIBLE
@@ -127,7 +124,8 @@ open class ContactDetailFragment : BaseFragment() {
         val selectAllBtn = mainActivity!!.findViewById<ImageButton>(R.id.actionbar_select_all)
         val infoBtn = mainActivity!!.findViewById<ImageButton>(R.id.actionbar_info)
         val menuRightBtn = mainActivity!!.findViewById<ImageButton>(R.id.contact_detail_menu)
-        val menuRightSelectedBtn = mainActivity!!.findViewById<ImageButton>(R.id.contact_detail_selected_menu)
+        val menuRightSelectedBtn =
+            mainActivity!!.findViewById<ImageButton>(R.id.contact_detail_selected_menu)
         toggleTitle()
         if (mainActivity!!.layoutType == LayoutType.SINGLE_PANE) if (selectMode) hideView(
             navigateBackBtn,
@@ -187,7 +185,7 @@ open class ContactDetailFragment : BaseFragment() {
     }
 
     protected fun hideView(v: View?, animate: Boolean) {
-        if (animate) mainViewModel.fadeEffect(v!!, 0.0f, View.GONE,EFFECT_TIME) else {
+        if (animate) mainViewModel.fadeEffect(v!!, 0.0f, View.GONE, EFFECT_TIME) else {
             v!!.alpha = 0.0f //poate lipsi?
             v.visibility = View.GONE
         }
@@ -208,7 +206,7 @@ open class ContactDetailFragment : BaseFragment() {
     }
 
     private fun manageSelectRecording(recording: View, adapterPosition: Int, exists: Boolean) {
-        if (!mainViewModel.removeIfPresentInSelectedItems(adapterPosition,selectedItems!!)) {
+        if (!mainViewModel.removeIfPresentInSelectedItems(adapterPosition, selectedItems!!)) {
             selectedItems!!.add(adapterPosition)
             mainViewModel.selectRecording(recording)
             if (!exists) {
@@ -454,11 +452,11 @@ open class ContactDetailFragment : BaseFragment() {
             }
 
             holder.recordingShare.setOnClickListener {
-                mainViewModel.shareRecording(recording.path,context)
+                mainViewModel.shareRecording(recording.path, context)
             }
 
-            if (!recording.exists()) mainViewModel.markNonexistent(holder,mainActivity!!)
-            mainViewModel.modifyMargins(holder.itemView,requireContext(),selectMode)
+            if (!recording.exists()) mainViewModel.markNonexistent(holder, mainActivity!!)
+            mainViewModel.modifyMargins(holder.itemView, requireContext(), selectMode)
             if (selectedItems!!.contains(position)) mainViewModel.selectRecording(holder.itemView) else mainViewModel.deselectRecording(
                 holder.itemView
             )
