@@ -53,10 +53,19 @@ open class ContactDetailFragment : BaseFragment() {
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        detailView = inflater.inflate(R.layout.contact_detail_fragment, container, false) as RelativeLayout
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        detailView =
+            inflater.inflate(R.layout.contact_detail_fragment, container, false) as RelativeLayout
         recordingsRecycler = detailView!!.findViewById(R.id.recordings)
+<<<<<<< HEAD
         contactDetailsViewModel.init(adapter!!,recordingsRecycler!!,mainActivity!!)
+=======
+        mainViewModel.init(adapter!!, recordingsRecycler!!, mainActivity!!)
+>>>>>>> 549a6a2f5b225b94478df901495c01e9edb76bd0
         return detailView
     }
 
@@ -68,9 +77,15 @@ open class ContactDetailFragment : BaseFragment() {
     }
 
     protected fun onDeleteSelectedRecordings() {
+<<<<<<< HEAD
         contactDetailsViewModel.showDeleteDialog(mainActivity!!,selectedItems!!.size) {
             val result = mainViewModel.deleteRecordings(selectedRecordings)
             if (result != null) contactDetailsViewModel.showSecondaryDialog(mainActivity!!,result) else {
+=======
+        mainViewModel.showDeleteDialog(mainActivity!!, selectedItems!!.size) {
+            val result = mainViewModel.deleteRecordings(selectedRecordings)
+            if (result != null) mainViewModel.showSecondaryDialog(mainActivity!!, result) else {
+>>>>>>> 549a6a2f5b225b94478df901495c01e9edb76bd0
                 if (adapter!!.itemCount == 0) {
                     val noContent = mainActivity!!.findViewById<View>(R.id.no_content_detail)
                     if (noContent != null) noContent.visibility = View.VISIBLE
@@ -122,7 +137,8 @@ open class ContactDetailFragment : BaseFragment() {
         val selectAllBtn = mainActivity!!.findViewById<ImageButton>(R.id.actionbar_select_all)
         val infoBtn = mainActivity!!.findViewById<ImageButton>(R.id.actionbar_info)
         val menuRightBtn = mainActivity!!.findViewById<ImageButton>(R.id.contact_detail_menu)
-        val menuRightSelectedBtn = mainActivity!!.findViewById<ImageButton>(R.id.contact_detail_selected_menu)
+        val menuRightSelectedBtn =
+            mainActivity!!.findViewById<ImageButton>(R.id.contact_detail_selected_menu)
         toggleTitle()
         if (mainActivity!!.layoutType == LayoutType.SINGLE_PANE) if (selectMode) hideView(
             navigateBackBtn,
@@ -182,7 +198,11 @@ open class ContactDetailFragment : BaseFragment() {
     }
 
     protected fun hideView(v: View?, animate: Boolean) {
+<<<<<<< HEAD
         if (animate) contactDetailsViewModel.fadeEffect(v!!, 0.0f, View.GONE,EFFECT_TIME) else {
+=======
+        if (animate) mainViewModel.fadeEffect(v!!, 0.0f, View.GONE, EFFECT_TIME) else {
+>>>>>>> 549a6a2f5b225b94478df901495c01e9edb76bd0
             v!!.alpha = 0.0f //poate lipsi?
             v.visibility = View.GONE
         }
@@ -203,7 +223,11 @@ open class ContactDetailFragment : BaseFragment() {
     }
 
     private fun manageSelectRecording(recording: View, adapterPosition: Int, exists: Boolean) {
+<<<<<<< HEAD
         if (!contactDetailsViewModel.removeIfPresentInSelectedItems(adapterPosition,selectedItems!!)) {
+=======
+        if (!mainViewModel.removeIfPresentInSelectedItems(adapterPosition, selectedItems!!)) {
+>>>>>>> 549a6a2f5b225b94478df901495c01e9edb76bd0
             selectedItems!!.add(adapterPosition)
             contactDetailsViewModel.selectRecording(recording)
             if (!exists) {
@@ -449,12 +473,21 @@ open class ContactDetailFragment : BaseFragment() {
             }
 
             holder.recordingShare.setOnClickListener {
+<<<<<<< HEAD
                 contactDetailsViewModel.shareRecording(recording.path,context)
             }
 
             if (!recording.exists()) contactDetailsViewModel.markNonexistent(holder,mainActivity!!)
             contactDetailsViewModel.modifyMargins(holder.itemView,requireContext(),selectMode)
             if (selectedItems!!.contains(position)) contactDetailsViewModel.selectRecording(holder.itemView) else contactDetailsViewModel.deselectRecording(
+=======
+                mainViewModel.shareRecording(recording.path, context)
+            }
+
+            if (!recording.exists()) mainViewModel.markNonexistent(holder, mainActivity!!)
+            mainViewModel.modifyMargins(holder.itemView, requireContext(), selectMode)
+            if (selectedItems!!.contains(position)) mainViewModel.selectRecording(holder.itemView) else mainViewModel.deselectRecording(
+>>>>>>> 549a6a2f5b225b94478df901495c01e9edb76bd0
                 holder.itemView
             )
         }

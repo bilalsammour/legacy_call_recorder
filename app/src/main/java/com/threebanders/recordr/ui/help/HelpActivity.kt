@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.webkit.JavascriptInterface
 import android.webkit.WebView
-import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
@@ -20,13 +19,11 @@ import com.threebanders.recordr.BuildConfig
 import com.threebanders.recordr.R
 import com.threebanders.recordr.ui.BaseActivity
 import core.threebanders.recordr.CoreUtil
-import core.threebanders.recordr.CrLog
 
 class HelpActivity : BaseActivity() {
     private var pager: ViewPager? = null
     private var adapter: HelpPagerAdapter? = null
 
-    //am folosit R.raw pentru posibilitatea traducerii: res/raw-de/ for german
     override fun createFragment(): Fragment? {
         return null
     }
@@ -108,17 +105,10 @@ class HelpActivity : BaseActivity() {
                         .positiveText(android.R.string.ok)
                         .negativeText(android.R.string.cancel)
                         .onPositive { _: MaterialDialog, _: DialogAction ->
-                            CrLog.sendLogs(
-                                activity as AppCompatActivity?,
-                                "synapticwebb@gmail.com",
-                                getString(R.string.app_name)
-                            )
                         }
                         .show()
                 }
             }, "SendLogsWrapper")
-            //am pus imaginile și style-urile în main/assets. Ca urmare am setat base url la file:///android_asset/ și sursele
-            //sunt doar numele fișierelor.
             htmlText.loadDataWithBaseURL(
                 "file:///android_asset/",
                 content[position]!!,

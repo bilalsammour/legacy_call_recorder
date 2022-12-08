@@ -339,17 +339,35 @@ object Extras {
 
 
     /* ---------------------------- ContactDetailFragment ------------------------ */
-     fun initRecycler(adapter : ContactDetailFragment.RecordingAdapter, recordingsRecycler : RecyclerView, mainActivity : ContactsListActivityMain){
+    fun initRecycler(
+        adapter: ContactDetailFragment.RecordingAdapter,
+        recordingsRecycler: RecyclerView,
+        mainActivity: ContactsListActivityMain
+    ) {
         recordingsRecycler.layoutManager = LinearLayoutManager(mainActivity)
-        recordingsRecycler.addItemDecoration(DividerItemDecoration(mainActivity, DividerItemDecoration.VERTICAL))
+        recordingsRecycler.addItemDecoration(
+            DividerItemDecoration(
+                mainActivity,
+                DividerItemDecoration.VERTICAL
+            )
+        )
         recordingsRecycler.adapter = adapter
     }
-     fun showDialog(mainActivity : ContactsListActivityMain,selectedItems : Int, onAction : () -> Unit){
+
+    fun showDialog(
+        mainActivity: ContactsListActivityMain,
+        selectedItems: Int,
+        onAction: () -> Unit
+    ) {
         MaterialDialog.Builder(mainActivity)
             .title(R.string.delete_recording_confirm_title)
-            .content(String.format(mainActivity.resources.getString(
-                R.string.delete_recording_confirm_message
-            ), selectedItems))
+            .content(
+                String.format(
+                    mainActivity.resources.getString(
+                        R.string.delete_recording_confirm_message
+                    ), selectedItems
+                )
+            )
             .positiveText(android.R.string.ok)
             .negativeText(android.R.string.cancel)
             .icon(ResourcesCompat.getDrawable(mainActivity.resources, R.drawable.warning, null)!!)
@@ -358,7 +376,8 @@ object Extras {
             }
             .show()
     }
-     fun showSecondaryDialog(mainActivity : ContactsListActivityMain,result : DialogInfo){
+
+    fun showSecondaryDialog(mainActivity: ContactsListActivityMain, result: DialogInfo) {
         MaterialDialog.Builder(mainActivity)
             .title(result.title)
             .content(result.message)
@@ -366,7 +385,8 @@ object Extras {
             .positiveText(android.R.string.ok)
             .show()
     }
-     fun fadeEffect(view: View, finalAlpha: Float, finalVisibility: Int,EFFECT_TIME: Int) {
+
+    fun fadeEffect(view: View, finalAlpha: Float, finalVisibility: Int, EFFECT_TIME: Int) {
         view.animate()
             .alpha(finalAlpha)
             .setDuration(EFFECT_TIME.toLong())
@@ -380,7 +400,8 @@ object Extras {
                 override fun onAnimationRepeat(animator: Animator) {}
             })
     }
-     fun shareRecorder(path : String,context: Context?){
+
+    fun shareRecorder(path: String, context: Context?) {
         try {
             val f = File(path)
             val uri = context?.let {
@@ -395,7 +416,8 @@ object Extras {
             e.printStackTrace()
         }
     }
-     fun modifyMargins(recording: View,context: Context,selectMode : Boolean) {
+
+    fun modifyMargins(recording: View, context: Context, selectMode: Boolean) {
         val checkBox = recording.findViewById<CheckBox>(R.id.recording_checkbox)
         val res = context.resources
         checkBox.visibility = if (selectMode) View.VISIBLE else View.GONE
@@ -419,18 +441,25 @@ object Extras {
                 .toInt()
         title.layoutParams = lpTitle
     }
-     fun selectRecording(recording: View) {
+
+    fun selectRecording(recording: View) {
         val checkBox = recording.findViewById<CheckBox>(R.id.recording_checkbox)
         checkBox.isChecked = true
     }
-     fun deselectRecording(recording: View) {
+
+    fun deselectRecording(recording: View) {
         val checkBox = recording.findViewById<CheckBox>(R.id.recording_checkbox)
         checkBox.isChecked = false
     }
-     fun redrawRecordings(adapter: ContactDetailFragment.RecordingAdapter) {
+
+    fun redrawRecordings(adapter: ContactDetailFragment.RecordingAdapter) {
         for (i in 0 until adapter.itemCount) adapter.notifyItemChanged(i)
     }
-     fun markNonexistent(holder: ContactDetailFragment.RecordingHolder,mainActivity: ContactsListActivityMain) {
+
+    fun markNonexistent(
+        holder: ContactDetailFragment.RecordingHolder,
+        mainActivity: ContactsListActivityMain
+    ) {
         holder.exclamation.visibility = View.VISIBLE
         val filter =
             if (mainActivity.settledTheme == BaseActivity.LIGHT_THEME) Color.argb(
@@ -445,7 +474,8 @@ object Extras {
         holder.recordingType.imageAlpha = 100
         holder.title.alpha = 0.5f
     }
-     fun unMarkNonexistent(holder: ContactDetailFragment.RecordingHolder) {
+
+    fun unMarkNonexistent(holder: ContactDetailFragment.RecordingHolder) {
         holder.exclamation.visibility = View.GONE
         holder.recordingAdorn.colorFilter = null
         holder.recordingType.colorFilter = null
@@ -454,12 +484,16 @@ object Extras {
         holder.title.alpha = 1f
     }
 
-    fun removeIfPresentInSelectedItems(adapterPosition: Int,selectedItems : MutableList<Int>): Boolean {
+    fun removeIfPresentInSelectedItems(
+        adapterPosition: Int,
+        selectedItems: MutableList<Int>
+    ): Boolean {
         return if (selectedItems.contains(adapterPosition)) {
             selectedItems.remove(adapterPosition)
             true
         } else false
     }
+
     fun newInstance(contact: Contact?): ContactDetailFragment {
         val args = Bundle()
         args.putParcelable(ContactsListFragment.ARG_CONTACT, contact)
