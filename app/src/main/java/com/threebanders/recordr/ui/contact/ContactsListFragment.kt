@@ -136,7 +136,8 @@ class ContactsListFragment : BaseFragment() {
         mainViewModel = ViewModelProvider(mainActivity!!)[MainViewModel::class.java]
         mainViewModel.contacts.observe(viewLifecycleOwner) { showContacts() }
         showContacts()
-        contactDetailsViewModel  = ViewModelProvider(mainActivity!!)[ContactDetailsViewModel::class.java]
+        contactDetailsViewModel =
+            ViewModelProvider(mainActivity!!)[ContactDetailsViewModel::class.java]
         return fragmentRoot
     }
 

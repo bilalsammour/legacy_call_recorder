@@ -18,8 +18,8 @@ import com.google.android.material.navigation.NavigationView
 import com.threebanders.recordr.R
 import com.threebanders.recordr.common.Extras
 import com.threebanders.recordr.ui.BaseActivity
-import com.threebanders.recordr.viewmodels.MainViewModel
 import com.threebanders.recordr.ui.setup.SetupActivity
+import com.threebanders.recordr.viewmodels.MainViewModel
 import core.threebanders.recordr.MyService
 
 class ContactsListActivityMain : BaseActivity() {

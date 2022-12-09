@@ -2,19 +2,15 @@ package com.threebanders.recordr.viewmodels
 
 import android.app.Activity
 import android.content.Context
-import android.view.View
 import androidx.activity.result.ActivityResult
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.recyclerview.widget.RecyclerView
 import com.threebanders.recordr.BuildConfig
 import com.threebanders.recordr.R
 import com.threebanders.recordr.common.DialogInfo
 import com.threebanders.recordr.common.Extras
-import com.threebanders.recordr.ui.contact.ContactDetailFragment
-import com.threebanders.recordr.ui.contact.ContactsListActivityMain
 import core.threebanders.recordr.Core
 import core.threebanders.recordr.data.Contact
 import core.threebanders.recordr.data.Recording
@@ -119,7 +115,4 @@ class MainViewModel : ViewModel() {
     fun openGoogleMarketInApp(context: Activity) {
         Extras.openGoogleMarket(context)
     }
-
-
-
 }

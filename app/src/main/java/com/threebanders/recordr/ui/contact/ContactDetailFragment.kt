@@ -17,8 +17,6 @@ import com.threebanders.recordr.common.Extras.EFFECT_TIME
 import com.threebanders.recordr.common.Extras.RECORDING_EXTRA
 import com.threebanders.recordr.common.Extras.SELECTED_ITEMS_KEY
 import com.threebanders.recordr.common.Extras.SELECT_MODE_KEY
-import com.threebanders.recordr.common.Extras.deselectRecording
-import com.threebanders.recordr.common.Extras.fadeEffect
 import com.threebanders.recordr.ui.BaseActivity
 import com.threebanders.recordr.ui.BaseActivity.LayoutType
 import com.threebanders.recordr.ui.BaseFragment
@@ -47,7 +45,8 @@ open class ContactDetailFragment : BaseFragment() {
 
         adapter = RecordingAdapter(ArrayList(0))
         mainViewModel = ViewModelProvider(mainActivity!!)[MainViewModel::class.java]
-        contactDetailsViewModel = ViewModelProvider(mainActivity!!)[ContactDetailsViewModel::class.java]
+        contactDetailsViewModel =
+            ViewModelProvider(mainActivity!!)[ContactDetailsViewModel::class.java]
 
         if (savedInstanceState != null) {
             selectMode = savedInstanceState.getBoolean(SELECT_MODE_KEY)
@@ -55,10 +54,15 @@ open class ContactDetailFragment : BaseFragment() {
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        detailView = inflater.inflate(R.layout.contact_detail_fragment, container, false) as RelativeLayout
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        detailView =
+            inflater.inflate(R.layout.contact_detail_fragment, container, false) as RelativeLayout
         recordingsRecycler = detailView!!.findViewById(R.id.recordings)
-        contactDetailsViewModel.init(adapter!!,recordingsRecycler!!,mainActivity!!)
+        contactDetailsViewModel.init(adapter!!, recordingsRecycler!!, mainActivity!!)
         return detailView
     }
 
@@ -70,9 +74,12 @@ open class ContactDetailFragment : BaseFragment() {
     }
 
     protected fun onDeleteSelectedRecordings() {
-        contactDetailsViewModel.showDeleteDialog(mainActivity!!,selectedItems!!.size) {
+        contactDetailsViewModel.showDeleteDialog(mainActivity!!, selectedItems!!.size) {
             val result = mainViewModel.deleteRecordings(selectedRecordings)
-            if (result != null) contactDetailsViewModel.showSecondaryDialog(mainActivity!!,result) else {
+            if (result != null) contactDetailsViewModel.showSecondaryDialog(
+                mainActivity!!,
+                result
+            ) else {
                 if (adapter!!.itemCount == 0) {
                     val noContent = mainActivity!!.findViewById<View>(R.id.no_content_detail)
                     if (noContent != null) noContent.visibility = View.VISIBLE
@@ -124,7 +131,8 @@ open class ContactDetailFragment : BaseFragment() {
         val selectAllBtn = mainActivity!!.findViewById<ImageButton>(R.id.actionbar_select_all)
         val infoBtn = mainActivity!!.findViewById<ImageButton>(R.id.actionbar_info)
         val menuRightBtn = mainActivity!!.findViewById<ImageButton>(R.id.contact_detail_menu)
-        val menuRightSelectedBtn = mainActivity!!.findViewById<ImageButton>(R.id.contact_detail_selected_menu)
+        val menuRightSelectedBtn =
+            mainActivity!!.findViewById<ImageButton>(R.id.contact_detail_selected_menu)
         toggleTitle()
         if (mainActivity!!.layoutType == LayoutType.SINGLE_PANE) if (selectMode) hideView(
             navigateBackBtn,
@@ -184,7 +192,7 @@ open class ContactDetailFragment : BaseFragment() {
     }
 
     protected fun hideView(v: View?, animate: Boolean) {
-        if (animate) contactDetailsViewModel.fadeEffect(v!!, 0.0f, View.GONE,EFFECT_TIME) else {
+        if (animate) contactDetailsViewModel.fadeEffect(v!!, 0.0f, View.GONE, EFFECT_TIME) else {
             v!!.alpha = 0.0f //poate lipsi?
             v.visibility = View.GONE
         }
@@ -205,7 +213,11 @@ open class ContactDetailFragment : BaseFragment() {
     }
 
     private fun manageSelectRecording(recording: View, adapterPosition: Int, exists: Boolean) {
-        if (!contactDetailsViewModel.removeIfPresentInSelectedItems(adapterPosition,selectedItems!!)) {
+        if (!contactDetailsViewModel.removeIfPresentInSelectedItems(
+                adapterPosition,
+                selectedItems!!
+            )
+        ) {
             selectedItems!!.add(adapterPosition)
             contactDetailsViewModel.selectRecording(recording)
             if (!exists) {
@@ -451,11 +463,11 @@ open class ContactDetailFragment : BaseFragment() {
             }
 
             holder.recordingShare.setOnClickListener {
-                contactDetailsViewModel.shareRecording(recording.path,context)
+                contactDetailsViewModel.shareRecording(recording.path, context)
             }
 
-            if (!recording.exists()) contactDetailsViewModel.markNonexistent(holder,mainActivity!!)
-            contactDetailsViewModel.modifyMargins(holder.itemView,requireContext(),selectMode)
+            if (!recording.exists()) contactDetailsViewModel.markNonexistent(holder, mainActivity!!)
+            contactDetailsViewModel.modifyMargins(holder.itemView, requireContext(), selectMode)
             if (selectedItems!!.contains(position)) contactDetailsViewModel.selectRecording(holder.itemView) else contactDetailsViewModel.deselectRecording(
                 holder.itemView
             )
@@ -522,5 +534,5 @@ open class ContactDetailFragment : BaseFragment() {
             ex.printStackTrace()
             ArrayList()
         }
-    
+
 }
