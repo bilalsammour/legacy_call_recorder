@@ -30,9 +30,9 @@ public class AudioPlayer extends Thread implements PlayerAdapter {
     private final static String ACRA_MODE = "mode";
     private final static String ACRA_SIZE = "file_size";
     private final static String ACRA_FORMAT = "format";
+    private final PlaybackListenerInterface playbackListener;
     private int state;
     private String mediaPath;
-    private final PlaybackListenerInterface playbackListener;
     private ScheduledExecutorService executor;
     private Runnable seekbarPositionUpdateTask;
     private MediaCodec decoder;

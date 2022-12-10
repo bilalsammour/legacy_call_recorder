@@ -11,10 +11,10 @@ import core.threebanders.recordr.Core;
 abstract class RecordingThread {
     static final int SAMPLE_RATE = 44100;
     protected final Recorder recorder;
+    protected final Context context;
     final int channels;
     final int bufferSize;
     final AudioRecord audioRecord;
-    protected final Context context;
 
     RecordingThread(Context context, String mode, Recorder recorder) throws RecordingException {
         this.context = context;

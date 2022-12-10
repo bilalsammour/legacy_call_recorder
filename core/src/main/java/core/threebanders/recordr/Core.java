@@ -99,6 +99,7 @@ public class Core {
         private int versionCode;
         private String versionName;
         private Repository repository;
+
         public Builder() {
         }
 
