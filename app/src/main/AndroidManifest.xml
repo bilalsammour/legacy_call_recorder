@@ -68,11 +68,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ui.contact.ContactDetailActivity"
-            android:exported="true"
-            android:parentActivityName=".ui.contact.ContactsListActivityMain"
-            android:screenOrientation="fullSensor" />
-        <activity
             android:name=".ui.settings.SettingsActivity"
             android:parentActivityName=".ui.contact.ContactsListActivityMain"
             android:screenOrientation="fullSensor" />
@@ -90,7 +85,6 @@
             android:name=".ui.player.PlayerActivity"
             android:configChanges="orientation|screenSize"
             android:exported="true"
-            android:parentActivityName=".ui.contact.ContactDetailActivity"
             android:screenOrientation="fullSensor" />
         <activity
             android:name=".ui.setup.ShowEulaActivity"
