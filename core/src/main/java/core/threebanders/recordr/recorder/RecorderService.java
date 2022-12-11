@@ -23,7 +23,6 @@ import org.acra.ACRA;
 import core.threebanders.recordr.Const;
 import core.threebanders.recordr.Core;
 import core.threebanders.recordr.CoreUtil;
-import core.threebanders.recordr.CrLog;
 import core.threebanders.recordr.data.Contact;
 import core.threebanders.recordr.data.Recording;
 
@@ -63,7 +62,8 @@ public class RecorderService extends Service {
         super.onCreate();
         recorder = new Recorder(getApplicationContext());
         audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-        nm = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
+        nm = (NotificationManager) getApplicationContext()
+                .getSystemService(Context.NOTIFICATION_SERVICE);
         settings = Core.getInstance().getCache().getPrefs();
 
         self = this;
@@ -75,13 +75,10 @@ public class RecorderService extends Service {
 
     @RequiresApi(Build.VERSION_CODES.O)
     private void createChannel() {
-        // The user-visible name of the channel.
         CharSequence name = "Call recorder";
-        // The user-visible description of the channel.
         String description = "Call recorder controls";
         int importance = NotificationManager.IMPORTANCE_LOW;
         NotificationChannel mChannel = new NotificationChannel(CHANNEL_ID, name, importance);
-        // Configure the notification channel.
         mChannel.setDescription(description);
         mChannel.setShowBadge(false);
         mChannel.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);
@@ -94,7 +91,6 @@ public class RecorderService extends Service {
             PendingIntent tapNotificationPi = PendingIntent.getActivity(getApplicationContext(),
                     0, goToActivity, PendingIntent.FLAG_IMMUTABLE);
 
-
             Intent sendBroadcast = new Intent(getApplicationContext(), ControlRecordingReceiver.class);
             Resources res = getApplicationContext().getResources();
 
@@ -106,19 +102,18 @@ public class RecorderService extends Service {
                     .setContentIntent(tapNotificationPi);
 
             switch (typeOfNotification) {
-                //Acum nu se mai bazează pe speakerOn, recunoaște dacă difuzorul era deja pornit. speakerOn
-                //a fost menținut deoarece în unele situații notificarea porneste prea devreme și isSpeakerphoneOn()
-                //returnează false.
                 case RECORD_AUTOMATICALLY:
                     if (audioManager.isSpeakerphoneOn() || speakerOn) {
                         sendBroadcast.setAction(ACTION_STOP_SPEAKER);
-                        PendingIntent stopSpeakerPi = PendingIntent.getBroadcast(Core.getContext(), 0, sendBroadcast, PendingIntent.FLAG_IMMUTABLE);
+                        PendingIntent stopSpeakerPi = PendingIntent.getBroadcast(Core.getContext(),
+                                0, sendBroadcast, PendingIntent.FLAG_IMMUTABLE);
                         builder.addAction(new NotificationCompat.Action.Builder(Core.getIconSpeakerOff(),
                                         "Stop speaker", stopSpeakerPi).build())
                                 .setContentText("Recording&#8230; (speaker on)");
                     } else {
                         sendBroadcast.setAction(ACTION_START_SPEAKER);
-                        PendingIntent startSpeakerPi = PendingIntent.getBroadcast(getApplicationContext(), 0, sendBroadcast, PendingIntent.FLAG_IMMUTABLE);
+                        PendingIntent startSpeakerPi = PendingIntent.getBroadcast(getApplicationContext(),
+                                0, sendBroadcast, PendingIntent.FLAG_IMMUTABLE);
                         builder.addAction(new NotificationCompat.Action.Builder(Core.getIconSpeakerOn(),
                                         "Start speaker", startSpeakerPi).build())
                                 .setContentText("Recording&#8230; (speaker off)");
@@ -138,13 +133,13 @@ public class RecorderService extends Service {
                     builder.setSmallIcon(Core.getIconSuccess())
                             .setContentText("The phone call was successfully recorded.")
                             .setAutoCancel(true);
-
             }
 
             return builder.build();
         } catch (Exception exception) {
             exception.printStackTrace();
         }
+
         return null;
     }
 
@@ -155,29 +150,27 @@ public class RecorderService extends Service {
         if (intent.hasExtra(CallReceiver.ARG_NUM_PHONE))
             receivedNumPhone = intent.getStringExtra(CallReceiver.ARG_NUM_PHONE);
         incoming = intent.getBooleanExtra(CallReceiver.ARG_INCOMING, false);
-        CrLog.log(CrLog.DEBUG, String.format("Recorder service started. Phone number: %s. Incoming: %s", receivedNumPhone, incoming));
+
         try {
             ACRA.getErrorReporter().putCustomData(ACRA_PHONE_NUMBER, receivedNumPhone);
             ACRA.getErrorReporter().putCustomData(ACRA_INCOMING, incoming.toString());
         } catch (IllegalStateException ignored) {
         }
-        //de văzut dacă formarea ussd-urilor trimite ofhook dacă nu mai primim new_outgoing_call
 
         if (receivedNumPhone == null && incoming && Build.VERSION.SDK_INT < Build.VERSION_CODES.P)
             privateCall = true;
 
-        //se întîmplă numai la incoming, la outgoing totdeauna nr e null.
         if (receivedNumPhone != null) {
             contact = Contact.queryNumberInAppContacts(Core.getRepository(), receivedNumPhone);
             if (contact == null) {
                 contact = Contact.queryNumberInPhoneContacts(receivedNumPhone, getContentResolver());
                 if (contact == null) {
-                    contact = new Contact(null, receivedNumPhone, "UNKNOWN CONTACT", null, CoreUtil.UNKNOWN_TYPE_PHONE_CODE);
+                    contact = new Contact(null, receivedNumPhone, "UNKNOWN CONTACT",
+                            null, CoreUtil.UNKNOWN_TYPE_PHONE_CODE);
                 }
                 try {
                     contact.save(Core.getRepository());
-                } catch (SQLException exception) {
-                    CrLog.log(CrLog.ERROR, "SQL exception: " + exception.getMessage());
+                } catch (SQLException ignored) {
                 }
             }
         }
@@ -192,17 +185,22 @@ public class RecorderService extends Service {
             callIdentifier = "Unknown phone number";
 
         try {
-            CrLog.log(CrLog.DEBUG, "Recorder started in onStartCommand()");
             recorder.startRecording(receivedNumPhone);
-            if (settings.getBoolean(Const.SPEAKER_USE, false))
+
+            if (settings.getBoolean(Const.SPEAKER_USE, false)) {
                 putSpeakerOn();
+            }
+
             Notification notification = buildNotification(RECORD_AUTOMATICALLY, "");
-            if (notification != null) startForeground(NOTIFICATION_ID, notification);
-        } catch (RecordingException e) {
-            CrLog.log(CrLog.ERROR, "onStartCommand: unable to start recorder: " + e.getMessage() + " Stoping the service...");
-            Notification notification = buildNotification(RECORD_ERROR, "Cannot start recorder. Maybe change audio source?");
-            if (notification != null)
+            if (notification != null) {
                 startForeground(NOTIFICATION_ID, notification);
+            }
+        } catch (RecordingException e) {
+            Notification notification = buildNotification(RECORD_ERROR,
+                    "Cannot start recorder. Maybe change audio source?");
+            if (notification != null) {
+                startForeground(NOTIFICATION_ID, notification);
+            }
         }
 
         return START_NOT_STICKY;
@@ -212,17 +210,18 @@ public class RecorderService extends Service {
         self = null;
     }
 
-    //de aici: https://stackoverflow.com/questions/39725367/how-to-turn-on-speaker-for-incoming-call-programmatically-in-android-l
     void putSpeakerOn() {
         speakerOnThread = new Thread() {
             @Override
             public void run() {
-                CrLog.log(CrLog.DEBUG, "Speaker has been turned on");
                 try {
                     while (!Thread.interrupted()) {
                         audioManager.setMode(AudioManager.MODE_IN_CALL);
-                        if (!audioManager.isSpeakerphoneOn())
+
+                        if (!audioManager.isSpeakerphoneOn()) {
                             audioManager.setSpeakerphoneOn(true);
+                        }
+
                         sleep(500);
                     }
                 } catch (InterruptedException e) {
@@ -237,24 +236,26 @@ public class RecorderService extends Service {
     void putSpeakerOff() {
         if (speakerOnThread != null) {
             speakerOnThread.interrupt();
-            CrLog.log(CrLog.DEBUG, "Speaker has been turned off");
         }
+
         speakerOnThread = null;
+
         if (audioManager != null && audioManager.isSpeakerphoneOn()) {
             audioManager.setMode(AudioManager.MODE_NORMAL);
             audioManager.setSpeakerphoneOn(false);
         }
+
         speakerOn = false;
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        CrLog.log(CrLog.DEBUG, "RecorderService is stoping now...");
 
         putSpeakerOff();
         if (!recorder.isRunning() || recorder.hasError()) {
             onDestroyCleanUp();
+
             return;
         }
 
@@ -263,33 +264,31 @@ public class RecorderService extends Service {
 
         if (privateCall) {
             contactId = Core.getRepository().getHiddenNumberContactId();
-            if (contactId == null) { //încă nu a fost înregistrat un apel de pe număr ascuns
+            if (contactId == null) {
                 Contact contact = new Contact();
                 contact.setIsPrivateNumber();
                 contact.setContactName("Hidden number");
                 try {
                     contact.save(Core.getRepository());
                 } catch (SQLException exc) {
-                    CrLog.log(CrLog.ERROR, "SQL exception: " + exc.getMessage());
                     onDestroyCleanUp();
                     return;
                 }
                 contactId = contact.getId();
             }
-        } else if (contact != null)
+        } else if (contact != null) {
             contactId = contact.getId();
-
-        else  //dacă nu e privat și contactul este null atunci nr e indisponibil.
+        } else {
             contactId = null;
+        }
 
         Recording recording = new Recording(null, contactId, recorder.getAudioFilePath(), incoming,
-                recorder.getStartingTime(), System.currentTimeMillis(), recorder.getFormat(), false, recorder.getMode(),
-                recorder.getSource());
+                recorder.getStartingTime(), System.currentTimeMillis(), recorder.getFormat(),
+                false, recorder.getMode(), recorder.getSource());
 
         try {
             recording.save(Core.getRepository());
         } catch (SQLException exc) {
-            CrLog.log(CrLog.ERROR, "SQL exception: " + exc.getMessage());
             onDestroyCleanUp();
             return;
         }
