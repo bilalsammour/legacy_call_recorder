@@ -31,7 +31,6 @@ object ContactDetailsExtra {
     const val EFFECT_TIME = 250
     const val RECORDING_EXTRA = "recording_extra"
 
-    const val CURRENT_POS_KEY = "current_pos"
     const val ARG_CONTACT = "arg_contact"
 
     fun showRecyclerView(
