@@ -544,7 +544,7 @@ open class ContactDetailFragment : BaseFragment() {
                 contact.contactName = callDuration
                 contact.daytime =
                     SimpleDateFormat("dd/MM/yyyy hh:mm a", Locale.US).format(callDayTime)
-                
+
                 contactList.add(contact)
             }
 
