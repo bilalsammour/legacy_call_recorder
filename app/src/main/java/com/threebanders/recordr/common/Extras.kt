@@ -35,10 +35,12 @@ import com.google.api.services.drive.Drive
 import com.google.api.services.drive.DriveScopes
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import com.threebanders.recordr.CrApp
 import com.threebanders.recordr.R
 import com.threebanders.recordr.ui.contact.ContactsListActivityMain
 import com.threebanders.recordr.ui.help.HelpActivity
 import com.threebanders.recordr.ui.settings.SettingsActivity
+import com.threebanders.recordr.ui.settings.SettingsFragment.Companion.GOOGLE_DRIVE
 import core.threebanders.recordr.data.Recording
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -300,5 +302,10 @@ object Extras {
         val editor = sharedPref?.edit()
         editor?.putString("PRODUCT_TAG", jsonCurProduct)
         editor?.apply()
+    }
+
+    fun isGoogleDriveSynced() : Boolean {
+        val corePrefs = CrApp.instance.core.prefs
+        return corePrefs.getBoolean(GOOGLE_DRIVE,false)
     }
 }
