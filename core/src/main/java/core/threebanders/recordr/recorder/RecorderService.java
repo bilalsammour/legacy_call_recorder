@@ -112,13 +112,13 @@ public class RecorderService extends Service {
                 case RECORD_AUTOMATICALLY:
                     if (audioManager.isSpeakerphoneOn() || speakerOn) {
                         sendBroadcast.setAction(ACTION_STOP_SPEAKER);
-                        PendingIntent stopSpeakerPi = PendingIntent.getBroadcast(Core.getContext(), 0, sendBroadcast, 0);
+                        PendingIntent stopSpeakerPi = PendingIntent.getBroadcast(Core.getContext(), 0, sendBroadcast, PendingIntent.FLAG_IMMUTABLE);
                         builder.addAction(new NotificationCompat.Action.Builder(Core.getIconSpeakerOff(),
                                         "Stop speaker", stopSpeakerPi).build())
                                 .setContentText("Recording&#8230; (speaker on)");
                     } else {
                         sendBroadcast.setAction(ACTION_START_SPEAKER);
-                        PendingIntent startSpeakerPi = PendingIntent.getBroadcast(getApplicationContext(), 0, sendBroadcast, 0);
+                        PendingIntent startSpeakerPi = PendingIntent.getBroadcast(getApplicationContext(), 0, sendBroadcast, PendingIntent.FLAG_IMMUTABLE);
                         builder.addAction(new NotificationCompat.Action.Builder(Core.getIconSpeakerOn(),
                                         "Start speaker", startSpeakerPi).build())
                                 .setContentText("Recording&#8230; (speaker off)");
