@@ -55,13 +55,17 @@ class ContactsListActivityMain : BaseActivity() {
         }
 
         prepareUi()
+
         checkValidations()
-        if (savedInstanceState == null) insertFragment(R.id.contacts_list_fragment_container)
+
+        if (savedInstanceState == null) {
+            insertFragment(R.id.contacts_list_fragment_container)
+        }
+
         setUpNavigationView()
 
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                // Back is pressed... Finishing the activity
                 viewModel.showOnBackPressedDialog(this@ContactsListActivityMain) {
                     finish()
                 }
