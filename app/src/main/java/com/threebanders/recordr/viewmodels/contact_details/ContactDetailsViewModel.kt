@@ -7,7 +7,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.threebanders.recordr.common.DialogInfo
 import com.threebanders.recordr.ui.BaseActivity
 import com.threebanders.recordr.ui.contact.ContactDetailFragment
-import core.threebanders.recordr.data.Contact
 
 class ContactDetailsViewModel : ViewModel() {
     fun init(
@@ -70,9 +69,5 @@ class ContactDetailsViewModel : ViewModel() {
         selectedItems: MutableList<Int>
     ): Boolean {
         return ContactDetailsExtra.removeIfPresentInSelectedItems(adapterPosition, selectedItems)
-    }
-
-    fun newInstance(contact: Contact?): ContactDetailFragment {
-        return ContactDetailsExtra.newInstance(contact)
     }
 }
