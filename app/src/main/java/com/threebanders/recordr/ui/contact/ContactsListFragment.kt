@@ -16,7 +16,7 @@ import com.threebanders.recordr.R
 import com.threebanders.recordr.ui.BaseActivity
 import com.threebanders.recordr.ui.BaseActivity.LayoutType
 import com.threebanders.recordr.ui.BaseFragment
-import com.threebanders.recordr.viewmodels.ContactDetailsViewModel
+import com.threebanders.recordr.viewmodels.contact_details.ContactDetailsViewModel
 import com.threebanders.recordr.viewmodels.MainViewModel
 import core.threebanders.recordr.CoreUtil
 import core.threebanders.recordr.data.Contact

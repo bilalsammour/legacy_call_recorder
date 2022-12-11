@@ -8,8 +8,8 @@ import androidx.appcompat.widget.PopupMenu
 import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.lifecycleScope
 import com.threebanders.recordr.R
-import com.threebanders.recordr.common.Extras
 import com.threebanders.recordr.ui.BaseActivity.LayoutType
+import com.threebanders.recordr.viewmodels.contact_details.ContactDetailsExtra
 import core.threebanders.recordr.data.Recording
 import core.threebanders.recordr.recorder.Recorder
 import kotlinx.coroutines.launch
@@ -26,7 +26,7 @@ class UnassignedRecordingsFragment : ContactDetailFragment() {
         rootView = inflater.inflate(R.layout.unassigned_recordings_fragment, container, false)
 
         recordingsRecycler = rootView.findViewById(R.id.unassigned_recordings)
-        Extras.showRecyclerView(recordingsRecycler, baseActivity, adapter!!)
+        ContactDetailsExtra.showRecyclerView(recordingsRecycler, baseActivity, adapter!!)
         record = Recorder(context)
 
         lifecycleScope.launch {

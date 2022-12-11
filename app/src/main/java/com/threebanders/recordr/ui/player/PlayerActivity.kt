@@ -19,8 +19,8 @@ import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.ktx.Firebase
 import com.sdsmdg.harjot.crollerTest.Croller
 import com.threebanders.recordr.R
-import com.threebanders.recordr.common.Extras.RECORDING_EXTRA
 import com.threebanders.recordr.ui.BaseActivity
+import com.threebanders.recordr.viewmodels.contact_details.ContactDetailsExtra.RECORDING_EXTRA
 import core.threebanders.recordr.CoreUtil
 import core.threebanders.recordr.data.Recording
 import core.threebanders.recordr.player.AudioPlayer

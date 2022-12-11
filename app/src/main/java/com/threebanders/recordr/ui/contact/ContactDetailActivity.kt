@@ -6,14 +6,14 @@ import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import com.threebanders.recordr.R
-import com.threebanders.recordr.common.Extras
 import com.threebanders.recordr.ui.BaseActivity
+import com.threebanders.recordr.viewmodels.contact_details.ContactDetailsExtra
 import core.threebanders.recordr.data.Contact
 
 class ContactDetailActivity : BaseActivity() {
     var contact: Contact? = null
     override fun createFragment(): Fragment {
-        return Extras.newInstance(contact)
+        return ContactDetailsExtra.newInstance(contact)
     }
 
     override fun onResume() {

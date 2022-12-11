@@ -1,4 +1,4 @@
-package com.threebanders.recordr.viewmodels
+package com.threebanders.recordr.viewmodels.contact_details
 
 import android.content.Context
 import android.view.View
@@ -11,14 +11,12 @@ import com.threebanders.recordr.ui.contact.ContactsListActivityMain
 import core.threebanders.recordr.data.Contact
 
 class ContactDetailsViewModel : ViewModel() {
-
-    /* -------------------------- Contact Details Fragment ---------------------------- */
     fun init(
         adapter: ContactDetailFragment.RecordingAdapter,
         recordingsRecycler: RecyclerView,
         mainActivity: ContactsListActivityMain
     ) {
-        Extras.initRecycler(adapter, recordingsRecycler, mainActivity)
+        ContactDetailsExtra.initRecycler(adapter, recordingsRecycler, mainActivity)
     }
 
     fun showDeleteDialog(
@@ -26,56 +24,56 @@ class ContactDetailsViewModel : ViewModel() {
         selectedItems: Int,
         onAction: () -> Unit
     ) {
-        Extras.showDialog(mainActivity, selectedItems, onAction)
+        ContactDetailsExtra.showDialog(mainActivity, selectedItems, onAction)
     }
 
     fun showSecondaryDialog(mainActivity: ContactsListActivityMain, result: DialogInfo) {
-        Extras.showSecondaryDialog(mainActivity, result)
+        ContactDetailsExtra.showSecondaryDialog(mainActivity, result)
     }
 
     fun fadeEffect(view: View, finalAlpha: Float, finalVisibility: Int, EFFECT_TIME: Int) {
-        Extras.fadeEffect(view, finalAlpha, finalVisibility, EFFECT_TIME)
+        ContactDetailsExtra.fadeEffect(view, finalAlpha, finalVisibility, EFFECT_TIME)
     }
 
     fun shareRecording(path: String, context: Context?) {
-        Extras.shareRecorder(path, context)
+        ContactDetailsExtra.shareRecorder(path, context)
     }
 
     fun modifyMargins(recording: View, context: Context, selectMode: Boolean) {
-        Extras.modifyMargins(recording, context, selectMode)
+        ContactDetailsExtra.modifyMargins(recording, context, selectMode)
     }
 
     fun selectRecording(recording: View) {
-        Extras.selectRecording(recording)
+        ContactDetailsExtra.selectRecording(recording)
     }
 
     fun deselectRecording(recording: View) {
-        Extras.deselectRecording(recording)
+        ContactDetailsExtra.deselectRecording(recording)
     }
 
     fun redrawRecordings(adapter: ContactDetailFragment.RecordingAdapter) {
-        Extras.redrawRecordings(adapter)
+        ContactDetailsExtra.redrawRecordings(adapter)
     }
 
     fun markNonexistent(
         holder: ContactDetailFragment.RecordingHolder,
         mainActivity: ContactsListActivityMain
     ) {
-        Extras.markNonexistent(holder, mainActivity)
+        ContactDetailsExtra.markNonexistent(holder, mainActivity)
     }
 
     fun unMarkNonexistent(holder: ContactDetailFragment.RecordingHolder) {
-        Extras.unMarkNonexistent(holder)
+        ContactDetailsExtra.unMarkNonexistent(holder)
     }
 
     fun removeIfPresentInSelectedItems(
         adapterPosition: Int,
         selectedItems: MutableList<Int>
     ): Boolean {
-        return Extras.removeIfPresentInSelectedItems(adapterPosition, selectedItems)
+        return ContactDetailsExtra.removeIfPresentInSelectedItems(adapterPosition, selectedItems)
     }
 
     fun newInstance(contact: Contact?): ContactDetailFragment {
-        return Extras.newInstance(contact)
+        return ContactDetailsExtra.newInstance(contact)
     }
 }
