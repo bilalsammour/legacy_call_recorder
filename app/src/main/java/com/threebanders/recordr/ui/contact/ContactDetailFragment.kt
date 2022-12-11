@@ -474,10 +474,16 @@ open class ContactDetailFragment : BaseFragment() {
             if (!recording.exists()) {
                 contactDetailsViewModel.markNonexistent(holder, mainActivity!!)
             }
+
             contactDetailsViewModel.modifyMargins(holder.itemView, requireContext(), selectMode)
-            if (selectedItems!!.contains(position)) contactDetailsViewModel.selectRecording(holder.itemView) else contactDetailsViewModel.deselectRecording(
-                holder.itemView
-            )
+
+            if (selectedItems!!.contains(position)) {
+                contactDetailsViewModel.selectRecording(holder.itemView)
+            } else {
+                contactDetailsViewModel.deselectRecording(
+                    holder.itemView
+                )
+            }
         }
 
         override fun onViewRecycled(holder: RecordingHolder) {
@@ -524,16 +530,24 @@ open class ContactDetailFragment : BaseFragment() {
 
                 var value: String?
                 value = phName
-                if (phName == null || phName.isEmpty())
+
+                if (phName == null || phName.isEmpty()) {
                     value = phNumber
+                }
+
                 val contact = Contact()
-                if (dir != null && dir.equals("MISSED", ignoreCase = true)) contact.isMissed = true
+                if (dir != null && dir.equals("MISSED", ignoreCase = true)) {
+                    contact.isMissed = true
+                }
+
                 contact.phoneNumber = value
                 contact.contactName = callDuration
                 contact.daytime =
                     SimpleDateFormat("dd/MM/yyyy hh:mm a", Locale.US).format(callDayTime)
+                
                 contactList.add(contact)
             }
+
             managedCursor.close()
 
             contactList
