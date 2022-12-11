@@ -192,15 +192,19 @@ open class ContactDetailFragment : BaseFragment() {
     }
 
     protected fun hideView(v: View?, animate: Boolean) {
-        if (animate) contactDetailsViewModel.fadeEffect(v!!, 0.0f, View.GONE, EFFECT_TIME) else {
-            v!!.alpha = 0.0f //poate lipsi?
+        if (animate) {
+            contactDetailsViewModel.fadeEffect(v!!, 0.0f, View.GONE, EFFECT_TIME)
+        } else {
+            v!!.alpha = 0.0f
             v.visibility = View.GONE
         }
     }
 
     protected fun showView(vw: View?, animate: Boolean) {
-        if (animate) contactDetailsViewModel.fadeEffect(vw!!, 1f, View.VISIBLE, EFFECT_TIME) else {
-            vw?.alpha = 1f //poate lipsi?
+        if (animate) {
+            contactDetailsViewModel.fadeEffect(vw!!, 1f, View.VISIBLE, EFFECT_TIME)
+        } else {
+            vw?.alpha = 1f
             vw?.visibility = View.VISIBLE
         }
     }
@@ -243,10 +247,11 @@ open class ContactDetailFragment : BaseFragment() {
             return list
         }
 
-
     protected fun onSelectAll() {
         val notSelected: MutableList<Int> = ArrayList()
-        for (i in 0 until adapter!!.itemCount) notSelected.add(i)
+        for (i in 0 until adapter!!.itemCount) {
+            notSelected.add(i)
+        }
         notSelected.removeAll(selectedItems!!)
         for (position in notSelected) {
             selectedItems!!.add(position)
@@ -466,7 +471,9 @@ open class ContactDetailFragment : BaseFragment() {
                 contactDetailsViewModel.shareRecording(recording.path, context)
             }
 
-            if (!recording.exists()) contactDetailsViewModel.markNonexistent(holder, mainActivity!!)
+            if (!recording.exists()) {
+                contactDetailsViewModel.markNonexistent(holder, mainActivity!!)
+            }
             contactDetailsViewModel.modifyMargins(holder.itemView, requireContext(), selectMode)
             if (selectedItems!!.contains(position)) contactDetailsViewModel.selectRecording(holder.itemView) else contactDetailsViewModel.deselectRecording(
                 holder.itemView
@@ -534,5 +541,4 @@ open class ContactDetailFragment : BaseFragment() {
             ex.printStackTrace()
             ArrayList()
         }
-
 }
