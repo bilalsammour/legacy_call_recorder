@@ -109,14 +109,14 @@ public class RecorderService extends Service {
                                 0, sendBroadcast, PendingIntent.FLAG_IMMUTABLE);
                         builder.addAction(new NotificationCompat.Action.Builder(Core.getIconSpeakerOff(),
                                         "Stop speaker", stopSpeakerPi).build())
-                                .setContentText("Recording&#8230; (speaker on)");
+                                .setContentText("Speaker on");
                     } else {
                         sendBroadcast.setAction(ACTION_START_SPEAKER);
                         PendingIntent startSpeakerPi = PendingIntent.getBroadcast(getApplicationContext(),
                                 0, sendBroadcast, PendingIntent.FLAG_IMMUTABLE);
                         builder.addAction(new NotificationCompat.Action.Builder(Core.getIconSpeakerOn(),
                                         "Start speaker", startSpeakerPi).build())
-                                .setContentText("Recording&#8230; (speaker off)");
+                                .setContentText("Speaker off");
                     }
                     break;
 
