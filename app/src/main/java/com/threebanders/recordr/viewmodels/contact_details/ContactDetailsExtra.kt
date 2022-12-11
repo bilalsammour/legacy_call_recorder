@@ -21,7 +21,6 @@ import com.threebanders.recordr.R
 import com.threebanders.recordr.common.DialogInfo
 import com.threebanders.recordr.ui.BaseActivity
 import com.threebanders.recordr.ui.contact.ContactDetailFragment
-import com.threebanders.recordr.ui.contact.ContactsListActivityMain
 import core.threebanders.recordr.data.Contact
 import java.io.File
 
@@ -51,7 +50,7 @@ object ContactDetailsExtra {
     fun initRecycler(
         adapter: ContactDetailFragment.RecordingAdapter,
         recordingsRecycler: RecyclerView,
-        mainActivity: ContactsListActivityMain
+        mainActivity: BaseActivity
     ) {
         recordingsRecycler.layoutManager = LinearLayoutManager(mainActivity)
         recordingsRecycler.addItemDecoration(
@@ -64,7 +63,7 @@ object ContactDetailsExtra {
     }
 
     fun showDialog(
-        mainActivity: ContactsListActivityMain,
+        mainActivity: BaseActivity,
         selectedItems: Int,
         onAction: () -> Unit
     ) {
@@ -86,7 +85,7 @@ object ContactDetailsExtra {
             .show()
     }
 
-    fun showSecondaryDialog(mainActivity: ContactsListActivityMain, result: DialogInfo) {
+    fun showSecondaryDialog(mainActivity: BaseActivity, result: DialogInfo) {
         MaterialDialog.Builder(mainActivity)
             .title(result.title)
             .content(result.message)
@@ -167,7 +166,7 @@ object ContactDetailsExtra {
 
     fun markNonexistent(
         holder: ContactDetailFragment.RecordingHolder,
-        mainActivity: ContactsListActivityMain
+        mainActivity: BaseActivity
     ) {
         holder.exclamation.visibility = View.VISIBLE
         val filter =

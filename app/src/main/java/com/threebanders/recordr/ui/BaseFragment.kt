@@ -1,11 +1,10 @@
 package com.threebanders.recordr.ui
 
 import androidx.fragment.app.Fragment
-import com.threebanders.recordr.ui.contact.ContactsListActivityMain
 
 open class BaseFragment : Fragment() {
-    val mainActivity: ContactsListActivityMain?
-        get() = activity as ContactsListActivityMain?
+    val mainActivity: BaseActivity?
+        get() = activity as BaseActivity?
     val baseActivity: BaseActivity?
         get() = activity as BaseActivity?
 }

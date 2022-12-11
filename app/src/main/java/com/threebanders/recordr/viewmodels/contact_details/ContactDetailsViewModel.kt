@@ -5,28 +5,28 @@ import android.view.View
 import androidx.lifecycle.ViewModel
 import androidx.recyclerview.widget.RecyclerView
 import com.threebanders.recordr.common.DialogInfo
+import com.threebanders.recordr.ui.BaseActivity
 import com.threebanders.recordr.ui.contact.ContactDetailFragment
-import com.threebanders.recordr.ui.contact.ContactsListActivityMain
 import core.threebanders.recordr.data.Contact
 
 class ContactDetailsViewModel : ViewModel() {
     fun init(
         adapter: ContactDetailFragment.RecordingAdapter,
         recordingsRecycler: RecyclerView,
-        mainActivity: ContactsListActivityMain
+        mainActivity: BaseActivity
     ) {
         ContactDetailsExtra.initRecycler(adapter, recordingsRecycler, mainActivity)
     }
 
     fun showDeleteDialog(
-        mainActivity: ContactsListActivityMain,
+        mainActivity: BaseActivity,
         selectedItems: Int,
         onAction: () -> Unit
     ) {
         ContactDetailsExtra.showDialog(mainActivity, selectedItems, onAction)
     }
 
-    fun showSecondaryDialog(mainActivity: ContactsListActivityMain, result: DialogInfo) {
+    fun showSecondaryDialog(mainActivity: BaseActivity, result: DialogInfo) {
         ContactDetailsExtra.showSecondaryDialog(mainActivity, result)
     }
 
@@ -56,7 +56,7 @@ class ContactDetailsViewModel : ViewModel() {
 
     fun markNonexistent(
         holder: ContactDetailFragment.RecordingHolder,
-        mainActivity: ContactsListActivityMain
+        mainActivity: BaseActivity
     ) {
         ContactDetailsExtra.markNonexistent(holder, mainActivity)
     }
