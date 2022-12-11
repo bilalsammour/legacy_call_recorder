@@ -47,7 +47,6 @@ class UnassignedRecordingsFragment : ContactDetailFragment() {
         return rootView
     }
 
-
     override fun toggleTitle() {
         val title = baseActivity?.findViewById<TextView>(R.id.actionbar_title)
         val params = title?.layoutParams as Toolbar.LayoutParams
