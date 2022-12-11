@@ -22,7 +22,6 @@ import com.threebanders.recordr.common.DialogInfo
 import com.threebanders.recordr.ui.BaseActivity
 import com.threebanders.recordr.ui.contact.ContactDetailFragment
 import com.threebanders.recordr.ui.contact.ContactsListActivityMain
-import com.threebanders.recordr.ui.contact.ContactsListFragment
 import core.threebanders.recordr.data.Contact
 import java.io.File
 
@@ -32,10 +31,13 @@ object ContactDetailsExtra {
     const val EFFECT_TIME = 250
     const val RECORDING_EXTRA = "recording_extra"
 
-   fun showRecyclerView(
-       recordingsRecycler: RecyclerView?,
-       activity: BaseActivity?,
-       recordingAdapter: ContactDetailFragment.RecordingAdapter
+    const val CURRENT_POS_KEY = "current_pos"
+    const val ARG_CONTACT = "arg_contact"
+
+    fun showRecyclerView(
+        recordingsRecycler: RecyclerView?,
+        activity: BaseActivity?,
+        recordingAdapter: ContactDetailFragment.RecordingAdapter
     ) {
         recordingsRecycler!!.layoutManager = LinearLayoutManager(activity)
         recordingsRecycler.addItemDecoration(
@@ -204,7 +206,7 @@ object ContactDetailsExtra {
 
     fun newInstance(contact: Contact?): ContactDetailFragment {
         val args = Bundle()
-        args.putParcelable(ContactsListFragment.ARG_CONTACT, contact)
+        args.putParcelable(ARG_CONTACT, contact)
         val fragment = ContactDetailFragment()
         fragment.arguments = args
 

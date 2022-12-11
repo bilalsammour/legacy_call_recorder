@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import com.threebanders.recordr.R
 import com.threebanders.recordr.ui.BaseActivity
 import com.threebanders.recordr.viewmodels.contact_details.ContactDetailsExtra
+import com.threebanders.recordr.viewmodels.contact_details.ContactDetailsExtra.ARG_CONTACT
 import core.threebanders.recordr.data.Contact
 
 class ContactDetailActivity : BaseActivity() {
@@ -27,9 +28,9 @@ class ContactDetailActivity : BaseActivity() {
         setContentView(R.layout.contact_detail_activity)
         val intent = intent
         contact = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            intent.getParcelableExtra(ContactsListFragment.ARG_CONTACT, Contact::class.java)
+            intent.getParcelableExtra(ARG_CONTACT, Contact::class.java)
         } else {
-            intent.getParcelableExtra(ContactsListFragment.ARG_CONTACT)
+            intent.getParcelableExtra(ARG_CONTACT)
         }
         insertFragment(R.id.contact_detail_fragment_container)
         val toolbar = findViewById<Toolbar>(R.id.toolbar_detail)

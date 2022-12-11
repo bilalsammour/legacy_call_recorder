@@ -18,6 +18,8 @@ import com.threebanders.recordr.ui.BaseActivity.LayoutType
 import com.threebanders.recordr.ui.BaseFragment
 import com.threebanders.recordr.viewmodels.contact_details.ContactDetailsViewModel
 import com.threebanders.recordr.viewmodels.MainViewModel
+import com.threebanders.recordr.viewmodels.contact_details.ContactDetailsExtra.ARG_CONTACT
+import com.threebanders.recordr.viewmodels.contact_details.ContactDetailsExtra.CURRENT_POS_KEY
 import core.threebanders.recordr.CoreUtil
 import core.threebanders.recordr.data.Contact
 
@@ -261,10 +263,5 @@ class ContactsListFragment : BaseFragment() {
         override fun getItemCount(): Int {
             return contacts.size
         }
-    }
-
-    companion object {
-        private const val CURRENT_POS_KEY = "current_pos"
-        const val ARG_CONTACT = "arg_contact"
     }
 }

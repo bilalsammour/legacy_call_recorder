@@ -5,7 +5,6 @@ import android.view.View
 import androidx.lifecycle.ViewModel
 import androidx.recyclerview.widget.RecyclerView
 import com.threebanders.recordr.common.DialogInfo
-import com.threebanders.recordr.common.Extras
 import com.threebanders.recordr.ui.contact.ContactDetailFragment
 import com.threebanders.recordr.ui.contact.ContactsListActivityMain
 import core.threebanders.recordr.data.Contact
