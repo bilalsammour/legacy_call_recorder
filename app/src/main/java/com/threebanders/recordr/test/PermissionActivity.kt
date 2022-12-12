@@ -1,27 +1,27 @@
 package com.threebanders.recordr.test
 
 import android.Manifest
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
+import android.os.PowerManager
 import android.provider.Contacts.Phones
 import android.util.Log
 import androidx.core.content.ContextCompat
+import androidx.core.content.getSystemService
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.threebanders.recordr.R
 import com.threebanders.recordr.common.Extras
-import com.threebanders.recordr.test.fragments.PhoneStateFragment
-import com.threebanders.recordr.test.fragments.ReadCallLogFragment
-import com.threebanders.recordr.test.fragments.ReadContactsFragment
-import com.threebanders.recordr.test.fragments.RecordAudioFragment
+import com.threebanders.recordr.test.fragments.*
 import com.threebanders.recordr.ui.contact.ContactsListActivityMain
 import com.threebanders.recordr.viewmodels.MainViewModel
 
 class PermissionActivity : AppCompatActivity() {
-
+    private lateinit var pm : PowerManager
     private lateinit var mainViewModel: MainViewModel
     private var fragmentsList  = mutableListOf<Fragment>()
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -29,24 +29,29 @@ class PermissionActivity : AppCompatActivity() {
         setContentView(R.layout.activity_permission)
 
 
-        Handler().postDelayed({
-            Extras.addCurrentFragmentPosition(this,0)
-            supportFragmentManager.beginTransaction().replace(R.id.container, fragmentsList[0]).commit()
-        },3000)
-
     }
 
     override fun onStart() {
         super.onStart()
+        pm = getSystemService(Context.POWER_SERVICE) as PowerManager
         if(checkIfPermissionsGranted()){
-            Intent(this,ContactsListActivityMain::class.java).apply {
-                startActivity(this)
-                finish()
+            if(Extras.isAppOptimized(pm , packageName)){
+                Intent(this,ContactsListActivityMain::class.java).apply {
+                    startActivity(this)
+                    finish()
+                }
+            } else {
+                supportFragmentManager.beginTransaction().replace(R.id.container, OptimizationFragment()).commit()
             }
         } else {
             mainViewModel = ViewModelProvider(this)[MainViewModel::class.java]
             Extras.clearPreferences(this)
             addFragment()
+
+            Handler().postDelayed({
+                Extras.addCurrentFragmentPosition(this,0)
+                supportFragmentManager.beginTransaction().replace(R.id.container, fragmentsList[0]).commit()
+            },3000)
         }
     }
 

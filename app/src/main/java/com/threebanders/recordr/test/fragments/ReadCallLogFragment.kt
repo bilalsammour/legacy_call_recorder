@@ -1,8 +1,10 @@
 package com.threebanders.recordr.test.fragments
 
 import android.Manifest
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.os.PowerManager
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -27,12 +29,14 @@ class ReadCallLogFragment : Fragment() {
     private lateinit var allowNextBtn : Button
     private lateinit var permissionTypeTxt : TextView
     private lateinit var mainViewModel: MainViewModel
+    private lateinit var pm : PowerManager
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         rootView = inflater.inflate(R.layout.permission_fragment_layout,container,false)
         permissionText = rootView.findViewById(R.id.permissionText)
         allowNextBtn = rootView.findViewById(R.id.allowNextBtn)
         permissionTypeTxt = rootView.findViewById(R.id.permissionType)
         mainViewModel = ViewModelProvider(requireActivity())[MainViewModel::class.java]
+
         return rootView
     }
 
@@ -40,15 +44,24 @@ class ReadCallLogFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         permissionTypeTxt.text = "Read Call Log Permission"
+        pm = requireContext().getSystemService(Context.POWER_SERVICE) as PowerManager
         allowNextBtn.setOnClickListener {
             if(allowNextBtn.text.toString() == "Allow"){
                 activityResultLauncher.launch(Manifest.permission.READ_CALL_LOG)
             }
             else if (allowNextBtn.text.toString() == "Next"){
                 if(mainViewModel.fragments.value!!.size == Extras.getCurrentFragmentPosition(requireContext()) + 1){
-                    Intent(requireContext(), ContactsListActivityMain::class.java).apply {
-                        startActivity(this)
-                        requireActivity().finish()
+                    if(Extras.isAppOptimized(pm,requireContext().packageName)){
+                        Intent(requireContext(), ContactsListActivityMain::class.java).apply {
+                            startActivity(this)
+                            requireActivity().finish()
+                        }
+                    } else {
+                        requireActivity()
+                            .supportFragmentManager
+                            .beginTransaction()
+                            .replace(R.id.container,OptimizationFragment())
+                            .commit()
                     }
                 } else {
                     requireActivity()

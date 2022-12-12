@@ -1,8 +1,10 @@
 package com.threebanders.recordr.test.fragments
 
 import android.Manifest
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.os.PowerManager
 import android.provider.Contacts.Phones
 import android.util.Log
 import android.view.LayoutInflater
@@ -27,6 +29,7 @@ class PhoneStateFragment : Fragment() {
     private lateinit var rootView : View
     private lateinit var permissionText : TextView
     private lateinit var allowNextBtn : Button
+    private lateinit var pm : PowerManager
     private lateinit var permissionTypeTxt : TextView
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         rootView = inflater.inflate(R.layout.permission_fragment_layout,container,false)
@@ -39,16 +42,26 @@ class PhoneStateFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        pm = requireContext().getSystemService(Context.POWER_SERVICE) as PowerManager
         permissionTypeTxt.text = "Phone State Permission"
         allowNextBtn.setOnClickListener {
             if(allowNextBtn.text.toString() == "Allow"){
                 activityResultLauncher.launch(Manifest.permission.READ_PHONE_STATE)
             } else if (allowNextBtn.text.toString() == "Next"){
                 if(mainViewModel.fragments.value!!.size == Extras.getCurrentFragmentPosition(requireContext())){
-                    Intent(requireContext(),ContactsListActivityMain::class.java).apply {
-                        startActivity(this)
-                        requireActivity().finish()
-                    }
+                   if(Extras.isAppOptimized(pm , requireContext().packageName)){
+                       Intent(requireContext(),ContactsListActivityMain::class.java).apply {
+                           startActivity(this)
+                           requireActivity().finish()
+                       }
+                   } else {
+                       requireActivity()
+                           .supportFragmentManager
+                           .beginTransaction()
+                           .replace(R.id.container,OptimizationFragment())
+                           .commit()
+                   }
                 } else {
                     requireActivity()
                         .supportFragmentManager

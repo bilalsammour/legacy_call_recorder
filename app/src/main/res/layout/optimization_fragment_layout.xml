@@ -5,10 +5,9 @@
     android:layout_height="match_parent">
 
     <TextView
-        android:id="@+id/permissionType"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Phone Call Permission"
+        android:text="Battery Optimization"
         android:layout_marginTop="100dp"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
@@ -26,11 +25,12 @@
 
 
     <Button
-        android:id="@+id/allowNextBtn"
+        android:id="@+id/turnOffBtn"
         android:layout_width="250dp"
         android:layout_height="wrap_content"
         android:background="@drawable/allow_next_button_shape"
-        android:text="Allow"
+        android:backgroundTint="@color/colorAccentLight"
+        android:text="Turn Off"
         android:layout_gravity="bottom|center"
         android:layout_marginBottom="30dp"
         android:textColor="@color/white" />

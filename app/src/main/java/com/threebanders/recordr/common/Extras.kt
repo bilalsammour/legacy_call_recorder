@@ -331,4 +331,7 @@ object Extras {
         }
     }
 
+    fun isAppOptimized(pm : PowerManager,packageName : String) : Boolean {
+        return pm.isIgnoringBatteryOptimizations(packageName)
+    }
 }
