@@ -155,13 +155,16 @@ public class RecorderService extends Service {
         } catch (IllegalStateException ignored) {
         }
 
-        if (receivedNumPhone == null && incoming && Build.VERSION.SDK_INT < Build.VERSION_CODES.P)
+        if (receivedNumPhone == null && incoming && Build.VERSION.SDK_INT < Build.VERSION_CODES.P) {
             privateCall = true;
+        }
 
         if (receivedNumPhone != null) {
             contact = Contact.queryNumberInAppContacts(Core.getRepository(), receivedNumPhone);
+
             if (contact == null) {
                 contact = Contact.queryNumberInPhoneContacts(receivedNumPhone, getContentResolver());
+
                 if (contact == null) {
                     contact = new Contact(null, receivedNumPhone, "UNKNOWN CONTACT",
                             null, CoreUtil.UNKNOWN_TYPE_PHONE_CODE);
@@ -196,6 +199,7 @@ public class RecorderService extends Service {
         } catch (RecordingException e) {
             Notification notification = buildNotification(RECORD_ERROR,
                     "Cannot start recorder. Maybe change audio source?");
+
             if (notification != null) {
                 startForeground(NOTIFICATION_ID, notification);
             }

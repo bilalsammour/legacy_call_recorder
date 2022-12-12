@@ -1,33 +1,21 @@
 package core.threebanders.recordr;
 
-import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Build;
 import android.util.Log;
 
 import androidx.annotation.StringDef;
-import androidx.appcompat.app.AppCompatActivity;
 
 import com.afollestad.materialdialogs.BuildConfig;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.Locale;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
 
 public class CrLog {
     public static final String DEBUG = " DEBUG ";
@@ -42,6 +30,7 @@ public class CrLog {
 
     private static void backupLogFiles() throws LoggerException {
         File backup = null;
+
         for (int i = 1; i <= MAX_FILE_COUNT; ++i) {
             backup = new File(LOG_FOLDER, LOG_FILE_NAME + i + ".txt");
             if (!backup.exists()) {
@@ -141,81 +130,9 @@ public class CrLog {
         }
     }
 
-    static public void sendLogs(final AppCompatActivity activity, String dev, String appName) {
-        new Thread(new SendLogs(zipFile -> {
-            Intent intent = new Intent(Intent.ACTION_SENDTO);
-            intent.setData(Uri.parse("mailto:" + dev));
-            intent.putExtra(Intent.EXTRA_SUBJECT, appName + " logs");
-            intent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(zipFile));
-            activity.startActivity(Intent.createChooser(intent, "Send email..."));
-        })).start();
-    }
-
     @StringDef({DEBUG, WARN, ERROR})
     @Retention(RetentionPolicy.SOURCE)
     @interface levels {
-    }
-
-    static class SendLogs implements Runnable {
-        private final AfterZip afterZip;
-
-        SendLogs(AfterZip afterZip) {
-            this.afterZip = afterZip;
-        }
-
-        @Override
-        public void run() {
-            Context context = Core.getContext();
-            final int BUFFER_SIZE = 2048;
-
-            List<File> files = new ArrayList<>();
-            if (logFile.exists())
-                files.add(logFile);
-            for (int i = 1; i <= MAX_FILE_COUNT; ++i) {
-                File file = new File(LOG_FOLDER, LOG_FILE_NAME + i + ".txt");
-                if (file.exists())
-                    files.add(file);
-                else
-                    break;
-            }
-
-            if (files.isEmpty() || context.getExternalFilesDir(null) == null)  //dacă external storage is unavailable.
-                // În cazul acesta nu avem cum pune arhiva într-o locație accesibilă clienților de mail și ieșim.
-                return;
-
-            File zipFile = new File(context.getExternalFilesDir(null), "logs.zip");
-            if (zipFile.exists())
-                if (!zipFile.delete())
-                    Log.wtf(TAG, "Cannot delete old zip file.");
-
-            byte[] data = new byte[BUFFER_SIZE];
-            try {
-                ZipOutputStream zout = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(zipFile)));
-
-                for (File file : files) {
-                    BufferedInputStream input = new BufferedInputStream(new FileInputStream(file), BUFFER_SIZE);
-                    ZipEntry entry = new ZipEntry(file.getName());
-                    zout.putNextEntry(entry);
-                    int count;
-
-                    while ((count = input.read(data, 0, BUFFER_SIZE)) != -1)
-                        zout.write(data, 0, count);
-
-                    input.close();
-                }
-                zout.finish();
-                zout.close();
-            } catch (IOException e) {
-                Log.wtf(TAG, e.getMessage());
-                return;
-            }
-
-            afterZip.doTheRest(zipFile);
-        }
-
-        interface AfterZip {
-            void doTheRest(File zipFile);
-        }
     }
 
     static class LoggerException extends Exception {

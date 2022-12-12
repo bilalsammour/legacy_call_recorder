@@ -240,10 +240,11 @@ class PlayerActivity : BaseActivity() {
 
         override fun onPositionChanged(position: Int) {
             if (!userIsSeeking) {
-                if (Build.VERSION.SDK_INT >= 24) playSeekBar!!.setProgress(
-                    position,
-                    true
-                ) else playSeekBar!!.progress = position
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    playSeekBar!!.setProgress(position, true)
+                } else {
+                    playSeekBar!!.progress = position
+                }
             }
         }
 
