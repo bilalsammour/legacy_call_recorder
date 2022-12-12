@@ -8,7 +8,6 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.Resources;
 import android.database.SQLException;
 import android.graphics.Color;
 import android.media.AudioManager;
@@ -92,7 +91,6 @@ public class RecorderService extends Service {
                     0, goToActivity, PendingIntent.FLAG_IMMUTABLE);
 
             Intent sendBroadcast = new Intent(getApplicationContext(), ControlRecordingReceiver.class);
-            Resources res = getApplicationContext().getResources();
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
                 createChannel();
