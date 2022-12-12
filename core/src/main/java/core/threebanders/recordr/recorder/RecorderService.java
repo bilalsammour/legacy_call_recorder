@@ -22,6 +22,7 @@ import org.acra.ACRA;
 import core.threebanders.recordr.Const;
 import core.threebanders.recordr.Core;
 import core.threebanders.recordr.CoreUtil;
+import core.threebanders.recordr.R;
 import core.threebanders.recordr.data.Contact;
 import core.threebanders.recordr.data.Recording;
 
@@ -74,8 +75,8 @@ public class RecorderService extends Service {
 
     @RequiresApi(Build.VERSION_CODES.O)
     private void createChannel() {
-        CharSequence name = "RECORDR";
-        String description = "Call recorder controls";
+        CharSequence name = getString(R.string.recorder);
+        String description = getString(R.string.call_controllers);
         int importance = NotificationManager.IMPORTANCE_LOW;
         NotificationChannel mChannel = new NotificationChannel(CHANNEL_ID, name, importance);
         mChannel.setDescription(description);
@@ -96,7 +97,7 @@ public class RecorderService extends Service {
                 createChannel();
             NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext(), CHANNEL_ID)
                     .setSmallIcon(Core.getNotificationIcon())
-                    .setContentTitle(callIdentifier + (incoming ? " (incoming)" : " (outgoing)"))
+                    .setContentTitle(callIdentifier + (incoming ? getString(R.string.incoming) : getString(R.string.outgoing)))
                     .setContentIntent(tapNotificationPi);
 
             switch (typeOfNotification) {
@@ -106,15 +107,15 @@ public class RecorderService extends Service {
                         PendingIntent stopSpeakerPi = PendingIntent.getBroadcast(Core.getContext(),
                                 0, sendBroadcast, PendingIntent.FLAG_IMMUTABLE);
                         builder.addAction(new NotificationCompat.Action.Builder(Core.getIconSpeakerOff(),
-                                        "Stop speaker", stopSpeakerPi).build())
-                                .setContentText("Speaker on");
+                                        getString(R.string.stop_speaker), stopSpeakerPi).build())
+                                .setContentText(getString(R.string.speaker_on));
                     } else {
                         sendBroadcast.setAction(ACTION_START_SPEAKER);
                         PendingIntent startSpeakerPi = PendingIntent.getBroadcast(getApplicationContext(),
                                 0, sendBroadcast, PendingIntent.FLAG_IMMUTABLE);
                         builder.addAction(new NotificationCompat.Action.Builder(Core.getIconSpeakerOn(),
-                                        "Start speaker", startSpeakerPi).build())
-                                .setContentText("Speaker off");
+                                        getString(R.string.start_speaker), startSpeakerPi).build())
+                                .setContentText(getString(R.string.speaker_off));
                     }
                     break;
 
@@ -122,14 +123,14 @@ public class RecorderService extends Service {
                     builder.setColor(Color.RED)
                             .setColorized(true)
                             .setSmallIcon(Core.getIconFailure())
-                            .setContentTitle("The call is not recorded")
+                            .setContentTitle(getString(R.string.call_recorder_or_not))
                             .setContentText(message)
                             .setAutoCancel(true);
                     break;
 
                 case RECORD_SUCCESS:
                     builder.setSmallIcon(Core.getIconSuccess())
-                            .setContentText("The phone call was successfully recorded.")
+                            .setContentText(getString(R.string.call_record_success))
                             .setAutoCancel(true);
             }
 
@@ -166,7 +167,7 @@ public class RecorderService extends Service {
                 contact = Contact.queryNumberInPhoneContacts(receivedNumPhone, getContentResolver());
 
                 if (contact == null) {
-                    contact = new Contact(null, receivedNumPhone, "UNKNOWN CONTACT",
+                    contact = new Contact(null, receivedNumPhone, getString(R.string.unknown_contact),
                             null, CoreUtil.UNKNOWN_TYPE_PHONE_CODE);
                 }
                 try {
@@ -178,12 +179,12 @@ public class RecorderService extends Service {
 
         if (contact != null) {
             String name = contact.getContactName();
-            callIdentifier = name.equals("UNKNOWN CONTACT") ?
+            callIdentifier = name.equals(getString(R.string.unknown_contact)) ?
                     receivedNumPhone : name;
         } else if (privateCall)
-            callIdentifier = "Hidden number";
+            callIdentifier = getString(R.string.hidden_number);
         else
-            callIdentifier = "Unknown phone number";
+            callIdentifier = getString(R.string.unknown_phone_number);
 
         try {
             recorder.startRecording(receivedNumPhone);
@@ -198,7 +199,7 @@ public class RecorderService extends Service {
             }
         } catch (RecordingException e) {
             Notification notification = buildNotification(RECORD_ERROR,
-                    "Cannot start recorder. Maybe change audio source?");
+                    getString(R.string.cannot_start_record));
 
             if (notification != null) {
                 startForeground(NOTIFICATION_ID, notification);
@@ -269,7 +270,7 @@ public class RecorderService extends Service {
             if (contactId == null) {
                 Contact contact = new Contact();
                 contact.setIsPrivateNumber();
-                contact.setContactName("Hidden number");
+                contact.setContactName(getString(R.string.hidden_number));
                 try {
                     contact.save(Core.getRepository());
                 } catch (SQLException exc) {

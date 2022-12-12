@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="recorder">RECORDR</string>
+    <string name="call_controllers">Call recorder controls</string>
+    <string name="incoming">\" (incoming)\"</string>
+    <string name="outgoing">\" (outgoing)\"</string>
+    <string name="stop_speaker">Stop speaker</string>
+    <string name="speaker_on">Speaker on</string>
+    <string name="start_speaker">Start speaker</string>
+    <string name="speaker_off">Speaker off</string>
+    <string name="call_recorder_or_not">The call is not recorded</string>
+    <string name="call_record_success">The phone call was successfully recorded.</string>
+    <string name="unknown_contact">UNKNOWN CONTACT</string>
+    <string name="hidden_number">Hidden number</string>
+    <string name="unknown_phone_number">Unknown phone number</string>
+    <string name="cannot_start_record">Cannot start recorder. Maybe change audio source?</string>
+</resources>
