@@ -304,8 +304,9 @@ object Extras {
         editor?.apply()
     }
 
-    fun isGoogleDriveSynced() : Boolean {
+    fun isGoogleDriveSynced(): Boolean {
         val corePrefs = CrApp.instance.core.prefs
-        return corePrefs.getBoolean(GOOGLE_DRIVE,false)
+        
+        return corePrefs.getBoolean(GOOGLE_DRIVE, false)
     }
 }
