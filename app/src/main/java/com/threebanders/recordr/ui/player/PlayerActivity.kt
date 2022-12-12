@@ -67,10 +67,10 @@ class PlayerActivity : BaseActivity() {
             actionBar.setDisplayHomeAsUpEnabled(true)
         }
 
-        recording = if (Build.VERSION.SDK_INT >= 33) {
+        recording = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             intent.getParcelableExtra(RECORDING_EXTRA, Recording::class.java)
         } else {
-            intent.getParcelableExtra(RECORDING_EXTRA)
+            @Suppress("DEPRECATION") intent.getParcelableExtra(RECORDING_EXTRA)
         }
 
         visualizer = findViewById(R.id.visualizer)
