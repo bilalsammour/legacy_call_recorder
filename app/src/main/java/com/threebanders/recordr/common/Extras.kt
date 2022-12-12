@@ -22,6 +22,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
+import androidx.core.content.edit
 import androidx.fragment.app.FragmentActivity
 import com.afollestad.materialdialogs.DialogAction
 import com.afollestad.materialdialogs.MaterialDialog
@@ -60,6 +61,15 @@ object Extras {
 
     const val NOTIFICATION_ID = "1"
     const val NOTIFICATION_STRING = "notification"
+
+    private fun getPermissionsList(): Array<String> {
+        return arrayOf(
+            Manifest.permission.READ_PHONE_STATE,
+            Manifest.permission.RECORD_AUDIO,
+            Manifest.permission.READ_CONTACTS,
+            Manifest.permission.READ_CALL_LOG
+        )
+    }
 
     fun uploadFileToGDrive(file: File, context: Context?) {
         try {
@@ -229,14 +239,7 @@ object Extras {
         )
     }
 
-    private fun getPermissionsList(): Array<String> {
-        return arrayOf(
-            Manifest.permission.READ_PHONE_STATE,
-            Manifest.permission.RECORD_AUDIO,
-            Manifest.permission.READ_CONTACTS,
-            Manifest.permission.READ_CALL_LOG
-        )
-    }
+
 
     fun checkPermissions(context: Context): Boolean {
         val phoneState = createPermission(Manifest.permission.READ_PHONE_STATE, context)
@@ -308,4 +311,24 @@ object Extras {
 
         return corePrefs.getBoolean(GOOGLE_DRIVE, false)
     }
+
+
+    /* ------------------------------ PERMISSIONS ACTIVITY ------------------------------ */
+    fun addCurrentFragmentPosition(context: Context,position : Int){
+      val prefs = context.getSharedPreferences("permissionPrefs",Context.MODE_PRIVATE)
+      val editor = prefs.edit()
+      editor.putInt("position",position)
+      editor.apply()
+    }
+    fun getCurrentFragmentPosition(context: Context) : Int {
+        val prefs = context.getSharedPreferences("permissionPrefs",Context.MODE_PRIVATE)
+        return prefs.getInt("position",0)
+    }
+    fun clearPreferences(context: Context){
+        val prefs = context.getSharedPreferences("permissionPrefs",Context.MODE_PRIVATE)
+        prefs.edit {
+            clear()
+        }
+    }
+
 }

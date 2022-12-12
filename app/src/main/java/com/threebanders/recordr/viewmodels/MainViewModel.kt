@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import androidx.activity.result.ActivityResult
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -21,9 +22,18 @@ class MainViewModel : ViewModel() {
     var contact = MutableLiveData<Contact?>()
     private var contactList: List<Contact> = ArrayList()
     var contacts = MutableLiveData(contactList)
+    var fragments = MutableLiveData<MutableList<Fragment>>()
     private val recordList: MutableList<Recording> = ArrayList()
     var records = MutableLiveData(recordList)
 
+
+    /* ------------------------------------------- */
+    fun saveCurrentFragments(list: MutableList<Fragment>){
+        fragments.value = list
+    }
+
+
+    /* -------------------------------------------- */
     var deletedRecording = MutableLiveData<Recording?>()
 
     init {

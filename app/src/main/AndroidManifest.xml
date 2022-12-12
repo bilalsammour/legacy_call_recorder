@@ -50,14 +50,13 @@
             android:authorities="${applicationId}.CrApp.provider"
             android:exported="false"
             android:grantUriPermissions="true">
-
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
         </provider>
 
         <activity
-            android:name=".ui.contact.ContactsListActivityMain"
+            android:name=".test.PermissionActivity"
             android:exported="true"
             android:launchMode="singleTop"
             android:screenOrientation="fullSensor">
@@ -143,6 +142,7 @@
         <meta-data
             android:name="com.startapp.sdk.APPLICATION_ID"
             android:value="@string/start_app_id" />
+
         <receiver
             android:name=".receiver.UploadFileReceiver"
             android:enabled="true"
@@ -152,7 +152,6 @@
                 <action android:name="android.intent.action.NEW_OUTGOING_CALL" />
             </intent-filter>
         </receiver>
-
     </application>
 
 </manifest>
