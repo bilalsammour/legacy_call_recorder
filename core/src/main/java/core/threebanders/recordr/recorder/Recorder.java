@@ -19,7 +19,6 @@ import core.threebanders.recordr.Cache;
 import core.threebanders.recordr.Core;
 
 public class Recorder {
-
     public static final String WAV_FORMAT = "wav";
     public static final String AAC_HIGH_FORMAT = "aac_hi";
     public static final String AAC_MEDIUM_FORMAT = "aac_med";

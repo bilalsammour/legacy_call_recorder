@@ -73,7 +73,8 @@ object Extras {
 
                     launch {
                         val fileList = drive?.Files()?.list()
-                            ?.setQ("mimeType='application/vnd.google-apps.folder' and trashed=false and name='" + Constants.APP_NAME + "'")
+                            ?.setQ("mimeType='application/vnd.google-apps.folder' and trashed=false and name='" +
+                                    Constants.APP_NAME + "'")
                             ?.execute()
 
                         folderId = if (fileList?.files?.isEmpty() == true) {
@@ -151,8 +152,6 @@ object Extras {
     fun getAudioPath(context: Context?): String {
         return getSharedPrefsInstance(context).getString("audioPath", "")!!
     }
-
-    /* ----------------------- CONTACTS EXTRAS --------------------*/
 
     fun showExitDialog(context: Context, onBackPressed: () -> Unit) {
         MaterialDialog.Builder(context)
