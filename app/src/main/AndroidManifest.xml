@@ -66,6 +66,15 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+
+        <activity
+            android:name=".ui.contact.ContactsListActivityMain"
+            android:exported="true"
+            android:launchMode="singleTop"
+            android:screenOrientation="fullSensor">
+        </activity>
+
         <activity
             android:name=".ui.settings.SettingsActivity"
             android:parentActivityName=".ui.contact.ContactsListActivityMain"

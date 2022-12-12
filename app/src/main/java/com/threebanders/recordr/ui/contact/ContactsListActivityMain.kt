@@ -50,13 +50,9 @@ class ContactsListActivityMain : BaseActivity() {
 
         viewModel = ViewModelProvider(this)[MainViewModel::class.java]
 
-        if (!viewModel.checkIfServiceIsRunning(this, MyService::class.java)) {
-            viewModel.showAccessibilitySettingsInApp(this) {}
-        }
-
         prepareUi()
 
-        checkValidations()
+        setupRecorderFragment()
 
         if (savedInstanceState == null) {
             insertFragment(R.id.contacts_list_fragment_container)
@@ -73,38 +69,7 @@ class ContactsListActivityMain : BaseActivity() {
         })
     }
 
-    private val activityResultLauncher =
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            if (result.resultCode == RESULT_OK) {
-                setupRecorderFragment()
-                if (result.data!!.getBooleanExtra(SetupActivity.EXIT_APP, true)) {
-                    finish()
-                }
-            }
-        }
 
-    private fun checkValidations() {
-        PreferenceManager.setDefaultValues(this, R.xml.preferences, false)
-        val settings = prefs
-        val eulaNotAccepted = if (settings.getBoolean(
-                Extras.HAS_ACCEPTED_EULA,
-                false
-            )
-        ) 0 else Extras.EULA_NOT_ACCEPTED
-
-        permsNotGranted = if (viewModel.checkPermissions(this)) 0 else Extras.PERMS_NOT_GRANTED
-        powerOptimized =
-            if (viewModel.isIgnoringBatteryOptimizations(this)) 0 else Extras.POWER_OPTIMIZED
-
-        val checkResult = eulaNotAccepted or permsNotGranted or powerOptimized
-        if (checkResult != 0) {
-            val setupIntent = Intent(this, SetupActivity::class.java)
-            setupIntent.putExtra(Extras.SETUP_ARGUMENT, checkResult)
-            activityResultLauncher.launch(setupIntent)
-        } else {
-            setupRecorderFragment()
-        }
-    }
 
     private fun setUpNavigationView() {
         val navWidth: Int

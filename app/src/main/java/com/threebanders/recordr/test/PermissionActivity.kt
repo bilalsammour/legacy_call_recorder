@@ -1,5 +1,7 @@
 package com.threebanders.recordr.test
 
+import android.Manifest
+import android.content.Intent
 import android.content.pm.PackageManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -15,6 +17,7 @@ import com.threebanders.recordr.test.fragments.PhoneStateFragment
 import com.threebanders.recordr.test.fragments.ReadCallLogFragment
 import com.threebanders.recordr.test.fragments.ReadContactsFragment
 import com.threebanders.recordr.test.fragments.RecordAudioFragment
+import com.threebanders.recordr.ui.contact.ContactsListActivityMain
 import com.threebanders.recordr.viewmodels.MainViewModel
 
 class PermissionActivity : AppCompatActivity() {
@@ -25,6 +28,7 @@ class PermissionActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_permission)
 
+
         Handler().postDelayed({
             Extras.addCurrentFragmentPosition(this,0)
             supportFragmentManager.beginTransaction().replace(R.id.container, fragmentsList[0]).commit()
@@ -34,9 +38,16 @@ class PermissionActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
-        mainViewModel = ViewModelProvider(this)[MainViewModel::class.java]
-        Extras.clearPreferences(this)
-        addFragment()
+        if(checkIfPermissionsGranted()){
+            Intent(this,ContactsListActivityMain::class.java).apply {
+                startActivity(this)
+                finish()
+            }
+        } else {
+            mainViewModel = ViewModelProvider(this)[MainViewModel::class.java]
+            Extras.clearPreferences(this)
+            addFragment()
+        }
     }
 
     private fun addFragment() {
@@ -54,6 +65,12 @@ class PermissionActivity : AppCompatActivity() {
         }
 
         mainViewModel.saveCurrentFragments(fragmentsList)
+    }
+    private fun checkIfPermissionsGranted() : Boolean {
+        return ContextCompat.checkSelfPermission(this,Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED
+                && ContextCompat.checkSelfPermission(this,Manifest.permission.READ_CALL_LOG) == PackageManager.PERMISSION_GRANTED
+                && ContextCompat.checkSelfPermission(this,Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED
+                && ContextCompat.checkSelfPermission(this,Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED
     }
 
 
