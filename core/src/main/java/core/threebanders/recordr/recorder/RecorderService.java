@@ -75,7 +75,7 @@ public class RecorderService extends Service {
 
     @RequiresApi(Build.VERSION_CODES.O)
     private void createChannel() {
-        CharSequence name = "Call recorder";
+        CharSequence name = "RECORDR";
         String description = "Call recorder controls";
         int importance = NotificationManager.IMPORTANCE_LOW;
         NotificationChannel mChannel = new NotificationChannel(CHANNEL_ID, name, importance);
