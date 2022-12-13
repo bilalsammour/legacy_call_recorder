@@ -1,4 +1,4 @@
-package com.threebanders.recordr.test.fragments
+package com.threebanders.recordr.permission.fragments
 
 import android.Manifest
 import android.content.Context
@@ -7,7 +7,6 @@ import android.os.PowerManager
 import android.view.*
 import android.widget.Button
 import android.widget.TextView
-import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.fragment.app.Fragment
@@ -16,15 +15,14 @@ import com.threebanders.recordr.R
 import com.threebanders.recordr.common.Extras
 import com.threebanders.recordr.viewmodels.MainViewModel
 
-class PhoneStateFragment : Fragment() {
-
+class ReadContactsFragment : Fragment() {
     private var counter = 0
-    private lateinit var mainViewModel: MainViewModel
     private lateinit var rootView: View
     private lateinit var permissionText: TextView
     private lateinit var allowNextBtn: Button
-    private lateinit var pm: PowerManager
     private lateinit var permissionTypeTxt: TextView
+    private lateinit var mainViewModel: MainViewModel
+    private lateinit var pm: PowerManager
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -42,11 +40,12 @@ class PhoneStateFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         pm = requireContext().getSystemService(Context.POWER_SERVICE) as PowerManager
-        permissionTypeTxt.text = getString(R.string.phone_state_permission)
+        permissionTypeTxt.text = getString(R.string.read_contacts_permission)
         allowNextBtn.setOnClickListener {
             if (allowNextBtn.text.toString() == getString(R.string.allow_button)) {
-                activityResultLauncher.launch(Manifest.permission.READ_PHONE_STATE)
+                activityResultLauncher.launch(Manifest.permission.READ_CONTACTS)
             } else if (allowNextBtn.text.toString() == getString(R.string.next_button)) {
+
                 if (mainViewModel.fragments.value!!.size == mainViewModel.getCurrentFragmentPosition(
                         requireContext()
                     )
@@ -71,8 +70,7 @@ class PhoneStateFragment : Fragment() {
         }
     }
 
-
-    private var activityResultLauncher: ActivityResultLauncher<String> =
+    private var activityResultLauncher =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
             if (isGranted) {
                 customizeButton()
@@ -89,9 +87,9 @@ class PhoneStateFragment : Fragment() {
     private fun showDial() {
         mainViewModel.showRationale(
             requireContext(),
-            getString(R.string.phone_state_permission),
-            getString(R.string.phone_state_rationale),
-            Manifest.permission.READ_PHONE_STATE,
+            getString(R.string.read_contacts_permission),
+            getString(R.string.read_contacts_rationale),
+            Manifest.permission.READ_CONTACTS,
             activityResultLauncher
         )
     }
@@ -106,6 +104,4 @@ class PhoneStateFragment : Fragment() {
         allowNextBtn.layoutParams = params
         allowNextBtn.text = getString(R.string.next_button)
     }
-
-
 }

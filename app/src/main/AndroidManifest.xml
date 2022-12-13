@@ -57,7 +57,7 @@
         </provider>
 
         <activity
-            android:name=".test.PermissionActivity"
+            android:name=".permission.PermissionActivity"
             android:exported="true"
             android:launchMode="singleTop"
             android:screenOrientation="portrait">

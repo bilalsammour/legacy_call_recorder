@@ -39,7 +39,7 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.threebanders.recordr.CrApp
 import com.threebanders.recordr.R
-import com.threebanders.recordr.test.fragments.OptimizationFragment
+import com.threebanders.recordr.permission.fragments.OptimizationFragment
 import com.threebanders.recordr.ui.contact.ContactsListActivityMain
 import com.threebanders.recordr.ui.help.HelpActivity
 import com.threebanders.recordr.ui.settings.SettingsActivity

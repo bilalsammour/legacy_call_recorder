@@ -1,4 +1,4 @@
-package com.threebanders.recordr.test.fragments
+package com.threebanders.recordr.permission.fragments
 
 import android.Manifest
 import android.content.Context
@@ -15,7 +15,7 @@ import com.threebanders.recordr.R
 import com.threebanders.recordr.common.Extras
 import com.threebanders.recordr.viewmodels.MainViewModel
 
-class ReadContactsFragment : Fragment() {
+class RecordAudioFragment : Fragment() {
     private var counter = 0
     private lateinit var rootView: View
     private lateinit var permissionText: TextView
@@ -40,10 +40,10 @@ class ReadContactsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         pm = requireContext().getSystemService(Context.POWER_SERVICE) as PowerManager
-        permissionTypeTxt.text = getString(R.string.read_contacts_permission)
+        permissionTypeTxt.text = getString(R.string.record_audio_permission)
         allowNextBtn.setOnClickListener {
             if (allowNextBtn.text.toString() == getString(R.string.allow_button)) {
-                activityResultLauncher.launch(Manifest.permission.READ_CONTACTS)
+                activityResultLauncher.launch(Manifest.permission.RECORD_AUDIO)
             } else if (allowNextBtn.text.toString() == getString(R.string.next_button)) {
 
                 if (mainViewModel.fragments.value!!.size == mainViewModel.getCurrentFragmentPosition(
@@ -87,9 +87,9 @@ class ReadContactsFragment : Fragment() {
     private fun showDial() {
         mainViewModel.showRationale(
             requireContext(),
-            getString(R.string.read_contacts_permission),
-            getString(R.string.read_contacts_rationale),
-            Manifest.permission.READ_CONTACTS,
+            getString(R.string.record_audio_permission),
+            getString(R.string.record_audio_rationale),
+            Manifest.permission.RECORD_AUDIO,
             activityResultLauncher
         )
     }

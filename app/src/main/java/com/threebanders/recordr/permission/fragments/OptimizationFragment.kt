@@ -1,4 +1,4 @@
-package com.threebanders.recordr.test.fragments
+package com.threebanders.recordr.permission.fragments
 
 import android.content.Context
 import android.os.Bundle
