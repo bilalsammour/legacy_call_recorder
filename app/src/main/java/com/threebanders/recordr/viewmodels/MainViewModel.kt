@@ -2,6 +2,7 @@ package com.threebanders.recordr.viewmodels
 
 import android.app.Activity
 import android.content.Context
+import android.os.PowerManager
 import androidx.activity.result.ActivityResult
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
@@ -124,5 +125,30 @@ class MainViewModel : ViewModel() {
 
     fun openGoogleMarketInApp(context: Activity) {
         Extras.openGoogleMarket(context)
+    }
+
+    /* -------------------- PERMISSIONS  *------------------ */
+    fun addCurrentFragmentPosition(context: Context,position : Int){
+        Extras.addCurrentFragmentPosition(context,position)
+    }
+
+    fun getCurrentFragmentPosition(context: Context) : Int {
+        return Extras.getCurrentFragmentPosition(context)
+    }
+
+    fun clearPreferences(context: Context){
+        Extras.clearPreferences(context)
+    }
+
+    fun isAppOptimized(pm : PowerManager, packageName : String) : Boolean {
+        return Extras.isAppOptimized(pm, packageName)
+    }
+
+    fun openActivity(context: Activity) {
+        return Extras.openActivity(context)
+    }
+
+    fun openOptimizationFragment(context: FragmentActivity){
+        Extras.openOptimizationFragment(context)
     }
 }

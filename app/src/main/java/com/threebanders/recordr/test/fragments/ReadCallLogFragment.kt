@@ -50,15 +50,15 @@ class ReadCallLogFragment : Fragment() {
                 activityResultLauncher.launch(Manifest.permission.READ_CALL_LOG)
             }
             else if (allowNextBtn.text.toString() == "Next"){
-                if(mainViewModel.fragments.value!!.size == Extras.getCurrentFragmentPosition(requireContext()) + 1){
-                    if(Extras.isAppOptimized(pm , requireContext().packageName)){
-                        Extras.openActivity(requireActivity())
+                if(mainViewModel.fragments.value!!.size == mainViewModel.getCurrentFragmentPosition(requireContext()) + 1){
+                    if(mainViewModel.isAppOptimized(pm , requireContext().packageName)){
+                        mainViewModel.openActivity(requireActivity())
                     } else {
-                        Extras.openOptimizationFragment(requireActivity())
+                        mainViewModel.openOptimizationFragment(requireActivity())
                     }
                 } else {
-                    Extras.openNextFragment(requireActivity(),mainViewModel,Extras.getCurrentFragmentPosition(requireContext()) + 1)
-                    Extras.addCurrentFragmentPosition(requireContext(),Extras.getCurrentFragmentPosition(requireContext()) + 1)
+                    Extras.openNextFragment(requireActivity(),mainViewModel,mainViewModel.getCurrentFragmentPosition(requireContext()) + 1)
+                    mainViewModel.addCurrentFragmentPosition(requireContext(),mainViewModel.getCurrentFragmentPosition(requireContext()) + 1)
                 }
             }
         }
@@ -68,17 +68,16 @@ class ReadCallLogFragment : Fragment() {
         if(isGranted){
             allowNextBtn.text = "Next"
         } else {
-            showRationale()
+            showDial()
         }
     }
 
-    private fun showRationale() {
-        AlertDialog.Builder(requireContext())
-            .setTitle("Read Call Log Permission")
-            .setMessage("Permission is to be granted cause it is needed")
-            .setPositiveButton("Ok") { _, _ ->
-                activityResultLauncher.launch(Manifest.permission.READ_CALL_LOG)
-            }
-            .show()
+    private fun showDial(){
+        Extras.showRationale(
+            requireContext(),
+            "Read Call Log Permission",
+            "xxxxxxx",
+            Manifest.permission.READ_CALL_LOG,
+            activityResultLauncher)
     }
 }

@@ -49,36 +49,35 @@ class PhoneStateFragment : Fragment() {
             if(allowNextBtn.text.toString() == "Allow"){
                 activityResultLauncher.launch(Manifest.permission.READ_PHONE_STATE)
             } else if (allowNextBtn.text.toString() == "Next"){
-                if(mainViewModel.fragments.value!!.size == Extras.getCurrentFragmentPosition(requireContext())){
-                    if(Extras.isAppOptimized(pm , requireContext().packageName)){
-                        Extras.openActivity(requireActivity())
+                if(mainViewModel.fragments.value!!.size == mainViewModel.getCurrentFragmentPosition(requireContext())){
+                    if(mainViewModel.isAppOptimized(pm , requireContext().packageName)){
+                        mainViewModel.openActivity(requireActivity())
                     } else {
-                        Extras.openOptimizationFragment(requireActivity())
+                        mainViewModel.openOptimizationFragment(requireActivity())
                     }
                 } else {
-                    Extras.openNextFragment(requireActivity(),mainViewModel,Extras.getCurrentFragmentPosition(requireContext()) + 1)
-                    Extras.addCurrentFragmentPosition(requireContext(),Extras.getCurrentFragmentPosition(requireContext()) + 1)
+                    Extras.openNextFragment(requireActivity(),mainViewModel,mainViewModel.getCurrentFragmentPosition(requireContext()) + 1)
+                    mainViewModel.addCurrentFragmentPosition(requireContext(),mainViewModel.getCurrentFragmentPosition(requireContext()) + 1)
                 }
             }
         }
     }
 
 
-    private var activityResultLauncher : ActivityResultLauncher<String> = registerForActivityResult(ActivityResultContracts.RequestPermission()){ isGranted ->
+    private var activityResultLauncher : ActivityResultLauncher<String>  = registerForActivityResult(ActivityResultContracts.RequestPermission()){ isGranted ->
         if(isGranted){
             allowNextBtn.text = "Next"
         } else {
-            showRationale()
+            showDial()
         }
     }
 
-    private fun showRationale() {
-        AlertDialog.Builder(requireContext())
-            .setTitle("Phone State Permission")
-            .setMessage("Permission is to be granted cause it is needed")
-            .setPositiveButton("Ok") { _, _ ->
-               activityResultLauncher.launch(Manifest.permission.READ_PHONE_STATE)
-            }
-            .show()
+    private fun showDial(){
+        Extras.showRationale(
+            requireContext(),
+            "Phone State Permission",
+            "xxxxxxx",
+             Manifest.permission.READ_PHONE_STATE,
+             activityResultLauncher)
     }
 }

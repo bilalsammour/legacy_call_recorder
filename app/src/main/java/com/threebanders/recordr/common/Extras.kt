@@ -16,7 +16,9 @@ import android.os.PowerManager
 import android.provider.Settings
 import android.widget.*
 import androidx.activity.result.ActivityResult
+import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
@@ -321,35 +323,33 @@ object Extras {
       val editor = prefs.edit()
       editor.putInt("position",position)
       editor.apply()
-    }
+    } /**/
     fun getCurrentFragmentPosition(context: Context) : Int {
         val prefs = context.getSharedPreferences("permissionPrefs",Context.MODE_PRIVATE)
         return prefs.getInt("position",0)
-    }
+    } /**/
     fun clearPreferences(context: Context){
         val prefs = context.getSharedPreferences("permissionPrefs",Context.MODE_PRIVATE)
         prefs.edit {
             clear()
         }
-    }
-
+    } /**/
     fun isAppOptimized(pm : PowerManager,packageName : String) : Boolean {
         return pm.isIgnoringBatteryOptimizations(packageName)
-    }
-
+    } /**/
     fun openActivity(context: Activity){
         Intent(context, ContactsListActivityMain::class.java).apply {
             context.startActivity(this)
             context.finish()
         }
-    }
+    } /**/
     fun openOptimizationFragment(context: FragmentActivity){
         context
             .supportFragmentManager
             .beginTransaction()
             .replace(R.id.container, OptimizationFragment())
             .commit()
-    }
+    } /**/
     fun openNextFragment(context : FragmentActivity,mainViewModel: MainViewModel,position: Int){
         context
             .supportFragmentManager
@@ -362,5 +362,14 @@ object Extras {
         intent.action = Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS
         intent.data = Uri.parse("package:${context.packageName}")
         context.startActivity(intent)
+    }
+    fun showRationale(context : Context , title : String , message : String, permission: String, activityResultLauncher: ActivityResultLauncher<String>) {
+        AlertDialog.Builder(context)
+            .setTitle(title)
+            .setMessage(message)
+            .setPositiveButton("Ok") { _, _ ->
+                activityResultLauncher.launch(permission)
+            }
+            .show()
     }
 }

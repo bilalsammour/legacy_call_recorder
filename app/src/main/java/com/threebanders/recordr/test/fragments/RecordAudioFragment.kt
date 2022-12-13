@@ -48,15 +48,15 @@ class RecordAudioFragment : Fragment() {
             }
             else if (allowNextBtn.text.toString() == "Next"){
 
-                if(mainViewModel.fragments.value!!.size == Extras.getCurrentFragmentPosition(requireContext())){
-                   if(Extras.isAppOptimized(pm , requireContext().packageName)){
-                      Extras.openActivity(requireActivity())
+                if(mainViewModel.fragments.value!!.size == mainViewModel.getCurrentFragmentPosition(requireContext())){
+                   if(mainViewModel.isAppOptimized(pm , requireContext().packageName)){
+                      mainViewModel.openActivity(requireActivity())
                    } else {
-                      Extras.openOptimizationFragment(requireActivity())
+                      mainViewModel.openOptimizationFragment(requireActivity())
                    }
                 } else {
-                    Extras.openNextFragment(requireActivity(),mainViewModel,Extras.getCurrentFragmentPosition(requireContext()) + 1)
-                    Extras.addCurrentFragmentPosition(requireContext(),Extras.getCurrentFragmentPosition(requireContext()) + 1)
+                    Extras.openNextFragment(requireActivity(),mainViewModel,mainViewModel.getCurrentFragmentPosition(requireContext()) + 1)
+                    mainViewModel.addCurrentFragmentPosition(requireContext(),mainViewModel.getCurrentFragmentPosition(requireContext()) + 1)
                 }
             }
         }
@@ -66,17 +66,16 @@ class RecordAudioFragment : Fragment() {
         if(isGranted){
             allowNextBtn.text = "Next"
         } else {
-            showRationale()
+            showDial()
         }
     }
 
-    private fun showRationale() {
-        AlertDialog.Builder(requireContext())
-            .setTitle("Record Audio Permission")
-            .setMessage("Permission is to be granted cause it is needed")
-            .setPositiveButton("Ok") { _, _ ->
-                activityResultLauncher.launch(Manifest.permission.RECORD_AUDIO)
-            }
-            .show()
+    private fun showDial(){
+        Extras.showRationale(
+            requireContext(),
+            "Phone State Permission",
+            "xxxxxxx",
+            Manifest.permission.RECORD_AUDIO,
+            activityResultLauncher)
     }
 }

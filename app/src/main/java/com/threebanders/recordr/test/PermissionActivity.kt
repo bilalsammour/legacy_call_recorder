@@ -35,7 +35,7 @@ class PermissionActivity : AppCompatActivity() {
         super.onStart()
         pm = getSystemService(Context.POWER_SERVICE) as PowerManager
         if(checkIfPermissionsGranted()){
-            if(Extras.isAppOptimized(pm , packageName)){
+            if(mainViewModel.isAppOptimized(pm , packageName)){
                 Intent(this,ContactsListActivityMain::class.java).apply {
                     startActivity(this)
                     finish()
@@ -45,11 +45,11 @@ class PermissionActivity : AppCompatActivity() {
             }
         } else {
             mainViewModel = ViewModelProvider(this)[MainViewModel::class.java]
-            Extras.clearPreferences(this)
+            mainViewModel.clearPreferences(this)
             addFragment()
 
             Handler().postDelayed({
-                Extras.addCurrentFragmentPosition(this,0)
+                mainViewModel.addCurrentFragmentPosition(this,0)
                 supportFragmentManager.beginTransaction().replace(R.id.container, fragmentsList[0]).commit()
             },3000)
         }
