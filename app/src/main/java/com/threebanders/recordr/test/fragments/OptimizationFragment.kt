@@ -10,6 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.threebanders.recordr.R
 import com.threebanders.recordr.common.Extras
@@ -33,24 +34,19 @@ class OptimizationFragment  : Fragment() {
         turnOffBtn.setOnClickListener {
             if(turnOffBtn.text.toString() == "Turn Off"){
                 if(!Extras.isAppOptimized(pm, requireContext().packageName)){
-                    val intent = Intent()
-                    intent.action = Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS
-                    intent.data = Uri.parse("package:${requireContext().packageName}")
-                    startActivity(intent)
+                    Extras.doNotOptimizeApp(requireActivity())
                     turnOffBtn.text = "Finish"
                 }
                 else {
-                    Intent(requireContext(), ContactsListActivityMain::class.java).apply {
-                        startActivity(this)
-                        requireActivity().finish()
-                    }
+                    Extras.openActivity(requireActivity())
                 }
             } else if(turnOffBtn.text == "Finish"){
                 if(Extras.isAppOptimized(pm, requireContext().packageName)){
-                    Intent(requireContext(), ContactsListActivityMain::class.java).apply {
-                        startActivity(this)
-                        requireActivity().finish()
-                    }
+                    Extras.openActivity(requireActivity())
+                }
+                else {
+                    Toast.makeText(requireContext(),"Please do no optimize this app ..",Toast.LENGTH_LONG).show()
+                    turnOffBtn.text = "Turn Off"
                 }
             }
         }

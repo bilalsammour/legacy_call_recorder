@@ -51,25 +51,13 @@ class ReadCallLogFragment : Fragment() {
             }
             else if (allowNextBtn.text.toString() == "Next"){
                 if(mainViewModel.fragments.value!!.size == Extras.getCurrentFragmentPosition(requireContext()) + 1){
-                    if(Extras.isAppOptimized(pm,requireContext().packageName)){
-                        Intent(requireContext(), ContactsListActivityMain::class.java).apply {
-                            startActivity(this)
-                            requireActivity().finish()
-                        }
+                    if(Extras.isAppOptimized(pm , requireContext().packageName)){
+                        Extras.openActivity(requireActivity())
                     } else {
-                        requireActivity()
-                            .supportFragmentManager
-                            .beginTransaction()
-                            .replace(R.id.container,OptimizationFragment())
-                            .commit()
+                        Extras.openOptimizationFragment(requireActivity())
                     }
                 } else {
-                    requireActivity()
-                        .supportFragmentManager
-                        .beginTransaction()
-                        .replace(R.id.container,mainViewModel.fragments.value!![Extras.getCurrentFragmentPosition(requireContext()) + 1])
-                        .commit()
-
+                    Extras.openNextFragment(requireActivity(),mainViewModel,Extras.getCurrentFragmentPosition(requireContext()) + 1)
                     Extras.addCurrentFragmentPosition(requireContext(),Extras.getCurrentFragmentPosition(requireContext()) + 1)
                 }
             }

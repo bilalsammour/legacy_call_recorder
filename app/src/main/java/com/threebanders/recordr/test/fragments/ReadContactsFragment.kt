@@ -49,24 +49,12 @@ class ReadContactsFragment  : Fragment(){
 
                 if(mainViewModel.fragments.value!!.size == Extras.getCurrentFragmentPosition(requireContext())){
                     if(Extras.isAppOptimized(pm , requireContext().packageName)){
-                        Intent(requireContext(), ContactsListActivityMain::class.java).apply {
-                            startActivity(this)
-                            requireActivity().finish()
-                        }
+                        Extras.openActivity(requireActivity())
                     } else {
-                        requireActivity()
-                            .supportFragmentManager
-                            .beginTransaction()
-                            .replace(R.id.container,OptimizationFragment())
-                            .commit()
+                        Extras.openOptimizationFragment(requireActivity())
                     }
                 } else {
-                    requireActivity()
-                        .supportFragmentManager
-                        .beginTransaction()
-                        .replace(R.id.container,mainViewModel.fragments.value!![Extras.getCurrentFragmentPosition(requireContext()) + 1])
-                        .commit()
-
+                    Extras.openNextFragment(requireActivity(),mainViewModel,Extras.getCurrentFragmentPosition(requireContext()) + 1)
                     Extras.addCurrentFragmentPosition(requireContext(),Extras.getCurrentFragmentPosition(requireContext()) + 1)
                 }
             }

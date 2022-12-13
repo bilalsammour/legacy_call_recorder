@@ -25,7 +25,7 @@
         android:layout_marginRight="20dp"/>
 
 
-    <Button
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/allowNextBtn"
         android:layout_width="250dp"
         android:layout_height="wrap_content"

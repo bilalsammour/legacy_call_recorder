@@ -38,10 +38,12 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.threebanders.recordr.CrApp
 import com.threebanders.recordr.R
+import com.threebanders.recordr.test.fragments.OptimizationFragment
 import com.threebanders.recordr.ui.contact.ContactsListActivityMain
 import com.threebanders.recordr.ui.help.HelpActivity
 import com.threebanders.recordr.ui.settings.SettingsActivity
 import com.threebanders.recordr.ui.settings.SettingsFragment.Companion.GOOGLE_DRIVE
+import com.threebanders.recordr.viewmodels.MainViewModel
 import core.threebanders.recordr.data.Recording
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -333,5 +335,32 @@ object Extras {
 
     fun isAppOptimized(pm : PowerManager,packageName : String) : Boolean {
         return pm.isIgnoringBatteryOptimizations(packageName)
+    }
+
+    fun openActivity(context: Activity){
+        Intent(context, ContactsListActivityMain::class.java).apply {
+            context.startActivity(this)
+            context.finish()
+        }
+    }
+    fun openOptimizationFragment(context: FragmentActivity){
+        context
+            .supportFragmentManager
+            .beginTransaction()
+            .replace(R.id.container, OptimizationFragment())
+            .commit()
+    }
+    fun openNextFragment(context : FragmentActivity,mainViewModel: MainViewModel,position: Int){
+        context
+            .supportFragmentManager
+            .beginTransaction()
+            .replace(R.id.container,mainViewModel.fragments.value!![position])
+            .commit()
+    }
+    fun doNotOptimizeApp(context : Activity){
+        val intent = Intent()
+        intent.action = Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS
+        intent.data = Uri.parse("package:${context.packageName}")
+        context.startActivity(intent)
     }
 }
