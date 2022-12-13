@@ -162,4 +162,7 @@ class MainViewModel : ViewModel() {
     fun showRationale(context : Context , title : String , message : String, permission: String, activityResultLauncher: ActivityResultLauncher<String>){
         Extras.showRationale(context, title, message, permission, activityResultLauncher)
     }
+    fun enablePermissionFromSettings(context: Activity){
+        Extras.enablePermissionFromSettings(context)
+    }
 }

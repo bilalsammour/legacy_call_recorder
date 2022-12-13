@@ -16,7 +16,7 @@ import com.threebanders.recordr.common.Extras
 import com.threebanders.recordr.viewmodels.MainViewModel
 
 class ReadContactsFragment  : Fragment(){
-
+    private var counter = 0
     private lateinit var rootView : View
     private lateinit var permissionText : TextView
     private lateinit var allowNextBtn : Button
@@ -60,7 +60,12 @@ class ReadContactsFragment  : Fragment(){
         if(isGranted){
             customizeButton()
         } else {
-           showDial()
+            counter++
+            if(counter >= 2){
+                mainViewModel.enablePermissionFromSettings(requireActivity())
+            } else {
+                showDial()
+            }
         }
     }
 

@@ -18,6 +18,7 @@ import com.threebanders.recordr.viewmodels.MainViewModel
 
 class PhoneStateFragment : Fragment() {
 
+    private var counter = 0
     private lateinit var mainViewModel: MainViewModel
     private lateinit var rootView : View
     private lateinit var permissionText : TextView
@@ -61,7 +62,12 @@ class PhoneStateFragment : Fragment() {
         if(isGranted){
             customizeButton()
         } else {
-            showDial()
+            counter++
+            if(counter >= 2){
+                mainViewModel.enablePermissionFromSettings(requireActivity())
+            } else {
+                showDial()
+            }
         }
     }
 
@@ -80,4 +86,6 @@ class PhoneStateFragment : Fragment() {
         allowNextBtn.layoutParams = params
         allowNextBtn.text = getString(R.string.next_button)
     }
+
+
 }

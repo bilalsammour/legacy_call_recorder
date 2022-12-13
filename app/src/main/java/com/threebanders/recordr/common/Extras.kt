@@ -24,6 +24,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.startActivity
 import androidx.core.content.edit
 import androidx.fragment.app.FragmentActivity
 import com.afollestad.materialdialogs.DialogAction
@@ -54,6 +55,7 @@ import kotlinx.coroutines.withContext
 import java.io.File
 import java.lang.reflect.Type
 import kotlin.random.Random
+
 
 object Extras {
     private const val PERMISSION_REQUEST_CODE = 1001
@@ -373,4 +375,11 @@ object Extras {
             }
             .show()
     } /**/
+
+    fun enablePermissionFromSettings(context: Activity){
+        val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+        val uri = Uri.fromParts("package", context.packageName,null)
+        intent.data = uri
+        context.startActivity(intent)
+    }
 }
