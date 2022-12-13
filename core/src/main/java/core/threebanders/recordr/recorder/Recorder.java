@@ -55,8 +55,10 @@ public class Recorder {
         if (phoneNumber == null)
             phoneNumber = "";
 
-        if (isRunning())
+        if (isRunning()) {
             stopRecording();
+        }
+
         String extension = format.equals(WAV_FORMAT) ? ".wav" : ".aac";
         File recordingsDir = context.getFilesDir();
 
@@ -73,11 +75,12 @@ public class Recorder {
         } catch (IllegalStateException ignored) {
         }
 
-        if (format.equals(WAV_FORMAT))
+        if (format.equals(WAV_FORMAT)) {
             recordingThread = new Thread(new RecordingThreadWav(context, mode, this));
-        else
+        } else {
             recordingThread = new Thread(new RecordingThreadAac(context, audioFile,
                     format, mode, this));
+        }
 
         recordingThread.start();
         startingTime = System.currentTimeMillis();
@@ -87,6 +90,7 @@ public class Recorder {
         if (recordingThread != null) {
             recordingThread.interrupt();
             recordingThread = null;
+
             if (format.equals(WAV_FORMAT)) {
                 Thread copyPcmToWav = new Thread(new RecordingThreadWav.CopyPcmToWav(context,
                         audioFile, mode, this));
@@ -136,7 +140,8 @@ public class Recorder {
     }
 
     private void saveAudioFilePath(String audioPath) {
-        SharedPreferences sharedPreferences = context.getSharedPreferences("audioPrefs", Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences =
+                context.getSharedPreferences("audioPrefs", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString("audioPath", audioPath);
         editor.apply();
