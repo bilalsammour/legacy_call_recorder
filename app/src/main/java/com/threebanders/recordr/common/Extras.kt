@@ -14,7 +14,6 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.PowerManager
 import android.provider.Settings
-import android.widget.*
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
@@ -24,7 +23,6 @@ import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
-import androidx.core.content.ContextCompat.startActivity
 import androidx.core.content.edit
 import androidx.fragment.app.FragmentActivity
 import com.afollestad.materialdialogs.DialogAction
@@ -90,8 +88,10 @@ object Extras {
 
                     launch {
                         val fileList = drive?.Files()?.list()
-                            ?.setQ("mimeType='application/vnd.google-apps.folder' and trashed=false and name='" +
-                                    Constants.APP_NAME + "'")
+                            ?.setQ(
+                                "mimeType='application/vnd.google-apps.folder' and trashed=false and name='" +
+                                        Constants.APP_NAME + "'"
+                            )
                             ?.execute()
 
                         folderId = if (fileList?.files?.isEmpty() == true) {
@@ -247,7 +247,6 @@ object Extras {
     }
 
 
-
     fun checkPermissions(context: Context): Boolean {
         val phoneState = createPermission(Manifest.permission.READ_PHONE_STATE, context)
         val recordAudio = createPermission(Manifest.permission.RECORD_AUDIO, context)
@@ -321,52 +320,66 @@ object Extras {
 
 
     /* ------------------------------ PERMISSIONS ACTIVITY ------------------------------ */
-    fun addCurrentFragmentPosition(context: Context,position : Int){
-      val prefs = context.getSharedPreferences("permissionPrefs",Context.MODE_PRIVATE)
-      val editor = prefs.edit()
-      editor.putInt("position",position)
-      editor.apply()
+    fun addCurrentFragmentPosition(context: Context, position: Int) {
+        val prefs = context.getSharedPreferences("permissionPrefs", Context.MODE_PRIVATE)
+        val editor = prefs.edit()
+        editor.putInt("position", position)
+        editor.apply()
     } /**/
-    fun getCurrentFragmentPosition(context: Context) : Int {
-        val prefs = context.getSharedPreferences("permissionPrefs",Context.MODE_PRIVATE)
-        return prefs.getInt("position",0)
+
+    fun getCurrentFragmentPosition(context: Context): Int {
+        val prefs = context.getSharedPreferences("permissionPrefs", Context.MODE_PRIVATE)
+        return prefs.getInt("position", 0)
     } /**/
-    fun clearPreferences(context: Context){
-        val prefs = context.getSharedPreferences("permissionPrefs",Context.MODE_PRIVATE)
+
+    fun clearPreferences(context: Context) {
+        val prefs = context.getSharedPreferences("permissionPrefs", Context.MODE_PRIVATE)
         prefs.edit {
             clear()
         }
     } /**/
-    fun isAppOptimized(pm : PowerManager,packageName : String) : Boolean {
+
+    fun isAppOptimized(pm: PowerManager, packageName: String): Boolean {
         return pm.isIgnoringBatteryOptimizations(packageName)
     } /**/
-    fun openActivity(context: Activity){
+
+    fun openActivity(context: Activity) {
         Intent(context, ContactsListActivityMain::class.java).apply {
             context.startActivity(this)
             context.finish()
         }
     } /**/
-    fun openOptimizationFragment(context: FragmentActivity){
+
+    fun openOptimizationFragment(context: FragmentActivity) {
         context
             .supportFragmentManager
             .beginTransaction()
             .replace(R.id.container, OptimizationFragment())
             .commit()
     } /**/
-    fun openNextFragment(context : FragmentActivity,mainViewModel: MainViewModel,position: Int){
+
+    fun openNextFragment(context: FragmentActivity, mainViewModel: MainViewModel, position: Int) {
         context
             .supportFragmentManager
             .beginTransaction()
-            .replace(R.id.container,mainViewModel.fragments.value!![position])
+            .replace(R.id.container, mainViewModel.fragments.value!![position])
             .commit()
     }/**/
-    fun doNotOptimizeApp(context : Activity){
+
+    fun doNotOptimizeApp(context: Activity) {
         val intent = Intent()
         intent.action = Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS
         intent.data = Uri.parse("package:${context.packageName}")
         context.startActivity(intent)
     }/**/
-    fun showRationale(context : Context , title : String , message : String, permission: String, activityResultLauncher: ActivityResultLauncher<String>) {
+
+    fun showRationale(
+        context: Context,
+        title: String,
+        message: String,
+        permission: String,
+        activityResultLauncher: ActivityResultLauncher<String>
+    ) {
         AlertDialog.Builder(context)
             .setTitle(title)
             .setMessage(message)
@@ -376,9 +389,9 @@ object Extras {
             .show()
     } /**/
 
-    fun enablePermissionFromSettings(context: Activity){
+    fun enablePermissionFromSettings(context: Activity) {
         val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
-        val uri = Uri.fromParts("package", context.packageName,null)
+        val uri = Uri.fromParts("package", context.packageName, null)
         intent.data = uri
         context.startActivity(intent)
     }

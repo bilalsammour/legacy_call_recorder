@@ -15,7 +15,7 @@
     <uses-permission android:name="android.permission.READ_CONTACTS" />
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS"/>
+    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
     <uses-permission
         android:name="android.permission.CAPTURE_AUDIO_OUTPUT"
         tools:ignore="ProtectedPermissions" />
@@ -73,8 +73,7 @@
             android:name=".ui.contact.ContactsListActivityMain"
             android:exported="true"
             android:launchMode="singleTop"
-            android:screenOrientation="fullSensor">
-        </activity>
+            android:screenOrientation="fullSensor"></activity>
 
         <activity
             android:name=".ui.settings.SettingsActivity"

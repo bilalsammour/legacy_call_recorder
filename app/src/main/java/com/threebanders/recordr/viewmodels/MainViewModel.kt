@@ -30,7 +30,7 @@ class MainViewModel : ViewModel() {
 
 
     /* ------------------------------------------- */
-    fun saveCurrentFragments(list: MutableList<Fragment>){
+    fun saveCurrentFragments(list: MutableList<Fragment>) {
         fragments.value = list
     }
 
@@ -129,19 +129,19 @@ class MainViewModel : ViewModel() {
     }
 
     /* -------------------- PERMISSIONS  *------------------ */
-    fun addCurrentFragmentPosition(context: Context,position : Int){
-        Extras.addCurrentFragmentPosition(context,position)
+    fun addCurrentFragmentPosition(context: Context, position: Int) {
+        Extras.addCurrentFragmentPosition(context, position)
     }
 
-    fun getCurrentFragmentPosition(context: Context) : Int {
+    fun getCurrentFragmentPosition(context: Context): Int {
         return Extras.getCurrentFragmentPosition(context)
     }
 
-    fun clearPreferences(context: Context){
+    fun clearPreferences(context: Context) {
         Extras.clearPreferences(context)
     }
 
-    fun isAppOptimized(pm : PowerManager, packageName : String) : Boolean {
+    fun isAppOptimized(pm: PowerManager, packageName: String): Boolean {
         return Extras.isAppOptimized(pm, packageName)
     }
 
@@ -149,20 +149,29 @@ class MainViewModel : ViewModel() {
         return Extras.openActivity(context)
     }
 
-    fun openOptimizationFragment(context: FragmentActivity){
+    fun openOptimizationFragment(context: FragmentActivity) {
         Extras.openOptimizationFragment(context)
     }
 
-    fun openNextFragment(context : FragmentActivity,mainViewModel: MainViewModel,position: Int){
-        Extras.openNextFragment(context,mainViewModel,position)
+    fun openNextFragment(context: FragmentActivity, mainViewModel: MainViewModel, position: Int) {
+        Extras.openNextFragment(context, mainViewModel, position)
     }
-    fun doNotOptimizeApp(context : Activity){
+
+    fun doNotOptimizeApp(context: Activity) {
         Extras.doNotOptimizeApp(context)
     }
-    fun showRationale(context : Context , title : String , message : String, permission: String, activityResultLauncher: ActivityResultLauncher<String>){
+
+    fun showRationale(
+        context: Context,
+        title: String,
+        message: String,
+        permission: String,
+        activityResultLauncher: ActivityResultLauncher<String>
+    ) {
         Extras.showRationale(context, title, message, permission, activityResultLauncher)
     }
-    fun enablePermissionFromSettings(context: Activity){
+
+    fun enablePermissionFromSettings(context: Activity) {
         Extras.enablePermissionFromSettings(context)
     }
 }

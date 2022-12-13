@@ -15,16 +15,20 @@ import com.threebanders.recordr.R
 import com.threebanders.recordr.common.Extras
 import com.threebanders.recordr.viewmodels.MainViewModel
 
-class ReadContactsFragment  : Fragment(){
+class ReadContactsFragment : Fragment() {
     private var counter = 0
-    private lateinit var rootView : View
-    private lateinit var permissionText : TextView
-    private lateinit var allowNextBtn : Button
-    private lateinit var permissionTypeTxt : TextView
+    private lateinit var rootView: View
+    private lateinit var permissionText: TextView
+    private lateinit var allowNextBtn: Button
+    private lateinit var permissionTypeTxt: TextView
     private lateinit var mainViewModel: MainViewModel
-    private lateinit var pm : PowerManager
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        rootView = inflater.inflate(R.layout.permission_fragment_layout,container,false)
+    private lateinit var pm: PowerManager
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        rootView = inflater.inflate(R.layout.permission_fragment_layout, container, false)
         permissionText = rootView.findViewById(R.id.permissionText)
         allowNextBtn = rootView.findViewById(R.id.allowNextBtn)
         permissionTypeTxt = rootView.findViewById(R.id.permissionType)
@@ -38,47 +42,63 @@ class ReadContactsFragment  : Fragment(){
         pm = requireContext().getSystemService(Context.POWER_SERVICE) as PowerManager
         permissionTypeTxt.text = getString(R.string.read_contacts_permission)
         allowNextBtn.setOnClickListener {
-            if(allowNextBtn.text.toString() == getString(R.string.allow_button)){
+            if (allowNextBtn.text.toString() == getString(R.string.allow_button)) {
                 activityResultLauncher.launch(Manifest.permission.READ_CONTACTS)
-            } else if (allowNextBtn.text.toString() == getString(R.string.next_button)){
+            } else if (allowNextBtn.text.toString() == getString(R.string.next_button)) {
 
-                if(mainViewModel.fragments.value!!.size == mainViewModel.getCurrentFragmentPosition(requireContext())){
-                    if(mainViewModel.isAppOptimized(pm , requireContext().packageName)){
+                if (mainViewModel.fragments.value!!.size == mainViewModel.getCurrentFragmentPosition(
+                        requireContext()
+                    )
+                ) {
+                    if (mainViewModel.isAppOptimized(pm, requireContext().packageName)) {
                         mainViewModel.openActivity(requireActivity())
                     } else {
                         mainViewModel.openOptimizationFragment(requireActivity())
                     }
                 } else {
-                    mainViewModel.openNextFragment(requireActivity(),mainViewModel,mainViewModel.getCurrentFragmentPosition(requireContext()) + 1)
-                    mainViewModel.addCurrentFragmentPosition(requireContext(),mainViewModel.getCurrentFragmentPosition(requireContext()) + 1)
+                    mainViewModel.openNextFragment(
+                        requireActivity(),
+                        mainViewModel,
+                        mainViewModel.getCurrentFragmentPosition(requireContext()) + 1
+                    )
+                    mainViewModel.addCurrentFragmentPosition(
+                        requireContext(),
+                        mainViewModel.getCurrentFragmentPosition(requireContext()) + 1
+                    )
                 }
             }
         }
     }
 
-    private var activityResultLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()){ isGranted ->
-        if(isGranted){
-            customizeButton()
-        } else {
-            counter++
-            if(counter >= 2){
-                mainViewModel.enablePermissionFromSettings(requireActivity())
+    private var activityResultLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
+            if (isGranted) {
+                customizeButton()
             } else {
-                showDial()
+                counter++
+                if (counter >= 2) {
+                    mainViewModel.enablePermissionFromSettings(requireActivity())
+                } else {
+                    showDial()
+                }
             }
         }
-    }
 
-    private fun showDial(){
+    private fun showDial() {
         mainViewModel.showRationale(
             requireContext(),
             getString(R.string.read_contacts_permission),
             getString(R.string.read_contacts_rationale),
             Manifest.permission.READ_CONTACTS,
-            activityResultLauncher)
+            activityResultLauncher
+        )
     }
-    private fun customizeButton(){
-        val params = CoordinatorLayout.LayoutParams(Extras.BUTTON_WIDTH, WindowManager.LayoutParams.WRAP_CONTENT)
+
+    private fun customizeButton() {
+        val params = CoordinatorLayout.LayoutParams(
+            Extras.BUTTON_WIDTH,
+            WindowManager.LayoutParams.WRAP_CONTENT
+        )
         params.gravity = Gravity.BOTTOM or Gravity.CENTER
         params.bottomMargin = Extras.MARGIN_BOTTOM
         allowNextBtn.layoutParams = params

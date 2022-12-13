@@ -1,26 +1,20 @@
 package com.threebanders.recordr.ui.contact
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
 import android.widget.ImageButton
 import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
-import androidx.preference.PreferenceManager
 import com.google.android.material.navigation.NavigationView
 import com.threebanders.recordr.R
-import com.threebanders.recordr.common.Extras
 import com.threebanders.recordr.ui.BaseActivity
-import com.threebanders.recordr.ui.setup.SetupActivity
 import com.threebanders.recordr.viewmodels.MainViewModel
-import core.threebanders.recordr.MyService
 
 class ContactsListActivityMain : BaseActivity() {
     private var fm: FragmentManager? = null
@@ -68,7 +62,6 @@ class ContactsListActivityMain : BaseActivity() {
             }
         })
     }
-
 
 
     private fun setUpNavigationView() {
