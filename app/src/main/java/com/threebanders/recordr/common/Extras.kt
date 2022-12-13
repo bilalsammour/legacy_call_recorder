@@ -62,7 +62,8 @@ object Extras {
     const val PERMS_NOT_GRANTED = 2
     const val POWER_OPTIMIZED = 4
     const val SETUP_ARGUMENT = "setup_arg"
-
+    const val BUTTON_WIDTH = 200
+    const val MARGIN_BOTTOM = 30
     const val NOTIFICATION_ID = "1"
     const val NOTIFICATION_STRING = "notification"
 
@@ -356,13 +357,13 @@ object Extras {
             .beginTransaction()
             .replace(R.id.container,mainViewModel.fragments.value!![position])
             .commit()
-    }
+    }/**/
     fun doNotOptimizeApp(context : Activity){
         val intent = Intent()
         intent.action = Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS
         intent.data = Uri.parse("package:${context.packageName}")
         context.startActivity(intent)
-    }
+    }/**/
     fun showRationale(context : Context , title : String , message : String, permission: String, activityResultLauncher: ActivityResultLauncher<String>) {
         AlertDialog.Builder(context)
             .setTitle(title)
@@ -371,5 +372,5 @@ object Extras {
                 activityResultLauncher.launch(permission)
             }
             .show()
-    }
+    } /**/
 }

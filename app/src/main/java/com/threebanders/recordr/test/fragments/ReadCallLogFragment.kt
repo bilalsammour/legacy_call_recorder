@@ -2,25 +2,18 @@ package com.threebanders.recordr.test.fragments
 
 import android.Manifest
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.os.PowerManager
-import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.Button
 import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AlertDialog
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.threebanders.recordr.R
 import com.threebanders.recordr.common.Extras
-import com.threebanders.recordr.test.PermissionActivity
-import com.threebanders.recordr.ui.contact.ContactsListActivityMain
 import com.threebanders.recordr.viewmodels.MainViewModel
-import kotlinx.coroutines.flow.combine
 
 class ReadCallLogFragment : Fragment() {
 
@@ -30,7 +23,7 @@ class ReadCallLogFragment : Fragment() {
     private lateinit var permissionTypeTxt : TextView
     private lateinit var mainViewModel: MainViewModel
     private lateinit var pm : PowerManager
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View{
         rootView = inflater.inflate(R.layout.permission_fragment_layout,container,false)
         permissionText = rootView.findViewById(R.id.permissionText)
         allowNextBtn = rootView.findViewById(R.id.allowNextBtn)
@@ -43,13 +36,13 @@ class ReadCallLogFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        permissionTypeTxt.text = "Read Call Log Permission"
+        permissionTypeTxt.text = getString(R.string.read_call_log_permission)
         pm = requireContext().getSystemService(Context.POWER_SERVICE) as PowerManager
         allowNextBtn.setOnClickListener {
-            if(allowNextBtn.text.toString() == "Allow"){
+            if(allowNextBtn.text.toString() == getString(R.string.allow_button)){
                 activityResultLauncher.launch(Manifest.permission.READ_CALL_LOG)
             }
-            else if (allowNextBtn.text.toString() == "Next"){
+            else if (allowNextBtn.text.toString() == getString(R.string.next_button)){
                 if(mainViewModel.fragments.value!!.size == mainViewModel.getCurrentFragmentPosition(requireContext()) + 1){
                     if(mainViewModel.isAppOptimized(pm , requireContext().packageName)){
                         mainViewModel.openActivity(requireActivity())
@@ -57,7 +50,7 @@ class ReadCallLogFragment : Fragment() {
                         mainViewModel.openOptimizationFragment(requireActivity())
                     }
                 } else {
-                    Extras.openNextFragment(requireActivity(),mainViewModel,mainViewModel.getCurrentFragmentPosition(requireContext()) + 1)
+                    mainViewModel.openNextFragment(requireActivity(),mainViewModel,mainViewModel.getCurrentFragmentPosition(requireContext()) + 1)
                     mainViewModel.addCurrentFragmentPosition(requireContext(),mainViewModel.getCurrentFragmentPosition(requireContext()) + 1)
                 }
             }
@@ -66,18 +59,25 @@ class ReadCallLogFragment : Fragment() {
 
     private var activityResultLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()){ isGranted ->
         if(isGranted){
-            allowNextBtn.text = "Next"
+            customizeButton()
         } else {
             showDial()
         }
     }
 
     private fun showDial(){
-        Extras.showRationale(
+        mainViewModel.showRationale(
             requireContext(),
-            "Read Call Log Permission",
-            "xxxxxxx",
+            getString(R.string.read_call_log_permission),
+            getString(R.string.call_log_rationale),
             Manifest.permission.READ_CALL_LOG,
             activityResultLauncher)
+    }
+    private fun customizeButton(){
+        val params = CoordinatorLayout.LayoutParams(Extras.BUTTON_WIDTH, WindowManager.LayoutParams.WRAP_CONTENT)
+        params.gravity = Gravity.BOTTOM or Gravity.CENTER
+        params.bottomMargin = Extras.MARGIN_BOTTOM
+        allowNextBtn.layoutParams = params
+        allowNextBtn.text = getString(R.string.allow_button)
     }
 }

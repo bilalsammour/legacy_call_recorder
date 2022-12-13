@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.os.PowerManager
 import androidx.activity.result.ActivityResult
+import androidx.activity.result.ActivityResultLauncher
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
@@ -150,5 +151,15 @@ class MainViewModel : ViewModel() {
 
     fun openOptimizationFragment(context: FragmentActivity){
         Extras.openOptimizationFragment(context)
+    }
+
+    fun openNextFragment(context : FragmentActivity,mainViewModel: MainViewModel,position: Int){
+        Extras.openNextFragment(context,mainViewModel,position)
+    }
+    fun doNotOptimizeApp(context : Activity){
+        Extras.doNotOptimizeApp(context)
+    }
+    fun showRationale(context : Context , title : String , message : String, permission: String, activityResultLauncher: ActivityResultLauncher<String>){
+        Extras.showRationale(context, title, message, permission, activityResultLauncher)
     }
 }

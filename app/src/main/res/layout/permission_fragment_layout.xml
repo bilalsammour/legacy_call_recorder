@@ -8,31 +8,34 @@
         android:id="@+id/permissionType"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Phone Call Permission"
-        android:layout_marginTop="100dp"
         android:layout_marginLeft="20dp"
+        android:layout_marginTop="100dp"
         android:layout_marginRight="20dp"
-        android:textStyle="bold"
-        android:textSize="25sp"/>
+        android:fontFamily="@font/alatsi"
+        android:textSize="25sp"
+        android:textStyle="bold" />
+
     <TextView
         android:id="@+id/permissionText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/test_str"
-        android:textSize="19sp"
         android:layout_gravity="center"
         android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"/>
+        android:layout_marginRight="20dp"
+        android:fontFamily="@font/abel"
+        android:text="@string/test_str"
+        android:textSize="19sp" />
 
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/allowNextBtn"
         android:layout_width="250dp"
         android:layout_height="wrap_content"
-        android:background="@drawable/allow_next_button_shape"
-        android:text="Allow"
         android:layout_gravity="bottom|center"
         android:layout_marginBottom="30dp"
+        android:background="@drawable/allow_next_button_shape"
+        android:fontFamily="@font/alatsi"
+        android:text="Allow"
         android:textColor="@color/white" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
