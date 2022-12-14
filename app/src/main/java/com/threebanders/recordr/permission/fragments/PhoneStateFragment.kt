@@ -17,7 +17,6 @@ import com.threebanders.recordr.common.Extras
 import com.threebanders.recordr.viewmodels.MainViewModel
 
 class PhoneStateFragment : Fragment() {
-
     private var counter = 0
     private lateinit var mainViewModel: MainViewModel
     private lateinit var rootView: View
@@ -25,16 +24,22 @@ class PhoneStateFragment : Fragment() {
     private lateinit var allowNextBtn: Button
     private lateinit var pm: PowerManager
     private lateinit var permissionTypeTxt: TextView
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        rootView = inflater.inflate(R.layout.permission_fragment_layout, container, false)
+        rootView = inflater.inflate(
+            R.layout.permission_fragment_layout, container,
+            false
+        )
+        
         permissionText = rootView.findViewById(R.id.permissionText)
         allowNextBtn = rootView.findViewById(R.id.allowNextBtn)
         permissionTypeTxt = rootView.findViewById(R.id.permissionType)
         mainViewModel = ViewModelProvider(requireActivity())[MainViewModel::class.java]
+
         return rootView
     }
 

@@ -23,17 +23,18 @@ class PermissionActivity : AppCompatActivity() {
     private lateinit var pm: PowerManager
     private lateinit var mainViewModel: MainViewModel
     private var fragmentsList = mutableListOf<Fragment>()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_permission)
-
-
     }
 
     override fun onStart() {
         super.onStart()
+
         mainViewModel = ViewModelProvider(this)[MainViewModel::class.java]
         pm = getSystemService(Context.POWER_SERVICE) as PowerManager
+
         if (checkIfPermissionsGranted()) {
             if (mainViewModel.isAppOptimized(pm, packageName)) {
                 Intent(this, ContactsListActivityMain::class.java).apply {
@@ -46,9 +47,12 @@ class PermissionActivity : AppCompatActivity() {
             }
         } else {
             mainViewModel.clearPreferences(this)
+
             addFragment()
+
             CoroutineScope(Dispatchers.Main).launch {
                 delay(3000)
+
                 mainViewModel.addCurrentFragmentPosition(this@PermissionActivity, 0)
                 supportFragmentManager.beginTransaction().replace(R.id.container, fragmentsList[0])
                     .commit()
@@ -64,6 +68,7 @@ class PermissionActivity : AppCompatActivity() {
         ) {
             fragmentsList.add(PhoneStateFragment())
         }
+
         if (ContextCompat.checkSelfPermission(
                 this,
                 Manifest.permission.RECORD_AUDIO
@@ -71,6 +76,7 @@ class PermissionActivity : AppCompatActivity() {
         ) {
             fragmentsList.add(RecordAudioFragment())
         }
+
         if (ContextCompat.checkSelfPermission(
                 this,
                 Manifest.permission.READ_CONTACTS
@@ -78,6 +84,7 @@ class PermissionActivity : AppCompatActivity() {
         ) {
             fragmentsList.add(ReadContactsFragment())
         }
+
         if (ContextCompat.checkSelfPermission(
                 this,
                 Manifest.permission.READ_CALL_LOG
@@ -107,6 +114,4 @@ class PermissionActivity : AppCompatActivity() {
             Manifest.permission.RECORD_AUDIO
         ) == PackageManager.PERMISSION_GRANTED
     }
-
-
 }

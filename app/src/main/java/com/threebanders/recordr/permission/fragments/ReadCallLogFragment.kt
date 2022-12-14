@@ -23,12 +23,17 @@ class ReadCallLogFragment : Fragment() {
     private lateinit var permissionTypeTxt: TextView
     private lateinit var mainViewModel: MainViewModel
     private lateinit var pm: PowerManager
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        rootView = inflater.inflate(R.layout.permission_fragment_layout, container, false)
+        rootView = inflater.inflate(
+            R.layout.permission_fragment_layout, container,
+            false
+        )
+
         permissionText = rootView.findViewById(R.id.permissionText)
         allowNextBtn = rootView.findViewById(R.id.allowNextBtn)
         permissionTypeTxt = rootView.findViewById(R.id.permissionType)

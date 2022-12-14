@@ -18,19 +18,24 @@ import com.threebanders.recordr.common.Extras
 import com.threebanders.recordr.viewmodels.MainViewModel
 
 class OptimizationFragment : Fragment() {
-
     private lateinit var rootView: View
     private lateinit var turnOffBtn: Button
     private lateinit var pm: PowerManager
     private lateinit var mainViewModel: MainViewModel
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        rootView = inflater.inflate(R.layout.optimization_fragment_layout, container, false)
+        rootView = inflater.inflate(
+            R.layout.optimization_fragment_layout, container,
+            false
+        )
+
         turnOffBtn = rootView.findViewById(R.id.turnOffBtn)
         mainViewModel = ViewModelProvider(requireActivity())[MainViewModel::class.java]
+
         return rootView
     }
 
@@ -38,6 +43,7 @@ class OptimizationFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         pm = requireContext().getSystemService(Context.POWER_SERVICE) as PowerManager
+
         turnOffBtn.setOnClickListener {
             if (turnOffBtn.text.toString() == getString(R.string.turn_off_button)) {
                 if (!mainViewModel.isAppOptimized(pm, requireContext().packageName)) {
@@ -61,7 +67,6 @@ class OptimizationFragment : Fragment() {
         }
     }
 
-
     private fun customizeButton() {
         val params = CoordinatorLayout.LayoutParams(Extras.BUTTON_WIDTH, LayoutParams.WRAP_CONTENT)
         params.gravity = Gravity.BOTTOM or Gravity.CENTER
@@ -69,5 +74,4 @@ class OptimizationFragment : Fragment() {
         turnOffBtn.layoutParams = params
         turnOffBtn.text = getString(R.string.finish_button)
     }
-
 }
