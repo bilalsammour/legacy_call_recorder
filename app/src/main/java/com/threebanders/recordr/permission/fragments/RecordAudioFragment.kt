@@ -79,7 +79,7 @@ class RecordAudioFragment : Fragment() {
     private var activityResultLauncher =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
             if (isGranted) {
-                customizeButton()
+                allowNextBtn.text = getString(R.string.next_button)
             } else {
                 counter++
                 if (counter >= 2) {
@@ -100,14 +100,5 @@ class RecordAudioFragment : Fragment() {
         )
     }
 
-    private fun customizeButton() {
-        val params = CoordinatorLayout.LayoutParams(
-            Extras.BUTTON_WIDTH,
-            WindowManager.LayoutParams.WRAP_CONTENT
-        )
-        params.gravity = Gravity.BOTTOM or Gravity.CENTER
-        params.bottomMargin = Extras.MARGIN_BOTTOM
-        allowNextBtn.layoutParams = params
-        allowNextBtn.text = getString(R.string.next_button)
-    }
+
 }

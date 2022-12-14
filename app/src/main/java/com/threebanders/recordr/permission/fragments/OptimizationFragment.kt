@@ -11,6 +11,7 @@ import android.view.WindowManager.LayoutParams
 import android.widget.Button
 import android.widget.Toast
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.threebanders.recordr.R
@@ -48,13 +49,17 @@ class OptimizationFragment : Fragment() {
             if (turnOffBtn.text.toString() == getString(R.string.turn_off_button)) {
                 if (!mainViewModel.isAppOptimized(pm, requireContext().packageName)) {
                     mainViewModel.doNotOptimizeApp(requireActivity())
-                    customizeButton()
+                    turnOffBtn.text = getString(R.string.finish_button)
+                    turnOffBtn.background = ContextCompat.getDrawable(requireContext(),R.drawable.next_button_shape)
                 } else {
                     mainViewModel.openActivity(requireActivity())
                 }
             } else if (turnOffBtn.text == getString(R.string.finish_button)) {
                 if (mainViewModel.isAppOptimized(pm, requireContext().packageName)) {
-                    mainViewModel.openActivity(requireActivity())
+                    requireActivity().supportFragmentManager
+                        .beginTransaction()
+                        .replace(R.id.container, AccessibilityFragment())
+                        .commit()
                 } else {
                     Toast.makeText(
                         requireContext(),
@@ -67,11 +72,4 @@ class OptimizationFragment : Fragment() {
         }
     }
 
-    private fun customizeButton() {
-        val params = CoordinatorLayout.LayoutParams(Extras.BUTTON_WIDTH, LayoutParams.WRAP_CONTENT)
-        params.gravity = Gravity.BOTTOM or Gravity.CENTER
-        params.bottomMargin = Extras.MARGIN_BOTTOM
-        turnOffBtn.layoutParams = params
-        turnOffBtn.text = getString(R.string.finish_button)
-    }
 }

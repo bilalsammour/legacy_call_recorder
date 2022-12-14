@@ -24,6 +24,7 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.edit
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import com.afollestad.materialdialogs.DialogAction
 import com.afollestad.materialdialogs.MaterialDialog
@@ -39,7 +40,7 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.threebanders.recordr.CrApp
 import com.threebanders.recordr.R
-import com.threebanders.recordr.permission.fragments.OptimizationFragment
+import com.threebanders.recordr.permission.fragments.*
 import com.threebanders.recordr.ui.contact.ContactsListActivityMain
 import com.threebanders.recordr.ui.help.HelpActivity
 import com.threebanders.recordr.ui.settings.SettingsActivity
@@ -395,4 +396,45 @@ object Extras {
         intent.data = uri
         context.startActivity(intent)
     }
+
+    fun addFragment(context: Context,fragmentsList : MutableList<Fragment> , onFinish: (MutableList<Fragment>) -> Unit) {
+        if (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+            fragmentsList.add(PhoneStateFragment())
+        }
+
+        if (ContextCompat.checkSelfPermission(context, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+            fragmentsList.add(RecordAudioFragment())
+        }
+
+        if (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
+            fragmentsList.add(ReadContactsFragment())
+        }
+
+        if (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_CALL_LOG) != PackageManager.PERMISSION_GRANTED) {
+            fragmentsList.add(ReadCallLogFragment())
+        }
+
+        onFinish.invoke(fragmentsList)
+
+    }
+
+     fun checkIfPermissionsGranted(context: Context): Boolean {
+        return ContextCompat.checkSelfPermission(
+            context,
+            Manifest.permission.READ_PHONE_STATE
+        ) == PackageManager.PERMISSION_GRANTED
+                && ContextCompat.checkSelfPermission(
+            context,
+            Manifest.permission.READ_CALL_LOG
+        ) == PackageManager.PERMISSION_GRANTED
+                && ContextCompat.checkSelfPermission(
+            context,
+            Manifest.permission.READ_CONTACTS
+        ) == PackageManager.PERMISSION_GRANTED
+                && ContextCompat.checkSelfPermission(
+            context,
+            Manifest.permission.RECORD_AUDIO
+        ) == PackageManager.PERMISSION_GRANTED
+    }
+
 }

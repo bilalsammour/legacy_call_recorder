@@ -10,6 +10,7 @@ import android.widget.TextView
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.threebanders.recordr.R
@@ -80,7 +81,8 @@ class PhoneStateFragment : Fragment() {
     private var activityResultLauncher: ActivityResultLauncher<String> =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
             if (isGranted) {
-                customizeButton()
+                allowNextBtn.text = getString(R.string.next_button)
+                allowNextBtn.background = ContextCompat.getDrawable(requireContext(),R.drawable.next_button_shape)
             } else {
                 counter++
                 if (counter >= 2) {
@@ -101,16 +103,6 @@ class PhoneStateFragment : Fragment() {
         )
     }
 
-    private fun customizeButton() {
-        val params = CoordinatorLayout.LayoutParams(
-            Extras.BUTTON_WIDTH,
-            WindowManager.LayoutParams.WRAP_CONTENT
-        )
-        params.gravity = Gravity.BOTTOM or Gravity.CENTER
-        params.bottomMargin = Extras.MARGIN_BOTTOM
-        allowNextBtn.layoutParams = params
-        allowNextBtn.text = getString(R.string.next_button)
-    }
 
 
 }

@@ -1,11 +1,13 @@
 package com.threebanders.recordr.permission
 
 import android.Manifest
+import android.accessibilityservice.AccessibilityService
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.PowerManager
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -14,6 +16,7 @@ import com.threebanders.recordr.R
 import com.threebanders.recordr.permission.fragments.*
 import com.threebanders.recordr.ui.contact.ContactsListActivityMain
 import com.threebanders.recordr.viewmodels.MainViewModel
+import core.threebanders.recordr.MyService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -32,24 +35,25 @@ class PermissionActivity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
 
+
         mainViewModel = ViewModelProvider(this)[MainViewModel::class.java]
         pm = getSystemService(Context.POWER_SERVICE) as PowerManager
 
-        if (checkIfPermissionsGranted()) {
+        if (mainViewModel.checkIfPermissionsGranted(this)) {
             if (mainViewModel.isAppOptimized(pm, packageName)) {
-                Intent(this, ContactsListActivityMain::class.java).apply {
-                    startActivity(this)
-                    finish()
-                }
-            } else {
+                supportFragmentManager.beginTransaction()
+                    .replace(R.id.container, AccessibilityFragment()).commit()
+            }
+            else {
                 supportFragmentManager.beginTransaction()
                     .replace(R.id.container, OptimizationFragment()).commit()
             }
-        } else {
+        }
+        else {
             mainViewModel.clearPreferences(this)
-
-            addFragment()
-
+            mainViewModel.addFragment(this,fragmentsList){
+                mainViewModel.saveCurrentFragments(it)
+            }
             CoroutineScope(Dispatchers.Main).launch {
                 delay(3000)
 
@@ -60,58 +64,4 @@ class PermissionActivity : AppCompatActivity() {
         }
     }
 
-    private fun addFragment() {
-        if (ContextCompat.checkSelfPermission(
-                this,
-                Manifest.permission.READ_PHONE_STATE
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            fragmentsList.add(PhoneStateFragment())
-        }
-
-        if (ContextCompat.checkSelfPermission(
-                this,
-                Manifest.permission.RECORD_AUDIO
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            fragmentsList.add(RecordAudioFragment())
-        }
-
-        if (ContextCompat.checkSelfPermission(
-                this,
-                Manifest.permission.READ_CONTACTS
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            fragmentsList.add(ReadContactsFragment())
-        }
-
-        if (ContextCompat.checkSelfPermission(
-                this,
-                Manifest.permission.READ_CALL_LOG
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            fragmentsList.add(ReadCallLogFragment())
-        }
-
-        mainViewModel.saveCurrentFragments(fragmentsList)
-    }
-
-    private fun checkIfPermissionsGranted(): Boolean {
-        return ContextCompat.checkSelfPermission(
-            this,
-            Manifest.permission.READ_PHONE_STATE
-        ) == PackageManager.PERMISSION_GRANTED
-                && ContextCompat.checkSelfPermission(
-            this,
-            Manifest.permission.READ_CALL_LOG
-        ) == PackageManager.PERMISSION_GRANTED
-                && ContextCompat.checkSelfPermission(
-            this,
-            Manifest.permission.READ_CONTACTS
-        ) == PackageManager.PERMISSION_GRANTED
-                && ContextCompat.checkSelfPermission(
-            this,
-            Manifest.permission.RECORD_AUDIO
-        ) == PackageManager.PERMISSION_GRANTED
-    }
 }

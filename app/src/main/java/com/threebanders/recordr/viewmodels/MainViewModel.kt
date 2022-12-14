@@ -174,4 +174,11 @@ class MainViewModel : ViewModel() {
     fun enablePermissionFromSettings(context: Activity) {
         Extras.enablePermissionFromSettings(context)
     }
+    fun addFragment(context: Context,fragmentsList : MutableList<Fragment> , onFinish: (MutableList<Fragment>) -> Unit){
+        Extras.addFragment(context,fragmentsList,onFinish)
+    }
+
+    fun checkIfPermissionsGranted(context: Context): Boolean {
+        return Extras.checkIfPermissionsGranted(context)
+    }
 }
