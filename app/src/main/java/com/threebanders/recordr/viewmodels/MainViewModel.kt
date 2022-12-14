@@ -181,4 +181,8 @@ class MainViewModel : ViewModel() {
     fun checkIfPermissionsGranted(context: Context): Boolean {
         return Extras.checkIfPermissionsGranted(context)
     }
+
+    fun openAccessibilityOption(context: Activity){
+        Extras.openAccessibilityOption(context)
+    }
 }
