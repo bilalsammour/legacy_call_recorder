@@ -13,22 +13,24 @@ import com.threebanders.recordr.viewmodels.MainViewModel
 import core.threebanders.recordr.MyService
 
 class AccessibilityFragment : Fragment() {
-    private lateinit var rootView : View
-    private lateinit var switchOnButton : Button
+    private lateinit var rootView: View
+    private lateinit var switchOnButton: Button
     private lateinit var mainViewModel: MainViewModel
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        rootView = inflater.inflate(R.layout.accessibility_fragment_layout,container,false)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        rootView = inflater.inflate(R.layout.accessibility_fragment_layout, container, false)
         mainViewModel = ViewModelProvider(requireActivity()).get(MainViewModel::class.java)
         switchOnButton = rootView.findViewById(R.id.switchOnAccessibility)
-        return  rootView
+        return rootView
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-
-        val enabled: Boolean = Extras.isAccessibilityServiceEnabled(requireContext(), MyService::class.java)
-        if(enabled){
+        if (Extras.isAccessibilityServiceEnabled(requireContext(), MyService::class.java)) {
             mainViewModel.openActivity(requireActivity())
         }
         switchOnButton.setOnClickListener {

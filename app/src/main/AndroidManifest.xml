@@ -73,7 +73,7 @@
             android:name=".ui.contact.ContactsListActivityMain"
             android:exported="true"
             android:launchMode="singleTop"
-            android:screenOrientation="fullSensor"/>
+            android:screenOrientation="fullSensor" />
 
         <activity
             android:name=".ui.settings.SettingsActivity"

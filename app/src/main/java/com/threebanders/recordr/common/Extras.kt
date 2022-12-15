@@ -400,20 +400,40 @@ object Extras {
         context.startActivity(intent)
     }
 
-    fun addFragment(context: Context,fragmentsList : MutableList<Fragment> , onFinish: (MutableList<Fragment>) -> Unit) {
-        if (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+    fun addFragment(
+        context: Context,
+        fragmentsList: MutableList<Fragment>,
+        onFinish: (MutableList<Fragment>) -> Unit
+    ) {
+        if (ContextCompat.checkSelfPermission(
+                context,
+                Manifest.permission.READ_PHONE_STATE
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
             fragmentsList.add(PhoneStateFragment())
         }
 
-        if (ContextCompat.checkSelfPermission(context, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+        if (ContextCompat.checkSelfPermission(
+                context,
+                Manifest.permission.RECORD_AUDIO
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
             fragmentsList.add(RecordAudioFragment())
         }
 
-        if (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
+        if (ContextCompat.checkSelfPermission(
+                context,
+                Manifest.permission.READ_CONTACTS
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
             fragmentsList.add(ReadContactsFragment())
         }
 
-        if (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_CALL_LOG) != PackageManager.PERMISSION_GRANTED) {
+        if (ContextCompat.checkSelfPermission(
+                context,
+                Manifest.permission.READ_CALL_LOG
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
             fragmentsList.add(ReadCallLogFragment())
         }
 
@@ -421,7 +441,7 @@ object Extras {
 
     }
 
-     fun checkIfPermissionsGranted(context: Context): Boolean {
+    fun checkIfPermissionsGranted(context: Context): Boolean {
         return ContextCompat.checkSelfPermission(
             context,
             Manifest.permission.READ_PHONE_STATE
@@ -440,19 +460,33 @@ object Extras {
         ) == PackageManager.PERMISSION_GRANTED
     }
 
-    fun isAccessibilityServiceEnabled(context: Context, service: Class<out AccessibilityService?>): Boolean {
+    fun isAccessibilityServiceEnabled(
+        context: Context,
+        service: Class<out AccessibilityService?>
+    ): Boolean {
         val am = context.getSystemService(Context.ACCESSIBILITY_SERVICE) as AccessibilityManager
-        val enabledServices = am.getEnabledAccessibilityServiceList(AccessibilityServiceInfo.FEEDBACK_ALL_MASK)
+        val enabledServices =
+            am.getEnabledAccessibilityServiceList(AccessibilityServiceInfo.FEEDBACK_ALL_MASK)
         for (enabledService in enabledServices) {
             val enabledServiceInfo = enabledService.resolveInfo.serviceInfo
-            if (enabledServiceInfo.packageName.equals(context.packageName) && enabledServiceInfo.name.equals(service.name)) return true
+            if (enabledServiceInfo.packageName.equals(context.packageName) && enabledServiceInfo.name.equals(
+                    service.name
+                )
+            ) return true
         }
         return false
     }
 
-    fun openAccessibilityOption(context: Activity){
+    fun openAccessibilityOption(context: Activity) {
         val intent = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         context.startActivity(intent)
+    }
+
+    fun moveToAccessibilityFragment(context: FragmentActivity) {
+        context.supportFragmentManager
+            .beginTransaction()
+            .replace(R.id.container, AccessibilityFragment())
+            .commit()
     }
 }

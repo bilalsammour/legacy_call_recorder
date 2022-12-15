@@ -80,7 +80,8 @@ class ReadCallLogFragment : Fragment() {
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
             if (isGranted) {
                 allowNextBtn.text = getString(R.string.next_button)
-                allowNextBtn.background = ContextCompat.getDrawable(requireContext(),R.drawable.next_button_shape)
+                allowNextBtn.background =
+                    ContextCompat.getDrawable(requireContext(), R.drawable.next_button_shape)
             } else {
                 counter++
                 if (counter >= 2) {

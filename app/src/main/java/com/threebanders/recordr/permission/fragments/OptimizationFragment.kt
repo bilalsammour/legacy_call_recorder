@@ -41,17 +41,14 @@ class OptimizationFragment : Fragment() {
                 if (!mainViewModel.isAppOptimized(pm, requireContext().packageName)) {
                     mainViewModel.doNotOptimizeApp(requireActivity())
                     turnOffBtn.text = getString(R.string.next)
-                    turnOffBtn.background = ContextCompat.getDrawable(requireContext(),R.drawable.next_button_shape)
-                }
-                else {
+                    turnOffBtn.background =
+                        ContextCompat.getDrawable(requireContext(), R.drawable.next_button_shape)
+                } else {
                     mainViewModel.openActivity(requireActivity())
                 }
             } else if (turnOffBtn.text == getString(R.string.next)) {
                 if (mainViewModel.isAppOptimized(pm, requireContext().packageName)) {
-                    requireActivity().supportFragmentManager
-                        .beginTransaction()
-                        .replace(R.id.container, AccessibilityFragment())
-                        .commit()
+                    mainViewModel.moveToAccessibilityFragment(requireActivity())
                 } else {
                     Toast.makeText(
                         requireContext(),

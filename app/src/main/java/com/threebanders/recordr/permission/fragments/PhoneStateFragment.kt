@@ -31,16 +31,11 @@ class PhoneStateFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        rootView = inflater.inflate(
-            R.layout.permission_fragment_layout, container,
-            false
-        )
-        
+        rootView = inflater.inflate(R.layout.permission_fragment_layout, container, false)
+        mainViewModel = ViewModelProvider(requireActivity())[MainViewModel::class.java]
         permissionText = rootView.findViewById(R.id.permissionText)
         allowNextBtn = rootView.findViewById(R.id.allowNextBtn)
         permissionTypeTxt = rootView.findViewById(R.id.permissionType)
-        mainViewModel = ViewModelProvider(requireActivity())[MainViewModel::class.java]
-
         return rootView
     }
 
@@ -82,7 +77,8 @@ class PhoneStateFragment : Fragment() {
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
             if (isGranted) {
                 allowNextBtn.text = getString(R.string.next_button)
-                allowNextBtn.background = ContextCompat.getDrawable(requireContext(),R.drawable.next_button_shape)
+                allowNextBtn.background =
+                    ContextCompat.getDrawable(requireContext(), R.drawable.next_button_shape)
             } else {
                 counter++
                 if (counter >= 2) {
@@ -102,7 +98,6 @@ class PhoneStateFragment : Fragment() {
             activityResultLauncher
         )
     }
-
 
 
 }

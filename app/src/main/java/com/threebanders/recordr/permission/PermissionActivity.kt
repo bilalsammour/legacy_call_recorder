@@ -37,15 +37,13 @@ class PermissionActivity : AppCompatActivity() {
             if (mainViewModel.isAppOptimized(pm, packageName)) {
                 supportFragmentManager.beginTransaction()
                     .replace(R.id.container, AccessibilityFragment()).commit()
-            }
-            else {
+            } else {
                 supportFragmentManager.beginTransaction()
                     .replace(R.id.container, OptimizationFragment()).commit()
             }
-        }
-        else {
+        } else {
             mainViewModel.clearPreferences(this)
-            mainViewModel.addFragment(this,fragmentsList){
+            mainViewModel.addFragment(this, fragmentsList) {
                 mainViewModel.saveCurrentFragments(it)
             }
             CoroutineScope(Dispatchers.Main).launch {
