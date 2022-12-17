@@ -14,4 +14,11 @@
     <string name="hidden_number">Hidden number</string>
     <string name="unknown_phone_number">Unknown phone number</string>
     <string name="cannot_start_record">Cannot start recorder. Maybe change audio source?</string>
+    <string name="recording">Recording</string>
+    <string name="time_format">-d-MMM-yyyy-HH-mm-ss</string>
+    <string name="voice_recognition">Voice recognition</string>
+    <string name="voice_communication">Voice communication</string>
+    <string name="voice_call">Voice call</string>
+    <string name="microphone">Microphone</string>
+    <string name="source_unrecognized">Source unrecognized</string>
 </resources>

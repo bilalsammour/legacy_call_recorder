@@ -17,6 +17,7 @@ import java.util.Locale;
 
 import core.threebanders.recordr.Cache;
 import core.threebanders.recordr.Core;
+import core.threebanders.recordr.R;
 
 public class Recorder {
     public static final String WAV_FORMAT = "wav";
@@ -61,9 +62,8 @@ public class Recorder {
         File recordingsDir = context.getFilesDir();
 
         phoneNumber = phoneNumber.replaceAll("[()/.,* ;+]", "_");
-        String fileName = "Recording" + phoneNumber +
-                new SimpleDateFormat("-d-MMM-yyyy-HH-mm-ss", Locale.US).
-                        format(new Date(System.currentTimeMillis())) + extension;
+        String fileName = context.getString(R.string.recording) + phoneNumber +
+                new SimpleDateFormat(context.getString(R.string.time_format), Locale.US).format(new Date(System.currentTimeMillis())) + extension;
         audioFile = new File(recordingsDir, fileName);
 
         try {
@@ -111,15 +111,15 @@ public class Recorder {
     public String getSource() {
         switch (source) {
             case VOICE_RECOGNITION:
-                return "Voice recognition";
+                return context.getString(R.string.voice_recognition);
             case VOICE_COMMUNICATION:
-                return "Voice communication";
+                return context.getString(R.string.voice_communication);
             case VOICE_CALL:
-                return "Voice call";
+                return context.getString(R.string.voice_call);
             case MIC:
-                return "Microphone";
+                return context.getString(R.string.microphone);
             default:
-                return "Source unrecognized";
+                return context.getString(R.string.source_unrecognized);
         }
     }
 
