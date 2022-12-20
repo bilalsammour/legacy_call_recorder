@@ -52,7 +52,6 @@ class ReadContactsFragment : Fragment() {
             if (allowNextBtn.text.toString() == getString(R.string.allow_button)) {
                 activityResultLauncher.launch(Manifest.permission.READ_CONTACTS)
             } else if (allowNextBtn.text.toString() == getString(R.string.next_button)) {
-
                 if (mainViewModel.fragments.value!!.size == mainViewModel.getCurrentFragmentPosition(
                         requireContext()
                     )
@@ -102,5 +101,4 @@ class ReadContactsFragment : Fragment() {
             activityResultLauncher
         )
     }
-
 }

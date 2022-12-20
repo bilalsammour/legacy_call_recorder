@@ -99,6 +99,4 @@ class RecordAudioFragment : Fragment() {
             activityResultLauncher
         )
     }
-
-
 }

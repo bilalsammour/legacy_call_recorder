@@ -5,7 +5,6 @@ import android.accessibilityservice.AccessibilityService
 import android.accessibilityservice.AccessibilityServiceInfo
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.app.ActivityManager
 import android.app.Notification
 import android.app.PendingIntent
 import android.content.ActivityNotFoundException
@@ -21,7 +20,6 @@ import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
@@ -58,7 +56,6 @@ import java.io.File
 import java.lang.reflect.Type
 import kotlin.random.Random
 
-
 object Extras {
     private const val PERMISSION_REQUEST_CODE = 1001
     const val HAS_ACCEPTED_EULA = "has_accepted_eula"
@@ -66,8 +63,6 @@ object Extras {
     const val PERMS_NOT_GRANTED = 2
     const val POWER_OPTIMIZED = 4
     const val SETUP_ARGUMENT = "setup_arg"
-    const val BUTTON_WIDTH = 200
-    const val MARGIN_BOTTOM = 30
     const val NOTIFICATION_ID = "1"
     const val NOTIFICATION_STRING = "notification"
 
@@ -187,29 +182,6 @@ object Extras {
             .show()
     }
 
-    @Suppress("DEPRECATION")
-    fun isMyServiceRunning(context: Context, serviceClass: Class<*>): Boolean {
-        val manager =
-            context.getSystemService(AppCompatActivity.ACTIVITY_SERVICE) as ActivityManager
-
-        for (service in manager.getRunningServices(Int.MAX_VALUE)) {
-            if (serviceClass.name == service.service.className) {
-                return true
-            }
-        }
-
-        return false
-    }
-
-    fun showAccessibilitySettings(activity: AppCompatActivity, block: (ActivityResult) -> Unit) {
-        val intent = Intent("android.settings.ACCESSIBILITY_SETTINGS")
-        activity.registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-            if (it.resultCode == Activity.RESULT_OK) {
-                block(it)
-            }
-        }.launch(intent)
-    }
-
     fun openSettingsActivity(context: Activity) {
         context.startActivity(
             Intent(context, SettingsActivity::class.java)
@@ -322,37 +294,35 @@ object Extras {
         return corePrefs.getBoolean(GOOGLE_DRIVE, false)
     }
 
-
-    /* ------------------------------ PERMISSIONS ACTIVITY ------------------------------ */
     fun addCurrentFragmentPosition(context: Context, position: Int) {
         val prefs = context.getSharedPreferences("permissionPrefs", Context.MODE_PRIVATE)
         val editor = prefs.edit()
         editor.putInt("position", position)
         editor.apply()
-    } /**/
+    }
 
     fun getCurrentFragmentPosition(context: Context): Int {
         val prefs = context.getSharedPreferences("permissionPrefs", Context.MODE_PRIVATE)
         return prefs.getInt("position", 0)
-    } /**/
+    }
 
     fun clearPreferences(context: Context) {
         val prefs = context.getSharedPreferences("permissionPrefs", Context.MODE_PRIVATE)
         prefs.edit {
             clear()
         }
-    } /**/
+    }
 
     fun isAppOptimized(pm: PowerManager, packageName: String): Boolean {
         return pm.isIgnoringBatteryOptimizations(packageName)
-    } /**/
+    }
 
     fun openActivity(context: Activity) {
         Intent(context, ContactsListActivityMain::class.java).apply {
             context.startActivity(this)
             context.finish()
         }
-    } /**/
+    }
 
     fun openOptimizationFragment(context: FragmentActivity) {
         context
@@ -360,7 +330,7 @@ object Extras {
             .beginTransaction()
             .replace(R.id.container, OptimizationFragment())
             .commit()
-    } /**/
+    }
 
     fun openNextFragment(context: FragmentActivity, mainViewModel: MainViewModel, position: Int) {
         context
@@ -368,14 +338,15 @@ object Extras {
             .beginTransaction()
             .replace(R.id.container, mainViewModel.fragments.value!![position])
             .commit()
-    }/**/
+    }
 
+    @SuppressLint("BatteryLife")
     fun doNotOptimizeApp(context: Activity) {
         val intent = Intent()
         intent.action = Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS
         intent.data = Uri.parse("package:${context.packageName}")
         context.startActivity(intent)
-    }/**/
+    }
 
     fun showRationale(
         context: Context,
@@ -391,7 +362,7 @@ object Extras {
                 activityResultLauncher.launch(permission)
             }
             .show()
-    } /**/
+    }
 
     fun enablePermissionFromSettings(context: Activity) {
         val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
@@ -477,10 +448,15 @@ object Extras {
         return false
     }
 
-    fun openAccessibilityOption(context: Activity) {
+    fun openAccessibilityOption(activity: FragmentActivity, block: (ActivityResult) -> Unit) {
         val intent = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        context.startActivity(intent)
+
+        activity.registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            if (it.resultCode == Activity.RESULT_OK) {
+                block(it)
+            }
+        }.launch(intent)
     }
 
     fun moveToAccessibilityFragment(context: FragmentActivity) {

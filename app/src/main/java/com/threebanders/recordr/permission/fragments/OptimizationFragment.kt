@@ -60,5 +60,4 @@ class OptimizationFragment : Fragment() {
             }
         }
     }
-
 }

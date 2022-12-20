@@ -101,5 +101,4 @@ class ReadCallLogFragment : Fragment() {
             activityResultLauncher
         )
     }
-
 }

@@ -36,6 +36,7 @@ class PhoneStateFragment : Fragment() {
         permissionText = rootView.findViewById(R.id.permissionText)
         allowNextBtn = rootView.findViewById(R.id.allowNextBtn)
         permissionTypeTxt = rootView.findViewById(R.id.permissionType)
+
         return rootView
     }
 
@@ -72,7 +73,6 @@ class PhoneStateFragment : Fragment() {
         }
     }
 
-
     private var activityResultLauncher: ActivityResultLauncher<String> =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
             if (isGranted) {
@@ -98,6 +98,4 @@ class PhoneStateFragment : Fragment() {
             activityResultLauncher
         )
     }
-
-
 }

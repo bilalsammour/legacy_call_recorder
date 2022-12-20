@@ -16,6 +16,7 @@ class AccessibilityFragment : Fragment() {
     private lateinit var rootView: View
     private lateinit var switchOnButton: Button
     private lateinit var mainViewModel: MainViewModel
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -24,6 +25,7 @@ class AccessibilityFragment : Fragment() {
         rootView = inflater.inflate(R.layout.accessibility_fragment_layout, container, false)
         mainViewModel = ViewModelProvider(requireActivity()).get(MainViewModel::class.java)
         switchOnButton = rootView.findViewById(R.id.switchOnAccessibility)
+
         return rootView
     }
 
@@ -34,8 +36,7 @@ class AccessibilityFragment : Fragment() {
             mainViewModel.openActivity(requireActivity())
         }
         switchOnButton.setOnClickListener {
-            mainViewModel.openAccessibilityOption(requireActivity())
+            mainViewModel.openAccessibilityOption(requireActivity(), {});
         }
     }
-
 }

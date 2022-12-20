@@ -5,7 +5,6 @@ import android.content.Context
 import android.os.PowerManager
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.MutableLiveData
@@ -23,7 +22,7 @@ class MainViewModel : ViewModel() {
     private val repository: Repository = Core.getRepository()
     var contact = MutableLiveData<Contact?>()
     private var contactList: List<Contact> = ArrayList()
-    var contacts = MutableLiveData(contactList)
+    private var contacts = MutableLiveData(contactList)
     var fragments = MutableLiveData<MutableList<Fragment>>()
     private val recordList: MutableList<Recording> = ArrayList()
     var records = MutableLiveData(recordList)
@@ -34,8 +33,6 @@ class MainViewModel : ViewModel() {
         fragments.value = list
     }
 
-
-    /* -------------------------------------------- */
     var deletedRecording = MutableLiveData<Recording?>()
 
     init {
@@ -103,17 +100,6 @@ class MainViewModel : ViewModel() {
 
     fun showOnBackPressedDialog(context: Context, onBackPressed: () -> Unit) {
         Extras.showExitDialog(context, onBackPressed)
-    }
-
-    fun checkIfServiceIsRunning(context: Context, serviceClass: Class<*>): Boolean {
-        return Extras.isMyServiceRunning(context, serviceClass)
-    }
-
-    fun showAccessibilitySettingsInApp(
-        activity: AppCompatActivity,
-        block: (ActivityResult) -> Unit
-    ) {
-        Extras.showAccessibilitySettings(activity, block)
     }
 
     fun openSettingsActivityInApp(context: Activity) {
@@ -187,8 +173,11 @@ class MainViewModel : ViewModel() {
         return Extras.checkIfPermissionsGranted(context)
     }
 
-    fun openAccessibilityOption(context: Activity) {
-        Extras.openAccessibilityOption(context)
+    fun openAccessibilityOption(
+        activity: FragmentActivity,
+        block: (ActivityResult) -> Unit
+    ) {
+        Extras.openAccessibilityOption(activity, block)
     }
 
     fun moveToAccessibilityFragment(context: FragmentActivity) {
