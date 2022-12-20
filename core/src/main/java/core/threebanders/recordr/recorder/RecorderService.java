@@ -146,8 +146,10 @@ public class RecorderService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         super.onStartCommand(intent, flags, startId);
 
-        if (intent.hasExtra(CallReceiver.ARG_NUM_PHONE))
+        if (intent.hasExtra(CallReceiver.ARG_NUM_PHONE)) {
             receivedNumPhone = intent.getStringExtra(CallReceiver.ARG_NUM_PHONE);
+        }
+
         incoming = intent.getBooleanExtra(CallReceiver.ARG_INCOMING, false);
 
         try {
@@ -164,11 +166,15 @@ public class RecorderService extends Service {
             contact = Contact.queryNumberInAppContacts(Core.getRepository(), receivedNumPhone);
 
             if (contact == null) {
-                contact = Contact.queryNumberInPhoneContacts(receivedNumPhone, getContentResolver());
+                {
+                    contact = Contact.queryNumberInPhoneContacts(receivedNumPhone, getContentResolver());
+                }
 
                 if (contact == null) {
-                    contact = new Contact(null, receivedNumPhone, getString(R.string.unknown_contact),
-                            null, CoreUtil.UNKNOWN_TYPE_PHONE_CODE);
+                    {
+                        contact = new Contact(null, receivedNumPhone, getString(R.string.unknown_contact),
+                                null, CoreUtil.UNKNOWN_TYPE_PHONE_CODE);
+                    }
                 }
                 try {
                     contact.save(Core.getRepository());
@@ -194,6 +200,7 @@ public class RecorderService extends Service {
             }
 
             Notification notification = buildNotification(RECORD_AUTOMATICALLY, "");
+
             if (notification != null) {
                 startForeground(NOTIFICATION_ID, notification);
             }
@@ -232,6 +239,7 @@ public class RecorderService extends Service {
                 }
             }
         };
+
         speakerOnThread.start();
         speakerOn = true;
     }
@@ -267,16 +275,19 @@ public class RecorderService extends Service {
 
         if (privateCall) {
             contactId = Core.getRepository().getHiddenNumberContactId();
+
             if (contactId == null) {
                 Contact contact = new Contact();
                 contact.setIsPrivateNumber();
                 contact.setContactName(getString(R.string.hidden_number));
+
                 try {
                     contact.save(Core.getRepository());
                 } catch (SQLException exc) {
                     onDestroyCleanUp();
                     return;
                 }
+
                 contactId = contact.getId();
             }
         } else if (contact != null) {
@@ -293,15 +304,18 @@ public class RecorderService extends Service {
             recording.save(Core.getRepository());
         } catch (SQLException exc) {
             onDestroyCleanUp();
+
             return;
         }
 
         nm.notify(NOTIFICATION_ID, buildNotification(RECORD_SUCCESS, ""));
+
         onDestroyCleanUp();
     }
 
     private void onDestroyCleanUp() {
         resetState();
+
         try {
             ACRA.getErrorReporter().clearCustomData();
         } catch (IllegalStateException ignored) {
