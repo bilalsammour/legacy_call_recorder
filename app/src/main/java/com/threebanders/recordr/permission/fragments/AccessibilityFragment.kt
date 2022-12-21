@@ -47,8 +47,7 @@ class AccessibilityFragment : Fragment() {
 
     }
 
-    private var activityResultLauncher =
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+    private var activityResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
                 mainViewModel.openActivity(requireActivity())
             }
