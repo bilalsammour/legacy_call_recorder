@@ -1,4 +1,4 @@
-package com.threebanders.recordr.ui.splash
+package com.threebanders.recordr.ui.welcome
 
 import android.content.Intent
 import android.os.Bundle
@@ -13,13 +13,13 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class SplashActivity : AppCompatActivity() {
+class WelcomeActivity : AppCompatActivity() {
     private lateinit var powerManager: PowerManager
     private lateinit var mainViewModel: MainViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_splash)
+        setContentView(R.layout.activity_welcome)
 
         mainViewModel = ViewModelProvider(this)[MainViewModel::class.java]
         powerManager = getSystemService(POWER_SERVICE) as PowerManager

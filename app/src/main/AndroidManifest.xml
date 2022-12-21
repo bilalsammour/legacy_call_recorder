@@ -57,7 +57,7 @@
         </provider>
 
         <activity
-            android:name=".ui.splash.SplashActivity"
+            android:name=".ui.welcome.WelcomeActivity"
             android:exported="true"
             android:launchMode="singleTop">
             <intent-filter>
