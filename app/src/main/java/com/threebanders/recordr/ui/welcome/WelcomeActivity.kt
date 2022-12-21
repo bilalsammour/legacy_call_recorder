@@ -7,6 +7,7 @@ import com.threebanders.recordr.R
 import com.threebanders.recordr.viewmodels.MainViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class WelcomeActivity : AppCompatActivity() {
@@ -19,6 +20,7 @@ class WelcomeActivity : AppCompatActivity() {
         mainViewModel = ViewModelProvider(this)[MainViewModel::class.java]
 
         CoroutineScope(Dispatchers.Main).launch {
+            delay(5000)
             verifyConditions()
         }
     }

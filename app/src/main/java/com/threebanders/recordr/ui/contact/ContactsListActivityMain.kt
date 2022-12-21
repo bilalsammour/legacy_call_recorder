@@ -25,8 +25,6 @@ class ContactsListActivityMain : BaseActivity() {
     private lateinit var hamburger: ImageButton
     private lateinit var drawer: DrawerLayout
     private lateinit var navigationView: NavigationView
-    private var permsNotGranted = 0
-    private var powerOptimized = 0
 
     override fun createFragment(): Fragment {
         return UnassignedRecordingsFragment()

@@ -27,12 +27,7 @@ class SetupActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.setup_activity)
 
-        checkResult = intent.getIntExtra(
-            Extras.SETUP_ARGUMENT,
-            EULA_NOT_ACCEPTED
-                    and Extras.PERMS_NOT_GRANTED and
-                    Extras.POWER_OPTIMIZED
-        )
+        checkResult = intent.getIntExtra(Extras.SETUP_ARGUMENT, EULA_NOT_ACCEPTED and Extras.PERMS_NOT_GRANTED and Extras.POWER_OPTIMIZED)
         insertFragment(R.id.setup_fragment_container)
 
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
