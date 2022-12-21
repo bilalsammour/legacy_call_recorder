@@ -16,7 +16,8 @@ import com.threebanders.recordr.viewmodels.MainViewModel
 
 class OptimizationFragment : Fragment() {
     private lateinit var rootView: View
-    private lateinit var turnOffBtn: Button
+    private lateinit var turnOffBtn : Button
+    private lateinit var nextBtn : Button
     private lateinit var pm: PowerManager
     private lateinit var mainViewModel: MainViewModel
 
@@ -26,7 +27,8 @@ class OptimizationFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         rootView = inflater.inflate(R.layout.optimization_fragment_layout, container, false)
-        turnOffBtn = rootView.findViewById(R.id.turnOffBtn)
+        turnOffBtn  =  rootView.findViewById(R.id.turnOffBtn)
+        nextBtn = rootView.findViewById(R.id.nextBtn)
         mainViewModel = ViewModelProvider(requireActivity())[MainViewModel::class.java]
 
         return rootView
@@ -37,26 +39,17 @@ class OptimizationFragment : Fragment() {
 
         pm = requireContext().getSystemService(Context.POWER_SERVICE) as PowerManager
         turnOffBtn.setOnClickListener {
-            if (turnOffBtn.text.toString() == getString(R.string.turn_off_button)) {
-                if (!mainViewModel.isAppOptimized(pm, requireContext().packageName)) {
-                    mainViewModel.doNotOptimizeApp(requireActivity())
-                    turnOffBtn.text = getString(R.string.next)
-                    turnOffBtn.background =
-                        ContextCompat.getDrawable(requireContext(), R.drawable.next_button_shape)
-                } else {
-                    mainViewModel.openActivity(requireActivity())
-                }
-            } else if (turnOffBtn.text == getString(R.string.next)) {
-                if (mainViewModel.isAppOptimized(pm, requireContext().packageName)) {
-                    mainViewModel.moveToAccessibilityFragment(requireActivity())
-                } else {
-                    Toast.makeText(
-                        requireContext(),
-                        getString(R.string.do_not_optimize_text),
-                        Toast.LENGTH_LONG
-                    ).show()
-                    turnOffBtn.text = getString(R.string.turn_off_button)
-                }
+            mainViewModel.doNotOptimizeApp(requireActivity())
+            turnOffBtn.visibility = View.GONE
+            nextBtn.visibility = View.VISIBLE
+        }
+        nextBtn.setOnClickListener {
+            if (mainViewModel.isAppOptimized(pm, requireContext().packageName)) {
+                mainViewModel.moveToAccessibilityFragment(requireActivity())
+            } else {
+                turnOffBtn.visibility = View.VISIBLE
+                nextBtn.visibility = View.GONE
+                Toast.makeText(requireContext(), getString(R.string.do_not_optimize_text), Toast.LENGTH_LONG).show()
             }
         }
     }

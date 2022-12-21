@@ -448,16 +448,6 @@ object Extras {
         return false
     }
 
-    fun openAccessibilityOption(activity: FragmentActivity, block: (ActivityResult) -> Unit) {
-        val intent = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-
-        activity.registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-            if (it.resultCode == Activity.RESULT_OK) {
-                block(it)
-            }
-        }.launch(intent)
-    }
 
     fun moveToAccessibilityFragment(context: FragmentActivity) {
         context.supportFragmentManager

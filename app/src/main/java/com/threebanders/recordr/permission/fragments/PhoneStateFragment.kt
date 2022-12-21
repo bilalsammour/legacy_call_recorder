@@ -19,12 +19,13 @@ import com.threebanders.recordr.viewmodels.MainViewModel
 
 class PhoneStateFragment : Fragment() {
     private var counter = 0
-    private lateinit var mainViewModel: MainViewModel
     private lateinit var rootView: View
     private lateinit var permissionText: TextView
-    private lateinit var allowNextBtn: Button
-    private lateinit var pm: PowerManager
+    private lateinit var allowBtn: Button
+    private lateinit var nextBtn : Button
     private lateinit var permissionTypeTxt: TextView
+    private lateinit var mainViewModel: MainViewModel
+    private lateinit var pm: PowerManager
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -32,11 +33,11 @@ class PhoneStateFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         rootView = inflater.inflate(R.layout.permission_fragment_layout, container, false)
-        mainViewModel = ViewModelProvider(requireActivity())[MainViewModel::class.java]
         permissionText = rootView.findViewById(R.id.permissionText)
-        allowNextBtn = rootView.findViewById(R.id.allowNextBtn)
+        allowBtn = rootView.findViewById(R.id.allowBtn)
+        nextBtn = rootView.findViewById(R.id.nextBtn)
         permissionTypeTxt = rootView.findViewById(R.id.permissionType)
-
+        mainViewModel = ViewModelProvider(requireActivity())[MainViewModel::class.java]
         return rootView
     }
 
@@ -45,30 +46,26 @@ class PhoneStateFragment : Fragment() {
 
         pm = requireContext().getSystemService(Context.POWER_SERVICE) as PowerManager
         permissionTypeTxt.text = getString(R.string.phone_state_permission)
-        allowNextBtn.setOnClickListener {
-            if (allowNextBtn.text.toString() == getString(R.string.allow_button)) {
-                activityResultLauncher.launch(Manifest.permission.READ_PHONE_STATE)
-            } else if (allowNextBtn.text.toString() == getString(R.string.next_button)) {
-                if (mainViewModel.fragments.value!!.size == mainViewModel.getCurrentFragmentPosition(
-                        requireContext()
-                    )
-                ) {
-                    if (mainViewModel.isAppOptimized(pm, requireContext().packageName)) {
-                        mainViewModel.openActivity(requireActivity())
-                    } else {
-                        mainViewModel.openOptimizationFragment(requireActivity())
-                    }
+        allowBtn.setOnClickListener {
+            activityResultLauncher.launch(Manifest.permission.READ_PHONE_STATE)
+        }
+        nextBtn.setOnClickListener {
+            if (mainViewModel.fragments.value!!.size == mainViewModel.getCurrentFragmentPosition(requireContext()) + 1) {
+                if (mainViewModel.isAppOptimized(pm, requireContext().packageName)) {
+                    mainViewModel.openActivity(requireActivity())
                 } else {
-                    mainViewModel.openNextFragment(
-                        requireActivity(),
-                        mainViewModel,
-                        mainViewModel.getCurrentFragmentPosition(requireContext()) + 1
-                    )
-                    mainViewModel.addCurrentFragmentPosition(
-                        requireContext(),
-                        mainViewModel.getCurrentFragmentPosition(requireContext()) + 1
-                    )
+                    mainViewModel.openOptimizationFragment(requireActivity())
                 }
+            } else {
+                mainViewModel.openNextFragment(
+                    requireActivity(),
+                    mainViewModel,
+                    mainViewModel.getCurrentFragmentPosition(requireContext()) + 1
+                )
+                mainViewModel.addCurrentFragmentPosition(
+                    requireContext(),
+                    mainViewModel.getCurrentFragmentPosition(requireContext()) + 1
+                )
             }
         }
     }
@@ -76,9 +73,8 @@ class PhoneStateFragment : Fragment() {
     private var activityResultLauncher: ActivityResultLauncher<String> =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
             if (isGranted) {
-                allowNextBtn.text = getString(R.string.next_button)
-                allowNextBtn.background =
-                    ContextCompat.getDrawable(requireContext(), R.drawable.next_button_shape)
+                allowBtn.visibility = View.GONE
+                nextBtn.visibility = View.VISIBLE
             } else {
                 counter++
                 if (counter >= 2) {

@@ -19,7 +19,8 @@ class RecordAudioFragment : Fragment() {
     private var counter = 0
     private lateinit var rootView: View
     private lateinit var permissionText: TextView
-    private lateinit var allowNextBtn: Button
+    private lateinit var allowBtn: Button
+    private lateinit var nextBtn : Button
     private lateinit var permissionTypeTxt: TextView
     private lateinit var mainViewModel: MainViewModel
     private lateinit var pm: PowerManager
@@ -35,7 +36,8 @@ class RecordAudioFragment : Fragment() {
         )
 
         permissionText = rootView.findViewById(R.id.permissionText)
-        allowNextBtn = rootView.findViewById(R.id.allowNextBtn)
+        allowBtn = rootView.findViewById(R.id.allowBtn)
+        nextBtn = rootView.findViewById(R.id.nextBtn)
         permissionTypeTxt = rootView.findViewById(R.id.permissionType)
         mainViewModel = ViewModelProvider(requireActivity())[MainViewModel::class.java]
 
@@ -47,31 +49,26 @@ class RecordAudioFragment : Fragment() {
 
         pm = requireContext().getSystemService(Context.POWER_SERVICE) as PowerManager
         permissionTypeTxt.text = getString(R.string.record_audio_permission)
-        allowNextBtn.setOnClickListener {
-            if (allowNextBtn.text.toString() == getString(R.string.allow_button)) {
-                activityResultLauncher.launch(Manifest.permission.RECORD_AUDIO)
-            } else if (allowNextBtn.text.toString() == getString(R.string.next_button)) {
-
-                if (mainViewModel.fragments.value!!.size == mainViewModel.getCurrentFragmentPosition(
-                        requireContext()
-                    )
-                ) {
-                    if (mainViewModel.isAppOptimized(pm, requireContext().packageName)) {
-                        mainViewModel.openActivity(requireActivity())
-                    } else {
-                        mainViewModel.openOptimizationFragment(requireActivity())
-                    }
+        allowBtn.setOnClickListener {
+            activityResultLauncher.launch(Manifest.permission.RECORD_AUDIO)
+        }
+        nextBtn.setOnClickListener {
+            if (mainViewModel.fragments.value!!.size == mainViewModel.getCurrentFragmentPosition(requireContext()) + 1) {
+                if (mainViewModel.isAppOptimized(pm, requireContext().packageName)) {
+                    mainViewModel.openActivity(requireActivity())
                 } else {
-                    mainViewModel.openNextFragment(
-                        requireActivity(),
-                        mainViewModel,
-                        mainViewModel.getCurrentFragmentPosition(requireContext()) + 1
-                    )
-                    mainViewModel.addCurrentFragmentPosition(
-                        requireContext(),
-                        mainViewModel.getCurrentFragmentPosition(requireContext()) + 1
-                    )
+                    mainViewModel.openOptimizationFragment(requireActivity())
                 }
+            } else {
+                mainViewModel.openNextFragment(
+                    requireActivity(),
+                    mainViewModel,
+                    mainViewModel.getCurrentFragmentPosition(requireContext()) + 1
+                )
+                mainViewModel.addCurrentFragmentPosition(
+                    requireContext(),
+                    mainViewModel.getCurrentFragmentPosition(requireContext()) + 1
+                )
             }
         }
     }
@@ -79,7 +76,8 @@ class RecordAudioFragment : Fragment() {
     private var activityResultLauncher =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
             if (isGranted) {
-                allowNextBtn.text = getString(R.string.next_button)
+                allowBtn.visibility = View.GONE
+                nextBtn.visibility = View.VISIBLE
             } else {
                 counter++
                 if (counter >= 2) {

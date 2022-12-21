@@ -173,13 +173,6 @@ class MainViewModel : ViewModel() {
         return Extras.checkIfPermissionsGranted(context)
     }
 
-    fun openAccessibilityOption(
-        activity: FragmentActivity,
-        block: (ActivityResult) -> Unit
-    ) {
-        Extras.openAccessibilityOption(activity, block)
-    }
-
     fun moveToAccessibilityFragment(context: FragmentActivity) {
         Extras.moveToAccessibilityFragment(context)
     }

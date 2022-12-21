@@ -27,7 +27,20 @@
 
 
     <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/allowNextBtn"
+        android:id="@+id/allowBtn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center"
+        android:layout_marginEnd="50dp"
+        android:layout_marginStart="50dp"
+        android:layout_marginBottom="30dp"
+        android:background="@drawable/allow_button_shape"
+        android:fontFamily="@font/alatsi"
+        android:text="Allow"
+        android:textColor="@color/white" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/nextBtn"
         android:layout_width="100dp"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
@@ -35,7 +48,8 @@
         android:layout_marginBottom="30dp"
         android:background="@drawable/allow_button_shape"
         android:fontFamily="@font/alatsi"
-        android:text="Allow"
+        android:visibility="gone"
+        android:text="Next"
         android:textColor="@color/white" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

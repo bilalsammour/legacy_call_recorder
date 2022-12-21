@@ -154,4 +154,12 @@
     <string name="call_log_rationale">This permission is needed to read call log</string>
     <string name="read_contacts_rationale">This permission is need to read contacts from phone</string>
     <string name="record_audio_rationale">This permission is needed to record audio and the call</string>
+    <string name="title_activity_splash">SplashActivity</string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="first_fragment_label">First Fragment</string>
+    <string name="second_fragment_label">Second Fragment</string>
+    <string name="previous">Previous</string>
+
+    <string name="hello_first_fragment">Hello first fragment</string>
+    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
 </resources>

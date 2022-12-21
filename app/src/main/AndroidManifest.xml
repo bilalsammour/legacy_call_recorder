@@ -57,7 +57,7 @@
         </provider>
 
         <activity
-            android:name=".permission.PermissionActivity"
+            android:name=".ui.splash.SplashActivity"
             android:exported="true"
             android:launchMode="singleTop">
             <intent-filter>
@@ -66,14 +66,15 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-
+        <activity
+            android:name=".permission.PermissionActivity"
+            android:exported="true">
+        </activity>
         <activity
             android:name=".ui.contact.ContactsListActivityMain"
             android:exported="true"
             android:launchMode="singleTop"
             android:screenOrientation="fullSensor" />
-
         <activity
             android:name=".ui.settings.SettingsActivity"
             android:parentActivityName=".ui.contact.ContactsListActivityMain"
