@@ -7,8 +7,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.threebanders.recordr.R
-import com.threebanders.recordr.permission.fragments.AccessibilityFragment
-import com.threebanders.recordr.permission.fragments.OptimizationFragment
 import com.threebanders.recordr.viewmodels.MainViewModel
 
 class PermissionActivity : AppCompatActivity() {
@@ -31,11 +29,9 @@ class PermissionActivity : AppCompatActivity() {
 
         if (mainViewModel.checkIfPermissionsGranted(this)) {
             if (mainViewModel.isAppOptimized(pm, packageName)) {
-                supportFragmentManager.beginTransaction()
-                    .replace(R.id.container, AccessibilityFragment()).commit()
+                mainViewModel.moveToAccessibilityFragment(this)
             } else {
-                supportFragmentManager.beginTransaction()
-                    .replace(R.id.container, OptimizationFragment()).commit()
+                mainViewModel.openOptimizationFragment(this)
             }
         } else {
             mainViewModel.clearPreferences(this)

@@ -1,13 +1,10 @@
 package com.threebanders.recordr.ui.welcome
 
-import android.content.Intent
 import android.os.Bundle
 import android.os.PowerManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.threebanders.recordr.R
-import com.threebanders.recordr.permission.PermissionActivity
-import com.threebanders.recordr.ui.contact.ContactsListActivityMain
 import com.threebanders.recordr.viewmodels.MainViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -31,23 +28,11 @@ class WelcomeActivity : AppCompatActivity() {
 
     private fun verifyConditions() {
         if (mainViewModel.ready(this)) {
-            openContactListScreen()
+            mainViewModel.openContactListScreen(this)
         } else {
-            openPermissionScreen()
+            mainViewModel.openPermissionScreen(this)
         }
     }
 
-    private fun openPermissionScreen() {
-        Intent(this, PermissionActivity::class.java).apply {
-            startActivity(this)
-            finish()
-        }
-    }
 
-    private fun openContactListScreen() {
-        Intent(this, ContactsListActivityMain::class.java).apply {
-            startActivity(this)
-            finish()
-        }
-    }
 }

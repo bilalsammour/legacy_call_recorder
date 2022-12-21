@@ -179,4 +179,12 @@ class MainViewModel : ViewModel() {
     fun moveToAccessibilityFragment(context: FragmentActivity) {
         Extras.moveToAccessibilityFragment(context)
     }
+
+    fun openPermissionScreen(context: Activity) {
+        Extras.openPermissionScreen(context)
+    }
+
+    fun openContactListScreen(context: Activity) {
+        Extras.openContactListScreen(context)
+    }
 }

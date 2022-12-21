@@ -38,6 +38,7 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.threebanders.recordr.CrApp
 import com.threebanders.recordr.R
+import com.threebanders.recordr.permission.PermissionActivity
 import com.threebanders.recordr.permission.fragments.*
 import com.threebanders.recordr.ui.contact.ContactsListActivityMain
 import com.threebanders.recordr.ui.help.HelpActivity
@@ -447,11 +448,24 @@ object Extras {
         return false
     }
 
-
     fun moveToAccessibilityFragment(context: FragmentActivity) {
         context.supportFragmentManager
             .beginTransaction()
             .replace(R.id.container, AccessibilityFragment())
             .commit()
+    }
+
+    fun openPermissionScreen(context: Activity) {
+        Intent(context, PermissionActivity::class.java).apply {
+            context.startActivity(this)
+            context.finish()
+        }
+    }
+
+    fun openContactListScreen(context: Activity) {
+        Intent(context, ContactsListActivityMain::class.java).apply {
+            context.startActivity(this)
+            context.finish()
+        }
     }
 }
