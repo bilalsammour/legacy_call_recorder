@@ -30,8 +30,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
-        android:layout_marginEnd="50dp"
         android:layout_marginStart="50dp"
+        android:layout_marginEnd="50dp"
         android:layout_marginBottom="30dp"
         android:background="@drawable/allow_button_shape"
         android:backgroundTint="@color/colorAccentLight"
@@ -44,13 +44,13 @@
         android:layout_width="100dp"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
-        android:visibility="gone"
         android:layout_marginEnd="20dp"
         android:layout_marginBottom="30dp"
         android:background="@drawable/allow_button_shape"
         android:backgroundTint="@color/colorAccentLight"
         android:fontFamily="@font/alatsi"
         android:text="Next"
-        android:textColor="@color/white" />
+        android:textColor="@color/white"
+        android:visibility="gone" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -20,7 +20,7 @@ class RecordAudioFragment : Fragment() {
     private lateinit var rootView: View
     private lateinit var permissionText: TextView
     private lateinit var allowBtn: Button
-    private lateinit var nextBtn : Button
+    private lateinit var nextBtn: Button
     private lateinit var permissionTypeTxt: TextView
     private lateinit var mainViewModel: MainViewModel
     private lateinit var pm: PowerManager
@@ -53,7 +53,10 @@ class RecordAudioFragment : Fragment() {
             activityResultLauncher.launch(Manifest.permission.RECORD_AUDIO)
         }
         nextBtn.setOnClickListener {
-            if (mainViewModel.fragments.value!!.size == mainViewModel.getCurrentFragmentPosition(requireContext()) + 1) {
+            if (mainViewModel.fragments.value!!.size == mainViewModel.getCurrentFragmentPosition(
+                    requireContext()
+                ) + 1
+            ) {
                 if (mainViewModel.isAppOptimized(pm, requireContext().packageName)) {
                     mainViewModel.openActivity(requireActivity())
                 } else {

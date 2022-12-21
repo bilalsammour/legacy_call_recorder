@@ -1,7 +1,6 @@
 package com.threebanders.recordr.common
 
 import android.Manifest
-import android.accessibilityservice.AccessibilityService
 import android.accessibilityservice.AccessibilityServiceInfo
 import android.annotation.SuppressLint
 import android.app.Activity
@@ -16,9 +15,7 @@ import android.net.Uri
 import android.os.PowerManager
 import android.provider.Settings
 import android.view.accessibility.AccessibilityManager
-import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
@@ -47,6 +44,7 @@ import com.threebanders.recordr.ui.help.HelpActivity
 import com.threebanders.recordr.ui.settings.SettingsActivity
 import com.threebanders.recordr.ui.settings.SettingsFragment.Companion.GOOGLE_DRIVE
 import com.threebanders.recordr.viewmodels.MainViewModel
+import core.threebanders.recordr.MyService
 import core.threebanders.recordr.data.Recording
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -222,6 +220,10 @@ object Extras {
         )
     }
 
+    fun ready(activity: FragmentActivity): Boolean {
+        return checkPermissions(activity) && isIgnoringBatteryOptimizations(activity)
+                && isAccessibilityServiceEnabled(activity)
+    }
 
     fun checkPermissions(context: Context): Boolean {
         val phoneState = createPermission(Manifest.permission.READ_PHONE_STATE, context)
@@ -431,17 +433,14 @@ object Extras {
         ) == PackageManager.PERMISSION_GRANTED
     }
 
-    fun isAccessibilityServiceEnabled(
-        context: Context,
-        service: Class<out AccessibilityService?>
-    ): Boolean {
+    fun isAccessibilityServiceEnabled(context: Context): Boolean {
         val am = context.getSystemService(Context.ACCESSIBILITY_SERVICE) as AccessibilityManager
         val enabledServices =
             am.getEnabledAccessibilityServiceList(AccessibilityServiceInfo.FEEDBACK_ALL_MASK)
         for (enabledService in enabledServices) {
             val enabledServiceInfo = enabledService.resolveInfo.serviceInfo
             if (enabledServiceInfo.packageName.equals(context.packageName) && enabledServiceInfo.name.equals(
-                    service.name
+                    MyService::class.java.name
                 )
             ) return true
         }

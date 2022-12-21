@@ -3,7 +3,6 @@ package com.threebanders.recordr.viewmodels
 import android.app.Activity
 import android.content.Context
 import android.os.PowerManager
-import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
@@ -76,6 +75,10 @@ class MainViewModel : ViewModel() {
 
     fun setPrefs(context: Context, list: List<Recording?>) {
         Extras.setDataFromSharedPreferences(context, list)
+    }
+
+    fun ready(activity: FragmentActivity): Boolean {
+        return Extras.ready(activity)
     }
 
     fun requestAllPermissions(activity: FragmentActivity) {

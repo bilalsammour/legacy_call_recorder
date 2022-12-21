@@ -9,13 +9,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.threebanders.recordr.R
 import com.threebanders.recordr.permission.fragments.AccessibilityFragment
 import com.threebanders.recordr.permission.fragments.OptimizationFragment
-import com.threebanders.recordr.permission.fragments.PhoneStateFragment
-import com.threebanders.recordr.permission.fragments.RecordAudioFragment
 import com.threebanders.recordr.viewmodels.MainViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 class PermissionActivity : AppCompatActivity() {
     private lateinit var pm: PowerManager
@@ -25,8 +19,8 @@ class PermissionActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_permission) }
-
+        setContentView(R.layout.activity_permission)
+    }
 
 
     override fun onStart() {
@@ -43,8 +37,7 @@ class PermissionActivity : AppCompatActivity() {
                 supportFragmentManager.beginTransaction()
                     .replace(R.id.container, OptimizationFragment()).commit()
             }
-        }
-        else {
+        } else {
             mainViewModel.clearPreferences(this)
             mainViewModel.addFragment(this, fragmentsList) {
                 mainViewModel.saveCurrentFragments(it)

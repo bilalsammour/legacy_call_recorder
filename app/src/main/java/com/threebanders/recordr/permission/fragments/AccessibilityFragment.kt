@@ -14,7 +14,6 @@ import androidx.lifecycle.ViewModelProvider
 import com.threebanders.recordr.R
 import com.threebanders.recordr.common.Extras
 import com.threebanders.recordr.viewmodels.MainViewModel
-import core.threebanders.recordr.MyService
 
 class AccessibilityFragment : Fragment() {
     private lateinit var rootView: View
@@ -36,21 +35,22 @@ class AccessibilityFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        if (Extras.isAccessibilityServiceEnabled(requireContext(), MyService::class.java)) {
+        if (Extras.isAccessibilityServiceEnabled(requireContext())) {
             mainViewModel.openActivity(requireActivity())
         }
 
-          switchOnButton.setOnClickListener {
-              val intent = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
-              intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-              activityResultLauncher.launch(intent)
-          }
-
-    }
-
-    private var activityResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){ result ->
-        if(result.resultCode == Activity.RESULT_OK){
-            mainViewModel.openActivity(requireActivity())
+        switchOnButton.setOnClickListener {
+            val intent = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            activityResultLauncher.launch(intent)
         }
+
     }
+
+    private var activityResultLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                mainViewModel.openActivity(requireActivity())
+            }
+        }
 }
