@@ -40,9 +40,7 @@ class AccessibilityFragment : Fragment() {
         }
 
         switchOnButton.setOnClickListener {
-            val intent = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            activityResultLauncher.launch(intent)
+            mainViewModel.openAccessibilitySettings(activityResultLauncher)
         }
 
     }
@@ -53,3 +51,19 @@ class AccessibilityFragment : Fragment() {
             }
         }
 }
+
+
+/*
+switchOnButton.setOnClickListener {
+            val intent = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            activityResultLauncher.launch(intent)
+        }
+ */
+/*
+ private var activityResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                mainViewModel.openActivity(requireActivity())
+            }
+        }
+ */
