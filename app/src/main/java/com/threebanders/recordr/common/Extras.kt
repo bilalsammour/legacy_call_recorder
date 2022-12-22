@@ -471,7 +471,7 @@ object Extras {
         }
     }
 
-    fun openAccessibilitySettings(activityResultLauncher: ActivityResultLauncher<Intent>){
+    fun openAccessibilitySettings(activityResultLauncher: ActivityResultLauncher<Intent>) {
         val intent = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         activityResultLauncher.launch(intent)
