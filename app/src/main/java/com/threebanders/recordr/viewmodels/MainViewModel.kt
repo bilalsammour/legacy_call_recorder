@@ -189,7 +189,7 @@ class MainViewModel : ViewModel() {
         Extras.openContactListScreen(context)
     }
 
-    fun openAccessibilitySettings(activityResultLauncher: ActivityResultLauncher<Intent>){
+    fun openAccessibilitySettings(activityResultLauncher: ActivityResultLauncher<Intent>) {
         Extras.openAccessibilitySettings(activityResultLauncher)
     }
 }
