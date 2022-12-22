@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
+import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -76,21 +77,35 @@ class ReadContactsFragment : Fragment() {
         }
     }
 
-    private var activityResultLauncher =
-        registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
-            if (isGranted) {
-                allowBtn.visibility = View.GONE
-                nextBtn.visibility = View.VISIBLE
+//    private var activityResultLauncher: ActivityResultLauncher<String> =
+//        registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
+//            if (isGranted) {
+//                allowBtn.visibility = View.GONE
+//                nextBtn.visibility = View.VISIBLE
+//            } else {
+//                counter++
+//                if (counter >= 2) {
+//                    mainViewModel.enablePermissionFromSettings(requireActivity())
+//                } else {
+//                    showDial()
+//                }
+//            }
+//        }
+
+    private val activityResultLauncher  : ActivityResultLauncher<String> = mainViewModel.launch(requireActivity()){ isGranted ->
+        if (isGranted) {
+            allowBtn.visibility = View.GONE
+            nextBtn.visibility = View.VISIBLE
+        } else {
+            counter++
+            if (counter >= 2) {
+                mainViewModel.enablePermissionFromSettings(requireActivity())
             } else {
-                counter++
-                if (counter >= 2) {
-                    mainViewModel.enablePermissionFromSettings(requireActivity())
-                } else {
-                    showDial()
-                }
+                showDial()
             }
         }
-
+    }
+    
     private fun showDial() {
         mainViewModel.showRationale(
             requireContext(),

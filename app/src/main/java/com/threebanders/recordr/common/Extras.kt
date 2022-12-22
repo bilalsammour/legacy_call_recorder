@@ -14,8 +14,10 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.PowerManager
 import android.provider.Settings
+import android.view.View
 import android.view.accessibility.AccessibilityManager
 import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
@@ -473,5 +475,15 @@ object Extras {
         val intent = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         activityResultLauncher.launch(intent)
+    }
+
+    fun launch(context: FragmentActivity,onGranted : (Boolean) -> Unit) : ActivityResultLauncher<String> {
+         return  context.registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
+              if(isGranted){
+                  onGranted.invoke(true)
+              } else {
+                  onGranted.invoke(false)
+              }
+        }
     }
 }

@@ -72,20 +72,33 @@ class PhoneStateFragment : Fragment() {
         }
     }
 
-    private var activityResultLauncher: ActivityResultLauncher<String> =
-        registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
-            if (isGranted) {
-                allowBtn.visibility = View.GONE
-                nextBtn.visibility = View.VISIBLE
+//    private var activityResultLauncher: ActivityResultLauncher<String> = registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
+//            if (isGranted) {
+//                allowBtn.visibility = View.GONE
+//                nextBtn.visibility = View.VISIBLE
+//            } else {
+//                counter++
+//                if (counter >= 2) {
+//                    mainViewModel.enablePermissionFromSettings(requireActivity())
+//                } else {
+//                    showDial()
+//                }
+//            }
+//        }
+
+    private val activityResultLauncher  : ActivityResultLauncher<String> = mainViewModel.launch(requireActivity()){ isGranted ->
+        if (isGranted) {
+            allowBtn.visibility = View.GONE
+            nextBtn.visibility = View.VISIBLE
+        } else {
+            counter++
+            if (counter >= 2) {
+                mainViewModel.enablePermissionFromSettings(requireActivity())
             } else {
-                counter++
-                if (counter >= 2) {
-                    mainViewModel.enablePermissionFromSettings(requireActivity())
-                } else {
-                    showDial()
-                }
+                showDial()
             }
         }
+    }
 
     private fun showDial() {
         mainViewModel.showRationale(

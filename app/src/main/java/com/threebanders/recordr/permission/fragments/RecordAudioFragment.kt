@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
+import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -53,43 +54,48 @@ class RecordAudioFragment : Fragment() {
             activityResultLauncher.launch(Manifest.permission.RECORD_AUDIO)
         }
         nextBtn.setOnClickListener {
-            if (mainViewModel.fragments.value!!.size == mainViewModel.getCurrentFragmentPosition(
-                    requireContext()
-                ) + 1
-            ) {
+            if (mainViewModel.fragments.value!!.size == mainViewModel.getCurrentFragmentPosition(requireContext()) + 1) {
                 if (mainViewModel.isAppOptimized(pm, requireContext().packageName)) {
                     mainViewModel.openActivity(requireActivity())
                 } else {
                     mainViewModel.openOptimizationFragment(requireActivity())
                 }
             } else {
-                mainViewModel.openNextFragment(
-                    requireActivity(),
-                    mainViewModel,
-                    mainViewModel.getCurrentFragmentPosition(requireContext()) + 1
-                )
-                mainViewModel.addCurrentFragmentPosition(
-                    requireContext(),
-                    mainViewModel.getCurrentFragmentPosition(requireContext()) + 1
-                )
+                mainViewModel.openNextFragment(requireActivity(), mainViewModel, mainViewModel.getCurrentFragmentPosition(requireContext()) + 1)
+                mainViewModel.addCurrentFragmentPosition(requireContext(), mainViewModel.getCurrentFragmentPosition(requireContext()) + 1)
+            }
+        }
+
+    }
+
+//    private var activityResultLauncher: ActivityResultLauncher<String> =
+//        registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
+//            if (isGranted) {
+//                allowBtn.visibility = View.GONE
+//                nextBtn.visibility = View.VISIBLE
+//            } else {
+//                counter++
+//                if (counter >= 2) {
+//                    mainViewModel.enablePermissionFromSettings(requireActivity())
+//                } else {
+//                    showDial()
+//                }
+//            }
+//        }
+
+    private val activityResultLauncher  : ActivityResultLauncher<String> = mainViewModel.launch(requireActivity()){ isGranted ->
+        if (isGranted) {
+            allowBtn.visibility = View.GONE
+            nextBtn.visibility = View.VISIBLE
+        } else {
+            counter++
+            if (counter >= 2) {
+                mainViewModel.enablePermissionFromSettings(requireActivity())
+            } else {
+                showDial()
             }
         }
     }
-
-    private var activityResultLauncher =
-        registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
-            if (isGranted) {
-                allowBtn.visibility = View.GONE
-                nextBtn.visibility = View.VISIBLE
-            } else {
-                counter++
-                if (counter >= 2) {
-                    mainViewModel.enablePermissionFromSettings(requireActivity())
-                } else {
-                    showDial()
-                }
-            }
-        }
 
     private fun showDial() {
         mainViewModel.showRationale(

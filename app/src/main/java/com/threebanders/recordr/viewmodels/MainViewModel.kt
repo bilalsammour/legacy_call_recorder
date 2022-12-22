@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.PowerManager
 import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.MutableLiveData
@@ -191,5 +192,9 @@ class MainViewModel : ViewModel() {
 
     fun openAccessibilitySettings(activityResultLauncher: ActivityResultLauncher<Intent>){
         Extras.openAccessibilitySettings(activityResultLauncher)
+    }
+
+    fun launch(context: FragmentActivity,onGranted : (Boolean) -> Unit) : ActivityResultLauncher<String>{
+        return Extras.launch(context,onGranted)
     }
 }
