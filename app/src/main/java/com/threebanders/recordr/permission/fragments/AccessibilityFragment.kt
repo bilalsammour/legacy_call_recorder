@@ -24,7 +24,7 @@ class AccessibilityFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         rootView = inflater.inflate(R.layout.accessibility_fragment_layout, container, false)
-        mainViewModel = ViewModelProvider(requireActivity()).get(MainViewModel::class.java)
+        mainViewModel = ViewModelProvider(requireActivity())[MainViewModel::class.java]
         switchOnButton = rootView.findViewById(R.id.switchOnAccessibility)
 
         return rootView
