@@ -14,7 +14,6 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.PowerManager
 import android.provider.Settings
-import android.view.View
 import android.view.accessibility.AccessibilityManager
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
@@ -477,13 +476,16 @@ object Extras {
         activityResultLauncher.launch(intent)
     }
 
-    fun launch(context: FragmentActivity,onGranted : (Boolean) -> Unit) : ActivityResultLauncher<String> {
-         return  context.registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
-              if(isGranted){
-                  onGranted.invoke(true)
-              } else {
-                  onGranted.invoke(false)
-              }
+    fun launch(
+        context: FragmentActivity,
+        onGranted: (Boolean) -> Unit
+    ): ActivityResultLauncher<String> {
+        return context.registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
+            if (isGranted) {
+                onGranted.invoke(true)
+            } else {
+                onGranted.invoke(false)
+            }
         }
     }
 }
