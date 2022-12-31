@@ -31,10 +31,7 @@ class ShowEulaActivity : BaseActivity() {
         )
 
         val eulaHtml = findViewById<WebView>(R.id.eula_hmtl)
-        eulaHtml.loadDataWithBaseURL(
-            "file:///android_asset/",
-            html, "text/html", null, null
-        )
+        eulaHtml.loadDataWithBaseURL("file:///android_asset/", html, "text/html", null, null)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

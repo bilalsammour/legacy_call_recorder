@@ -2,8 +2,10 @@ package com.threebanders.recordr.viewmodels
 
 import android.app.Activity
 import android.content.Context
-import androidx.activity.result.ActivityResult
-import androidx.appcompat.app.AppCompatActivity
+import android.content.Intent
+import android.os.PowerManager
+import androidx.activity.result.ActivityResultLauncher
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -20,9 +22,16 @@ class MainViewModel : ViewModel() {
     private val repository: Repository = Core.getRepository()
     var contact = MutableLiveData<Contact?>()
     private var contactList: List<Contact> = ArrayList()
-    var contacts = MutableLiveData(contactList)
+    private var contacts = MutableLiveData(contactList)
+    var fragments = MutableLiveData<MutableList<Fragment>>()
     private val recordList: MutableList<Recording> = ArrayList()
     var records = MutableLiveData(recordList)
+
+
+    /* ------------------------------------------- */
+    fun saveCurrentFragments(list: MutableList<Fragment>) {
+        fragments.value = list
+    }
 
     var deletedRecording = MutableLiveData<Recording?>()
 
@@ -69,6 +78,10 @@ class MainViewModel : ViewModel() {
         Extras.setDataFromSharedPreferences(context, list)
     }
 
+    fun ready(activity: FragmentActivity): Boolean {
+        return Extras.ready(activity)
+    }
+
     fun requestAllPermissions(activity: FragmentActivity) {
         Extras.requestAllPermissions(activity)
     }
@@ -93,17 +106,6 @@ class MainViewModel : ViewModel() {
         Extras.showExitDialog(context, onBackPressed)
     }
 
-    fun checkIfServiceIsRunning(context: Context, serviceClass: Class<*>): Boolean {
-        return Extras.isMyServiceRunning(context, serviceClass)
-    }
-
-    fun showAccessibilitySettingsInApp(
-        activity: AppCompatActivity,
-        block: (ActivityResult) -> Unit
-    ) {
-        Extras.showAccessibilitySettings(activity, block)
-    }
-
     fun openSettingsActivityInApp(context: Activity) {
         Extras.openSettingsActivity(context)
     }
@@ -115,4 +117,89 @@ class MainViewModel : ViewModel() {
     fun openGoogleMarketInApp(context: Activity) {
         Extras.openGoogleMarket(context)
     }
+
+    /* -------------------- PERMISSIONS  *------------------ */
+    fun addCurrentFragmentPosition(context: Context, position: Int) {
+        Extras.addCurrentFragmentPosition(context, position)
+    }
+
+    fun getCurrentFragmentPosition(context: Context): Int {
+        return Extras.getCurrentFragmentPosition(context)
+    }
+
+    fun clearPreferences(context: Context) {
+        Extras.clearPreferences(context)
+    }
+
+    fun isAppOptimized(pm: PowerManager, packageName: String): Boolean {
+        return Extras.isAppOptimized(pm, packageName)
+    }
+
+    fun openActivity(context: Activity) {
+        return Extras.openActivity(context)
+    }
+
+    fun openOptimizationFragment(context: FragmentActivity) {
+        Extras.openOptimizationFragment(context)
+    }
+
+    fun openNextFragment(context: FragmentActivity, mainViewModel: MainViewModel, position: Int) {
+        Extras.openNextFragment(context, mainViewModel, position)
+    }
+
+    fun doNotOptimizeApp(context: Activity) {
+        Extras.doNotOptimizeApp(context)
+    }
+
+    fun showRationale(
+        context: Context,
+        title: String,
+        message: String,
+        permission: String,
+        activityResultLauncher: ActivityResultLauncher<String>
+    ) {
+        Extras.showRationale(context, title, message, permission, activityResultLauncher)
+    }
+
+    fun enablePermissionFromSettings(context: Activity) {
+        Extras.enablePermissionFromSettings(context)
+    }
+
+    fun addFragment(
+        context: Context,
+        fragmentsList: MutableList<Fragment>,
+        onFinish: (MutableList<Fragment>) -> Unit
+    ) {
+        Extras.addFragment(context, fragmentsList, onFinish)
+    }
+
+    fun checkIfPermissionsGranted(context: Context): Boolean {
+        return Extras.checkIfPermissionsGranted(context)
+    }
+
+    fun moveToAccessibilityFragment(context: FragmentActivity) {
+        Extras.moveToAccessibilityFragment(context)
+    }
+
+    fun openPermissionScreen(context: Activity) {
+        Extras.openPermissionScreen(context)
+    }
+
+    fun openContactListScreen(context: Activity) {
+        Extras.openContactListScreen(context)
+    }
+
+    fun openAccessibilitySettings(activityResultLauncher: ActivityResultLauncher<Intent>) {
+        Extras.openAccessibilitySettings(activityResultLauncher)
+    }
+
+
+
+    fun launch(
+        context: FragmentActivity,
+        onGranted: (Boolean) -> Unit
+    ): ActivityResultLauncher<String> {
+        return Extras.launch(context, onGranted)
+    }
+
 }

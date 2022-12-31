@@ -29,9 +29,7 @@ class SetupActivity : BaseActivity() {
 
         checkResult = intent.getIntExtra(
             Extras.SETUP_ARGUMENT,
-            EULA_NOT_ACCEPTED
-                    and Extras.PERMS_NOT_GRANTED and
-                    Extras.POWER_OPTIMIZED
+            EULA_NOT_ACCEPTED and Extras.PERMS_NOT_GRANTED and Extras.POWER_OPTIMIZED
         )
         insertFragment(R.id.setup_fragment_container)
 
