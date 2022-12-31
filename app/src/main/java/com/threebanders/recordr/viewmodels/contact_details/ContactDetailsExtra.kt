@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.CheckBox
 import android.widget.ImageView
@@ -121,6 +122,7 @@ object ContactDetailsExtra {
             share.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
             context!!.startActivity(Intent.createChooser(share, "Share audio File"))
         } catch (e: java.lang.Exception) {
+            Log.d("TAG","Share Recording Error : " + e.message)
             e.printStackTrace()
         }
     }

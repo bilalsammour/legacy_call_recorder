@@ -9,25 +9,11 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 public class CoreUtil {
     public static final int UNKNOWN_TYPE_PHONE_CODE = -1;
-
-    public static final List<Integer> colorList = new ArrayList<>(Arrays.asList(
-            0xFF7b569b,
-            0xFFb8ad38,
-            0xFF586dd7,
-            0xFF45aecf,
-            0xFFd9a26a,
-            0xFFe26855,
-            0xFF8c6d2c,
-            0xFFa4572e
-    ));
 
 
     public static String getDurationHuman(long millis, boolean spokenStyle) {
@@ -39,36 +25,36 @@ public class CoreUtil {
         if (spokenStyle) {
             String duration = "";
             if (hours > 0)
-                duration += (hours + " hour" + (hours > 1 ? "s" : ""));
+                duration += (hours + Core.getContext().getString(R.string.hour) + (hours > 1 ? Core.getContext().getString(R.string.s) : ""));
             if (minutes > 0)
-                duration += ((hours > 0 ? ", " : "") + minutes + " minute" + (minutes > 1 ? "s" : ""));
+                duration += ((hours > 0 ? ", " : "") + minutes + Core.getContext().getString(R.string.minute) + (minutes > 1 ? Core.getContext().getString(R.string.s) : ""));
             if (seconds > 0)
-                duration += ((minutes > 0 || hours > 0 ? ", " : "") + seconds + " second" + (seconds > 1 ? "s" : ""));
+                duration += ((minutes > 0 || hours > 0 ? ", " : "") + seconds + Core.getContext().getString(R.string.second) + (seconds > 1 ? Core.getContext().getString(R.string.s) : ""));
             return duration;
         } else {
             if (hours > 0)
-                return String.format(Locale.US, "%02d:%02d:%02d", hours, minutes, seconds);
+                return String.format(Locale.US, Core.getContext().getString(R.string.three_d_format), hours, minutes, seconds);
             else
-                return String.format(Locale.US, "%02d:%02d", minutes, seconds);
+                return String.format(Locale.US, Core.getContext().getString(R.string.two_d_format), minutes, seconds);
         }
     }
 
     public static String getFileSizeHuman(long size) {
         double numUnits = size >> 10;
-        String unit = "KB";
+        String unit = Core.getContext().getString(R.string.kb);
         if (numUnits > 1000) {
             numUnits = (int) size >> 20;
-            unit = "MB";
+            unit = Core.getContext().getString(R.string.mb);
             double diff = (size - numUnits * 1048576) / 1048576;
             numUnits = numUnits + diff;
             if (numUnits > 1000) {
                 numUnits = size / 1099511627776L;
-                unit = "GB";
+                unit = Core.getContext().getString(R.string.gb);
                 diff = (size - numUnits * 1099511627776L) / 1099511627776L;
                 numUnits = numUnits + diff;
             }
         }
-        return new DecimalFormat("#.#").format(numUnits) + " " + unit;
+        return new DecimalFormat(Core.getContext().getString(R.string.diez)).format(numUnits) + " " + unit;
     }
 
     public static String rawHtmlToString(int fileRes, Context context) {
@@ -83,7 +69,7 @@ public class CoreUtil {
             br.close();
             is.close();
         } catch (Exception e) {
-            CrLog.log(CrLog.ERROR, "Error converting raw html to string: " + e.getMessage());
+            CrLog.log(CrLog.ERROR, Core.getContext().getString(R.string.error_converting_raw_html_to_string) + e.getMessage());
         }
         return sb.toString();
     }

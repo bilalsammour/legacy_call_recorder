@@ -8,6 +8,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 import core.threebanders.recordr.CrLog;
+import core.threebanders.recordr.R;
 
 class RecordingThreadWav extends RecordingThread implements Runnable {
     private static final int BITS_PER_SAMPLE = 16;
@@ -29,14 +30,14 @@ class RecordingThreadWav extends RecordingThread implements Runnable {
                 int length = audioRecord.read(data, 0, bufferSize);
 
                 if (length < 0) {
-                    throw new RecordingException("Recorder failed. Aborting...");
+                    throw new RecordingException(context.getString(R.string.recorder_failed));
                 }
 
                 outputStream.write(data);
             }
         } catch (RecordingException | IOException e) {
             if (!tmpFile.delete()) {
-                CrLog.log(CrLog.ERROR, "Cannot delete incomplete temp pcm file.");
+                CrLog.log(CrLog.ERROR, context.getString(R.string.cannot_delete_imcomplete_temp));
             }
             recorder.setHasError();
             notifyOnError(context);
@@ -78,14 +79,14 @@ class RecordingThreadWav extends RecordingThread implements Runnable {
 
             } catch (IOException e) {
                 if (!tmpFile.delete())
-                    CrLog.log(CrLog.ERROR, "Error while deleting temp pcm file on exception.");
+                    CrLog.log(CrLog.ERROR, context.getString(R.string.error_while_deleting_temp_pcm));
                 if (!wavFile.delete())
-                    CrLog.log(CrLog.ERROR, "Error while deleting wav file on exception.");
+                    CrLog.log(CrLog.ERROR, context.getString(R.string.error_while_deleting_wav_file));
                 recorder.setHasError();
                 notifyOnError(context);
             } finally {
                 if (!tmpFile.delete())
-                    CrLog.log(CrLog.ERROR, "Error while deleting temp pcm file on normal exit.");
+                    CrLog.log(CrLog.ERROR, context.getString(R.string.error_deleting_temp_on_normal_exit));
             }
         }
 

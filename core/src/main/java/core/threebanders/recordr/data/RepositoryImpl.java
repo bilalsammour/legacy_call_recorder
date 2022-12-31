@@ -12,6 +12,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import core.threebanders.recordr.Core;
+import core.threebanders.recordr.R;
+
 @SuppressLint("Range")
 public class RepositoryImpl implements Repository {
     private final SQLiteDatabase database;
@@ -89,23 +92,23 @@ public class RepositoryImpl implements Repository {
     @Override
     public void updateContact(Contact contact) throws SQLException, IllegalStateException {
         if (contact.getId() == 0)
-            throw new IllegalStateException("This contact was not saved in database");
+            throw new IllegalStateException(Core.getContext().getString(R.string.contact_not_saved_in_database));
 
         ContentValues values = createContactContentValues(contact);
         int updatedRows = database.update(ContactsContractLocal.Contacts.TABLE_NAME, values,
                 ContactsContractLocal.Contacts._ID + "=" + contact.getId(), null);
         if (updatedRows != 1)
-            throw new SQLException("The return value of updating this contact was " + updatedRows);
+            throw new SQLException(Core.getContext().getString(R.string.return_value_of_updating_contact) + updatedRows);
     }
 
     @Override
     public void deleteContact(Contact contact) {
         if (contact.getId() == 0)
-            throw new IllegalStateException("This contact was not saved in database");
+            throw new IllegalStateException(Core.getContext().getString(R.string.contact_not_saved_in_database));
         int deletedRows = database.delete(ContactsContractLocal.Contacts.TABLE_NAME, ContactsContractLocal.Contacts._ID
                 + "=" + contact.getId(), null);
         if (deletedRows != 1)
-            throw new SQLException("The return value of deleting this contact was " + deletedRows);
+            throw new SQLException(Core.getContext().getString(R.string.return_value_of_deleting_contact) + deletedRows);
     }
 
     private Recording populateRecording(Cursor cursor) {
@@ -167,22 +170,22 @@ public class RepositoryImpl implements Repository {
     @Override
     public void updateRecording(Recording recording) throws IllegalStateException, SQLException {
         if (recording.getId() == 0)
-            throw new IllegalStateException("This contact was not saved in database");
+            throw new IllegalStateException(Core.getContext().getString(R.string.contact_not_saved_in_database));
 
         ContentValues values = createRecordingContentValues(recording);
         int updatedRows = database.update(RecordingsContract.Recordings.TABLE_NAME, values,
                 RecordingsContract.Recordings._ID + "=" + recording.getId(), null);
         if (updatedRows != 1)
-            throw new SQLException("The return value of updating this recording was " + updatedRows);
+            throw new SQLException(Core.getContext().getString(R.string.return_value_of_updating_record) + updatedRows);
     }
 
     @Override
     public void deleteRecording(Recording recording) throws IllegalStateException, SQLException {
         if (recording.getId() == 0)
-            throw new IllegalStateException("This recording was not saved in database");
+            throw new IllegalStateException(Core.getContext().getString(R.string.recording_not_saved_in_database));
         int deletedRows = database.delete(RecordingsContract.Recordings.TABLE_NAME,
                 RecordingsContract.Recordings._ID + "=" + recording.getId(), null);
         if (deletedRows != 1)
-            throw new SQLException("The return value of deleting this recording was " + deletedRows);
+            throw new SQLException(Core.getContext().getString(R.string.return_value_of_deleting_record) + deletedRows);
     }
 }

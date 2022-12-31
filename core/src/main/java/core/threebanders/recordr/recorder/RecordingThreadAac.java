@@ -13,6 +13,7 @@ import java.io.OutputStream;
 import java.nio.ByteBuffer;
 
 import core.threebanders.recordr.CrLog;
+import core.threebanders.recordr.R;
 
 class RecordingThreadAac extends RecordingThread implements Runnable {
     private static final int SAMPLE_RATE_INDEX = 4;
@@ -57,11 +58,11 @@ class RecordingThreadAac extends RecordingThread implements Runnable {
                 if (success)
                     handleCodecOutput(mediaCodec, codecOutputBuffers, bufferInfo, outputStream);
                 else
-                    throw new RecordingException("Recorder failed. Aborting...");
+                    throw new RecordingException(context.getString(R.string.recorder_failed));
             }
         } catch (RecordingException | IOException e) {
             if (!outputFile.delete())
-                CrLog.log(CrLog.ERROR, "Cannot delete incomplete aac file");
+                CrLog.log(CrLog.ERROR, context.getString(R.string.cannot_delete_incomplete_aac_file));
             recorder.setHasError();
             notifyOnError(context);
         } finally {
@@ -92,7 +93,7 @@ class RecordingThreadAac extends RecordingThread implements Runnable {
             mediaCodec.configure(mediaFormat, null, null,
                     MediaCodec.CONFIGURE_FLAG_ENCODE);
         } catch (IOException e) {
-            throw new RecordingException("Cannot create mediacodec: " + e.getMessage());
+            throw new RecordingException(context.getString(R.string.cannot_create_mediacodec) + e.getMessage());
         }
         return mediaCodec;
     }

@@ -1,5 +1,6 @@
 package com.sdsmdg.harjot.crollerTest;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.AssetManager;
 import android.content.res.TypedArray;
@@ -401,6 +402,7 @@ public class Croller extends View {
         }
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     public boolean onTouchEvent(MotionEvent e) {
         if (!isEnabled)

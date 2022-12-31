@@ -7,6 +7,7 @@ import android.media.AudioFormat;
 import android.media.AudioRecord;
 
 import core.threebanders.recordr.Core;
+import core.threebanders.recordr.R;
 
 abstract class RecordingThread {
     static final int SAMPLE_RATE = 44100;
@@ -34,7 +35,7 @@ abstract class RecordingThread {
             NotificationManager nm = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
             if (nm != null)
                 nm.notify(RecorderService.NOTIFICATION_ID,
-                        service.buildNotification(RecorderService.RECORD_ERROR, "Recorder failed."));
+                        service.buildNotification(RecorderService.RECORD_ERROR, context.getString(R.string.recorder_fail)));
         }
     }
 
@@ -56,7 +57,7 @@ abstract class RecordingThread {
         }
 
         if (audioRecord.getState() != AudioRecord.STATE_INITIALIZED)
-            throw new RecordingException("Unable to initialize AudioRecord");
+            throw new RecordingException(context.getString(R.string.unable_to_init_audio_record));
 
         return audioRecord;
     }

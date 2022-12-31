@@ -1,5 +1,4 @@
 package core.threebanders.recordr;
-
 import android.os.Build;
 import android.util.Log;
 
@@ -26,51 +25,51 @@ public class CrLog {
     private final static int MAX_FILE_COUNT = 5;
     private final static String LOG_FILE_NAME = "log";
     private final static File LOG_FOLDER = Core.getContext().getFilesDir();
-    private static final File logFile = new File(LOG_FOLDER, LOG_FILE_NAME + ".txt");
+    private static final File logFile = new File(LOG_FOLDER, LOG_FILE_NAME + Core.getContext().getString(R.string.txt));
 
     private static void backupLogFiles() throws LoggerException {
         File backup = null;
 
         for (int i = 1; i <= MAX_FILE_COUNT; ++i) {
-            backup = new File(LOG_FOLDER, LOG_FILE_NAME + i + ".txt");
+            backup = new File(LOG_FOLDER, LOG_FILE_NAME + i + Core.getContext().getString(R.string.txt));
             if (!backup.exists()) {
-                backup = new File(LOG_FOLDER, LOG_FILE_NAME + i + ".txt");
+                backup = new File(LOG_FOLDER, LOG_FILE_NAME + i + Core.getContext().getString(R.string.txt));
                 break;
             }
             if (i == MAX_FILE_COUNT) {
-                File firstBackup = new File(LOG_FOLDER, LOG_FILE_NAME + "1.txt");
+                File firstBackup = new File(LOG_FOLDER, LOG_FILE_NAME + Core.getContext().getString(R.string.one_txt));
                 if (!firstBackup.delete())
-                    throw new LoggerException("Cannot delete last backup");
+                    throw new LoggerException(Core.getContext().getString(R.string.cannot_delete_last_backup));
 
                 for (int j = 2; j <= MAX_FILE_COUNT; ++j) {
-                    File currentBackup = new File(LOG_FOLDER, LOG_FILE_NAME + j + ".txt");
-                    if (!currentBackup.renameTo(new File(LOG_FOLDER, LOG_FILE_NAME + (j - 1) + ".txt")))
-                        throw new LoggerException("Could not rename backup file " + currentBackup.getName());
+                    File currentBackup = new File(LOG_FOLDER, LOG_FILE_NAME + j + Core.getContext().getString(R.string.txt));
+                    if (!currentBackup.renameTo(new File(LOG_FOLDER, LOG_FILE_NAME + (j - 1) + Core.getContext().getString(R.string.txt))))
+                        throw new LoggerException(Core.getContext().getString(R.string.cannot_delete_last_backup) + currentBackup.getName());
                 }
-                backup = new File(LOG_FOLDER, LOG_FILE_NAME + MAX_FILE_COUNT + ".txt");
+                backup = new File(LOG_FOLDER, LOG_FILE_NAME + MAX_FILE_COUNT + Core.getContext().getString(R.string.txt));
             }
         }
 
         if (!logFile.renameTo(backup))
-            throw new LoggerException("Could not rename log file");
+            throw new LoggerException(Core.getContext().getString(R.string.could_not_rename_log_file));
     }
 
     private static void writeHeader() throws IOException {
         String header = "";
-        header += "APP VERSION CODE: " + Core.getVersionCode() + "\n";
-        header += "APP VERSION: " + Core.getVersionName() + "\n";
-        header += "MODEL: " + Build.MODEL + "\n";
-        header += "MANUFACTURER: " + Build.MANUFACTURER + "\n";
-        header += "SDK: " + Build.VERSION.SDK_INT + "\n";
-        header += "BOARD: " + Build.BOARD + "\n";
-        header += "BRAND: " + Build.BRAND + "\n";
-        header += "DEVICE: " + Build.DEVICE + "\n";
-        header += "DISPLAY NAME: " + Build.DISPLAY + "\n";
-        header += "HARDWARE: " + Build.HARDWARE + "\n";
-        header += "PRODUCT: " + Build.PRODUCT + "\n";
-        header += "WIDTH PIXELS: " + Core.getContext().getResources().getDisplayMetrics().widthPixels + "\n";
-        header += "HEIGHT PIXELS: " + Core.getContext().getResources().getDisplayMetrics().heightPixels + "\n";
-        header += "DENSITY PIXELS: " + Core.getContext().getResources().getDisplayMetrics().density + "\n\n";
+        header += Core.getContext().getString(R.string.app_version_code) + Core.getVersionCode() + "\n";
+        header += Core.getContext().getString(R.string.app_version) + Core.getVersionName() + "\n";
+        header += Core.getContext().getString(R.string.model) + Build.MODEL + "\n";
+        header += Core.getContext().getString(R.string.manufacturer) + Build.MANUFACTURER + "\n";
+        header += Core.getContext().getString(R.string.sdk) + Build.VERSION.SDK_INT + "\n";
+        header += Core.getContext().getString(R.string.board) + Build.BOARD + "\n";
+        header += Core.getContext().getString(R.string.brand) + Build.BRAND + "\n";
+        header += Core.getContext().getString(R.string.device) + Build.DEVICE + "\n";
+        header += Core.getContext().getString(R.string.display_name) + Build.DISPLAY + "\n";
+        header += Core.getContext().getString(R.string.hardware) + Build.HARDWARE + "\n";
+        header += Core.getContext().getString(R.string.product) + Build.PRODUCT + "\n";
+        header += Core.getContext().getString(R.string.width_pixels) + Core.getContext().getResources().getDisplayMetrics().widthPixels + "\n";
+        header += Core.getContext().getString(R.string.height_pixels) + Core.getContext().getResources().getDisplayMetrics().heightPixels + "\n";
+        header += Core.getContext().getString(R.string.density_pixels) + Core.getContext().getResources().getDisplayMetrics().density + "\n\n";
 
         BufferedWriter buffer = new BufferedWriter(new FileWriter(logFile, true));
         buffer.append(header);
@@ -95,7 +94,7 @@ public class CrLog {
         if (!logFile.exists()) {
             try {
                 if (!logFile.createNewFile())
-                    throw new LoggerException("Cannot create log file.");
+                    throw new LoggerException(Core.getContext().getString(R.string.cannot_create_log_file));
                 writeHeader();
             } catch (LoggerException | IOException e) {
                 Log.wtf(TAG, e.getMessage());
@@ -107,7 +106,7 @@ public class CrLog {
             try {
                 backupLogFiles();
                 if (!logFile.createNewFile())
-                    throw new LoggerException("Cannot create log file.");
+                    throw new LoggerException(Core.getContext().getString(R.string.cannot_create_log_file));
                 writeHeader();
             } catch (IOException | LoggerException e) {
                 Log.wtf(TAG, e.getMessage());

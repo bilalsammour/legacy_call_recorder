@@ -10,6 +10,9 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.Objects;
 
+import core.threebanders.recordr.Core;
+import core.threebanders.recordr.R;
+
 public class Recording implements Parcelable {
     public static final Creator<Recording> CREATOR = new Creator<Recording>() {
         @Override
@@ -118,17 +121,17 @@ public class Recording implements Parcelable {
 
         switch (format) {
             case "wav":
-                return "Lossless quality" + " (WAV), 44khz 16bit WAV " + (mode.equals("mono") ? wavBitrate : wavBitrate * 2)
-                        + "kbps " + mode.substring(0, 1).toUpperCase() + mode.substring(1);
+                return Core.getContext().getString(R.string.lossless_quality) + Core.getContext().getString(R.string.wav_formatting) + (mode.equals(Core.getContext().getString(R.string.mono)) ? wavBitrate : wavBitrate * 2)
+                        + Core.getContext().getString(R.string.kbps) + mode.substring(0, 1).toUpperCase() + mode.substring(1);
             case "aac_hi":
-                return "High quality" + " (AAC), 44khz 16bit AAC128 " + (mode.equals("mono") ? aacHighBitrate : aacHighBitrate * 2)
-                        + "kbps " + mode.substring(0, 1).toUpperCase() + mode.substring(1);
+                return Core.getContext().getString(R.string.high_quality) + Core.getContext().getString(R.string.aac_high_formatting) + (mode.equals(Core.getContext().getString(R.string.mono)) ? aacHighBitrate : aacHighBitrate * 2)
+                        + Core.getContext().getString(R.string.kbps) + mode.substring(0, 1).toUpperCase() + mode.substring(1);
             case "aac_med":
-                return "Medium quality" + " (AAC), 44khz 16bit AAC64 " + (mode.equals("mono") ? aacMedBitrate : aacMedBitrate * 2)
-                        + "kbps " + mode.substring(0, 1).toUpperCase() + mode.substring(1);
+                return Core.getContext().getString(R.string.medium_quality) + Core.getContext().getString(R.string.aac_medium_formatting) + (mode.equals(Core.getContext().getString(R.string.mono)) ? aacMedBitrate : aacMedBitrate * 2)
+                        + Core.getContext().getString(R.string.kbps) + mode.substring(0, 1).toUpperCase() + mode.substring(1);
             case "aac_bas":
-                return "Basic quality" + " (AAC), 44khz 16bit AAC32 " + (mode.equals("mono") ? aacBasBitrate : aacBasBitrate * 2)
-                        + "kbps " + mode.substring(0, 1).toUpperCase() + mode.substring(1);
+                return Core.getContext().getString(R.string.basic_quality) + Core.getContext().getString(R.string.aac_basic_formatting) + (mode.equals(Core.getContext().getString(R.string.mono)) ? aacBasBitrate : aacBasBitrate * 2)
+                        + Core.getContext().getString(R.string.kbps) + mode.substring(0, 1).toUpperCase() + mode.substring(1);
         }
         return null;
     }

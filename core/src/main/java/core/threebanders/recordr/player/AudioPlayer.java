@@ -21,6 +21,9 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import core.threebanders.recordr.Core;
+import core.threebanders.recordr.R;
+
 public class AudioPlayer extends Thread implements PlayerAdapter {
     private static final int PLAYBACK_POSITION_REFRESH_INTERVAL_MS = 500;
     private static final int SAMPLE_RATE = 44100;
@@ -159,8 +162,9 @@ public class AudioPlayer extends Thread implements PlayerAdapter {
         //noinspection CatchMayIgnoreException
         try {
             ACRA.getErrorReporter().putCustomData(ACRA_FORMAT, formatName);
-            ACRA.getErrorReporter().putCustomData(ACRA_MODE, channelCount == 1 ? "mono" : "stereo");
-            ACRA.getErrorReporter().putCustomData(ACRA_SIZE, (audioFile.length() / 1024) + "KB");
+            ACRA.getErrorReporter().putCustomData(ACRA_MODE, channelCount == 1 ?
+                    Core.getContext().getString(R.string.mono) : Core.getContext().getString(R.string.stereo));
+            ACRA.getErrorReporter().putCustomData(ACRA_SIZE, (audioFile.length() / 1024) + Core.getContext().getString(R.string.kb));
         } catch (IllegalStateException exc) {
         }
         state = PlayerAdapter.State.INITIALIZED;
@@ -185,9 +189,9 @@ public class AudioPlayer extends Thread implements PlayerAdapter {
             channelCount = inputWav.readByte();
             inputWav.seek(0);
             if (inputWav.skipBytes(WAV_HEADER_SIZE) < WAV_HEADER_SIZE)
-                throw new PlayerException("Initialization error: Wav file corrupted");
+                throw new PlayerException(Core.getContext().getString(R.string.wav_file_corrupt));
         } catch (Exception e) {
-            throw new PlayerException("Initialization error: " + e.getMessage());
+            throw new PlayerException(Core.getContext().getString(R.string.intialization_error) + e.getMessage());
         }
 
         //Acest nr este stocat în headerul wav în format little endian, de aceea nu îl pot citi cu
@@ -217,7 +221,7 @@ public class AudioPlayer extends Thread implements PlayerAdapter {
             extractor.selectTrack(0);
             decoder.start();
         } catch (Exception e) {
-            throw new PlayerException("Initialization error: " + e.getMessage());
+            throw new PlayerException(Core.getContext().getString(R.string.intialization_error) + e.getMessage());
         }
     }
 
@@ -335,7 +339,7 @@ public class AudioPlayer extends Thread implements PlayerAdapter {
                     ByteBuffer inputBuffer;
                     inputBuffer = decoder.getInputBuffer(inputBufId);
                     if (inputBuffer == null)
-                        throw new PlayerException("Codec returned null input buffer");
+                        throw new PlayerException(Core.getContext().getString(R.string.codec_input_buffer));
                     int sampleSize = extractor.readSampleData(inputBuffer, 0 /* offset */);
                     long presentationTimeUs = 0;
                     if (sampleSize < 0) {
@@ -357,7 +361,7 @@ public class AudioPlayer extends Thread implements PlayerAdapter {
                 ByteBuffer outputBuffer;
                 outputBuffer = decoder.getOutputBuffer(outputBufId);
                 if (outputBuffer == null)
-                    throw new PlayerException("Codec returned null output buffer.");
+                    throw new PlayerException(Core.getContext().getString(R.string.codec_output_buffer));
                 byte[] audioData = new byte[bufInfo.size];
                 outputBuffer.get(audioData);
                 outputBuffer.clear();
@@ -400,7 +404,7 @@ public class AudioPlayer extends Thread implements PlayerAdapter {
             try {
                 bytesRead = inputWav.read(audioBuffer);
             } catch (IOException e) {
-                throw new PlayerException("Error reading from the wav file");
+                throw new PlayerException(Core.getContext().getString(R.string.error_reading_from_wav_file));
             }
             ++wavBufferCount;
 

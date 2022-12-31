@@ -7,10 +7,10 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
 public class Cache {
-    public static final String ENABLED = "enabled";
-    public static final String SOURCE = "source";
-    public static final String FORMAT = "format";
-    public static final String MODE = "mode";
+    public static final String ENABLED = Core.getContext().getString(R.string.enabled);
+    public static final String SOURCE = Core.getContext().getString(R.string.source);
+    public static final String FORMAT = Core.getContext().getString(R.string.format);
+    public static final String MODE = Core.getContext().getString(R.string.mode);
 
     private static Cache cache;
     private SharedPreferences prefs;
