@@ -136,10 +136,7 @@
     <string name="uploading">Uploading</string>
     <string name="uploading_file_to_google_drive">Uploading File to google drive</string>
     <string name="sync_with_google_drive">Please sync in with google drive..</string>
-
-
-    <string name="test_str">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry/s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages.
-    </string>
+    <string name="test_str">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry/s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.</string>
     <string name="turn_off_button">Turn Off</string>
     <string name="finish_button">Finish</string>
     <string name="do_not_optimize_text">Please do no optimize this app ..</string>
@@ -155,11 +152,9 @@
     <string name="read_contacts_rationale">This permission is need to read contacts from phone</string>
     <string name="record_audio_rationale">This permission is needed to record audio and the call</string>
     <string name="title_activity_splash">SplashActivity</string>
-    <!-- Strings used for fragments for navigation -->
     <string name="first_fragment_label">First Fragment</string>
     <string name="second_fragment_label">Second Fragment</string>
     <string name="previous">Previous</string>
-
     <string name="hello_first_fragment">Hello first fragment</string>
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
 </resources>

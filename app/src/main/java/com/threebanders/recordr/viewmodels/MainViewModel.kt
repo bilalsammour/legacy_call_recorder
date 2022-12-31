@@ -27,8 +27,6 @@ class MainViewModel : ViewModel() {
     private val recordList: MutableList<Recording> = ArrayList()
     var records = MutableLiveData(recordList)
 
-
-    /* ------------------------------------------- */
     fun saveCurrentFragments(list: MutableList<Fragment>) {
         fragments.value = list
     }

@@ -1,5 +1,5 @@
 SW Call Recorder license
-==============================
+==
 
 1\. Definitions
 --------------

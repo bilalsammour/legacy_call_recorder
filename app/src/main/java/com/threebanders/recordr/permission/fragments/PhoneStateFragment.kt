@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.threebanders.recordr.R
@@ -30,12 +31,13 @@ class PhoneStateFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        mainViewModel = ViewModelProvider(requireActivity())[MainViewModel::class.java]
         rootView = inflater.inflate(R.layout.permission_fragment_layout, container, false)
         permissionText = rootView.findViewById(R.id.permissionText)
         allowBtn = rootView.findViewById(R.id.allowBtn)
         nextBtn = rootView.findViewById(R.id.nextBtn)
         permissionTypeTxt = rootView.findViewById(R.id.permissionType)
-        mainViewModel = ViewModelProvider(requireActivity())[MainViewModel::class.java]
+
         return rootView
     }
 
@@ -71,20 +73,21 @@ class PhoneStateFragment : Fragment() {
         }
     }
 
-    private val activityResultLauncher: ActivityResultLauncher<String> =
-        mainViewModel.launch(requireActivity()) { isGranted ->
-            if (isGranted) {
-                allowBtn.visibility = View.GONE
-                nextBtn.visibility = View.VISIBLE
+    private val activityResultLauncher: ActivityResultLauncher<String> = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted ->
+        if (isGranted) {
+            allowBtn.visibility = View.GONE
+            nextBtn.visibility = View.VISIBLE
+        } else {
+            counter++
+            if (counter >= 2) {
+                mainViewModel.enablePermissionFromSettings(requireActivity())
             } else {
-                counter++
-                if (counter >= 2) {
-                    mainViewModel.enablePermissionFromSettings(requireActivity())
-                } else {
-                    showDial()
-                }
+                showDial()
             }
         }
+    }
 
     private fun showDial() {
         mainViewModel.showRationale(
