@@ -37,7 +37,7 @@ class RecordingThreadWav extends RecordingThread implements Runnable {
             }
         } catch (RecordingException | IOException e) {
             if (!tmpFile.delete()) {
-                CrLog.log(CrLog.ERROR, context.getString(R.string.cannot_delete_imcomplete_temp));
+                CrLog.log(CrLog.ERROR, context.getString(R.string.cannot_delete_incomplete_temp));
             }
             recorder.setHasError();
             notifyOnError(context);

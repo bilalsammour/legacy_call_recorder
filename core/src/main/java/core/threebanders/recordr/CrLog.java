@@ -1,4 +1,5 @@
 package core.threebanders.recordr;
+
 import android.os.Build;
 import android.util.Log;
 
@@ -24,29 +25,30 @@ public class CrLog {
     private final static int MAX_FILE_SIZE = 1000000;
     private final static int MAX_FILE_COUNT = 5;
     private final static String LOG_FILE_NAME = "log";
+    private final static String EXTENSION = ".txt";
     private final static File LOG_FOLDER = Core.getContext().getFilesDir();
-    private static final File logFile = new File(LOG_FOLDER, LOG_FILE_NAME + Core.getContext().getString(R.string.txt));
+    private static final File logFile = new File(LOG_FOLDER, LOG_FILE_NAME + EXTENSION);
 
     private static void backupLogFiles() throws LoggerException {
         File backup = null;
 
         for (int i = 1; i <= MAX_FILE_COUNT; ++i) {
-            backup = new File(LOG_FOLDER, LOG_FILE_NAME + i + Core.getContext().getString(R.string.txt));
+            backup = new File(LOG_FOLDER, LOG_FILE_NAME + i + EXTENSION);
             if (!backup.exists()) {
-                backup = new File(LOG_FOLDER, LOG_FILE_NAME + i + Core.getContext().getString(R.string.txt));
+                backup = new File(LOG_FOLDER, LOG_FILE_NAME + i + EXTENSION);
                 break;
             }
             if (i == MAX_FILE_COUNT) {
-                File firstBackup = new File(LOG_FOLDER, LOG_FILE_NAME + Core.getContext().getString(R.string.one_txt));
+                File firstBackup = new File(LOG_FOLDER, LOG_FILE_NAME + "1.text");
                 if (!firstBackup.delete())
                     throw new LoggerException(Core.getContext().getString(R.string.cannot_delete_last_backup));
 
                 for (int j = 2; j <= MAX_FILE_COUNT; ++j) {
-                    File currentBackup = new File(LOG_FOLDER, LOG_FILE_NAME + j + Core.getContext().getString(R.string.txt));
-                    if (!currentBackup.renameTo(new File(LOG_FOLDER, LOG_FILE_NAME + (j - 1) + Core.getContext().getString(R.string.txt))))
+                    File currentBackup = new File(LOG_FOLDER, LOG_FILE_NAME + j + EXTENSION);
+                    if (!currentBackup.renameTo(new File(LOG_FOLDER, LOG_FILE_NAME + (j - 1) + EXTENSION)))
                         throw new LoggerException(Core.getContext().getString(R.string.cannot_delete_last_backup) + currentBackup.getName());
                 }
-                backup = new File(LOG_FOLDER, LOG_FILE_NAME + MAX_FILE_COUNT + Core.getContext().getString(R.string.txt));
+                backup = new File(LOG_FOLDER, LOG_FILE_NAME + MAX_FILE_COUNT + EXTENSION);
             }
         }
 

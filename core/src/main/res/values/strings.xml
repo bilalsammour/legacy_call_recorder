@@ -22,7 +22,6 @@
     <string name="microphone">Microphone</string>
     <string name="source_unrecognized">Source unrecognized</string>
     <string name="cannot_delete_last_backup">Cannot delete last backup</string>
-    <string name="txt">.txt</string>
     <string name="app_version_code">APP VERSION CODE: </string>
     <string name="app_version">APP VERSION: </string>
     <string name="cannot_create_log_file">Cannot create log file.</string>
@@ -41,9 +40,7 @@
     <string name="height_pixels">HEIGHT PIXELS: </string>
     <string name="density_pixels">DENSITY PIXELS: </string>
     <string name="could_not_rename_log_file">Could not rename log file</string>
-    <string name="one_txt">1.text</string>
     <string name="second"> second</string>
-    <string name="error_converting_raw_html_to_string">Error converting raw html to string: </string>
     <string name="gb">GB</string>
     <string name="mb">MB</string>
     <string name="kb">KB</string>
@@ -79,11 +76,11 @@
     <string name="error_reading_from_wav_file">Error reading from the wav file</string>
     <string name="codec_output_buffer">Codec returned null output buffer</string>
     <string name="codec_input_buffer">Codec returned null input buffer</string>
-    <string name="intialization_error">Initialization error: </string>
+    <string name="initialization_error">Initialization error: </string>
     <string name="wav_file_corrupt">Initialization error: Wav file corrupted</string>
     <string name="stereo">stereo</string>
-    <string name="recorder_failed">Recorder failed. Aborting...</string>
-    <string name="cannot_delete_imcomplete_temp">Cannot delete incomplete temp pcm file.</string>
+    <string name="recorder_failed">Recorder failed. Aborting…</string>
+    <string name="cannot_delete_incomplete_temp">Cannot delete incomplete temp pcm file.</string>
     <string name="error_while_deleting_temp_pcm">Error while deleting temp pcm file on exception.</string>
     <string name="error_while_deleting_wav_file">Error while deleting wav file on exception.</string>
     <string name="error_deleting_temp_on_normal_exit">Error while deleting temp pcm file on normal exit.</string>

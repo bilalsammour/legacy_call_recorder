@@ -60,7 +60,6 @@
                 android:resource="@xml/file_paths" />
         </provider>
 
-
         <activity
             android:name=".ui.welcome.WelcomeActivity"
             android:exported="true"

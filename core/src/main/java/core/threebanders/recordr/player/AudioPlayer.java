@@ -45,12 +45,10 @@ public class AudioPlayer extends Thread implements PlayerAdapter {
     private boolean paused = false;
     private String formatName;
     private int channelCount;
-    private RandomAccessFile inputWav; //folosesc RandomAccessFile deoarece, spre deosebire de InputStream,
-    //permite operațiuni seek
+    private RandomAccessFile inputWav;
     private long wavBufferCount = 0;
     private int maxWavBuffers;
     private float gainDb = 0;
-
 
     public AudioPlayer(PlaybackListenerInterface listener) {
         this.playbackListener = listener;
@@ -62,14 +60,6 @@ public class AudioPlayer extends Thread implements PlayerAdapter {
         gainDb = gain;
     }
 
-    //https://stackoverflow.com/questions/26088427/increase-volume-output-of-recorded-audio
-    //Alte topicuri relevante:
-    //https://stackoverflow.com/questions/14485873/audio-change-volume-of-samples-in-byte-array
-    //https://stackoverflow.com/questions/4300995/modify-volume-gain-on-audio-sample-buffer
-    //https://github.com/JorenSix/TarsosDSP
-    //https://stackoverflow.com/questions/10578865/android-audiorecord-apply-gain-with-variation
-    //https://stackoverflow.com/questions/25441166/how-to-adjust-microphone-sensitivity-while-recording-audio-in-android
-    //https://stackoverflow.com/questions/26317772/increase-volume-of-recording-android-audiorecord
     private void addGain(@NonNull byte[] audioData) {
         double gainFactor = Math.pow(10, gainDb / 20);
         for (int i = 0; i < audioData.length; i += 2) {
@@ -113,7 +103,7 @@ public class AudioPlayer extends Thread implements PlayerAdapter {
     @Override
     public boolean seekTo(int position) {
         if (formatName.equals(AAC_FORMAT))
-            extractor.seekTo((long) position * 1000, MediaExtractor.SEEK_TO_CLOSEST_SYNC); //MediaExtractor folosește microsecunde, nu milisecunde
+            extractor.seekTo((long) position * 1000, MediaExtractor.SEEK_TO_CLOSEST_SYNC);
         else {
             long newPosition = (((long) SAMPLE_RATE * channelCount * 2) / 1000) * position;
             try {
@@ -147,9 +137,9 @@ public class AudioPlayer extends Thread implements PlayerAdapter {
     private void initialize() throws PlayerException {
         formatName = mediaPath.endsWith(".wav") ? WAV_FORMAT : AAC_FORMAT;
         if (formatName.equals(AAC_FORMAT))
-            initializeForAac(mediaPath); //exception
+            initializeForAac(mediaPath);
         else
-            initializeForWav(mediaPath); //exception
+            initializeForWav(mediaPath);
 
         int channelConfig = channelCount == 1 ? AudioFormat.CHANNEL_OUT_MONO :
                 AudioFormat.CHANNEL_OUT_STEREO;
@@ -170,14 +160,10 @@ public class AudioPlayer extends Thread implements PlayerAdapter {
         state = PlayerAdapter.State.INITIALIZED;
     }
 
-    //http://soundfile.sapp.org/doc/WaveFormat/
-    //https://thiscouldbebetter.wordpress.com/2011/08/14/reading-and-writing-a-wav-file-in-java/
-    //https://stackoverflow.com/questions/3925030/using-audiotrack-in-android-to-play-a-wav-file
-    //https://gist.github.com/muetzenflo/3e83975aba6abe63413abd98bb33c401
     private void initializeForWav(String mediaPath) throws PlayerException {
         final int WAV_HEADER_SIZE = 44;
-        final int DATA_SIZE_ADDRESS = 40; //adresa de la care se citește mărimea secțiunii "data" a fișierului
-        final int CHANNEL_COUNT_ADDRESS = 22; //adresa de la care se citește nr de canale
+        final int DATA_SIZE_ADDRESS = 40;
+        final int CHANNEL_COUNT_ADDRESS = 22;
         int dataSize;
         byte[] dataSizeBytes = new byte[4];
 
@@ -191,18 +177,9 @@ public class AudioPlayer extends Thread implements PlayerAdapter {
             if (inputWav.skipBytes(WAV_HEADER_SIZE) < WAV_HEADER_SIZE)
                 throw new PlayerException(Core.getContext().getString(R.string.wav_file_corrupt));
         } catch (Exception e) {
-            throw new PlayerException(Core.getContext().getString(R.string.intialization_error) + e.getMessage());
+            throw new PlayerException(Core.getContext().getString(R.string.initialization_error) + e.getMessage());
         }
 
-        //Acest nr este stocat în headerul wav în format little endian, de aceea nu îl pot citi cu
-        //RandomAccessFile.readInt() care vrea big endian. E musai să citesc acest nr deoarece, cel puțin
-        //în wav-urile produse de această aplicație (trebuie să aflu de ce) datele audio propriu-zise se
-        //termină înainte de finalul fișierului (în spațiul rămas sunt copiate niște sample-uri) ca umplutură pînă
-        //se face o secțiune "data" cu dimensiune putere de 2! Odată aflată mărimea segmentului valid
-        //împart la buffersize pentru a afla nr maxim de bufferuri care trebuie citite pentru a nu
-        //trece dincolo de segmentul valid. Masca 0xff e necesară pentru că octeții care au cel mai
-        //semnificativ bit 1 sunt transformați în int copiind cel mai semnificativ bit, rezultînd astfel
-        //în mod greșit un nr negativ.
         dataSize = ((int) dataSizeBytes[3] & 0xff) << 24 | ((int) dataSizeBytes[2] & 0xff) << 16 |
                 ((int) dataSizeBytes[1] & 0xff) << 8 | (int) dataSizeBytes[0] & 0xff;
         maxWavBuffers = (int) Math.ceil((double) dataSize / WAV_BUFFER_SIZE);
@@ -213,19 +190,17 @@ public class AudioPlayer extends Thread implements PlayerAdapter {
         extractor = new MediaExtractor();
         try {
             extractor.setDataSource(mediaPath);
-            format = extractor.getTrackFormat(0); //Există situații cînd mărimea fișierului e 0 și acest
-            // apel produce InvalidArgumentException
+            format = extractor.getTrackFormat(0);
             decoder = MediaCodec.createDecoderByType(format.getString(MediaFormat.KEY_MIME));
             decoder.configure(format, null /* surface */, null /* crypto */, 0 /* flags */);
             channelCount = format.getInteger(MediaFormat.KEY_CHANNEL_COUNT);
             extractor.selectTrack(0);
             decoder.start();
         } catch (Exception e) {
-            throw new PlayerException(Core.getContext().getString(R.string.intialization_error) + e.getMessage());
+            throw new PlayerException(Core.getContext().getString(R.string.initialization_error) + e.getMessage());
         }
     }
 
-    //poate fi apelat oricînd
     @SuppressLint("WrongConstant")
     @Override
     public void stopPlayer() {
@@ -302,7 +277,6 @@ public class AudioPlayer extends Thread implements PlayerAdapter {
     }
 
     private synchronized void resumeIfPaused() {
-        //https://docs.oracle.com/javase/8/docs%2Ftechnotes%2Fguides%2Fconcurrency%2FthreadPrimitiveDeprecation.html
         if (paused) {
             paused = false;
             notify();
@@ -310,8 +284,9 @@ public class AudioPlayer extends Thread implements PlayerAdapter {
     }
 
     private synchronized void pauseIfRunning() {
-        if (!paused)
+        if (!paused) {
             paused = true;
+        }
     }
 
     private void playAac() throws PlayerException {
@@ -436,5 +411,4 @@ public class AudioPlayer extends Thread implements PlayerAdapter {
         } catch (IllegalStateException ignored) {
         }
     }
-
 }

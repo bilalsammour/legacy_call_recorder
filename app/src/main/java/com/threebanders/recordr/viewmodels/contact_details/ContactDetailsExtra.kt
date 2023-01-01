@@ -4,8 +4,6 @@ import android.animation.Animator
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
-import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.CheckBox
 import android.widget.ImageView
@@ -22,7 +20,6 @@ import com.threebanders.recordr.R
 import com.threebanders.recordr.common.DialogInfo
 import com.threebanders.recordr.ui.BaseActivity
 import com.threebanders.recordr.ui.contact.ContactDetailFragment
-import core.threebanders.recordr.data.Contact
 import java.io.File
 
 object ContactDetailsExtra {
@@ -30,8 +27,6 @@ object ContactDetailsExtra {
     const val SELECTED_ITEMS_KEY = "selected_items_key"
     const val EFFECT_TIME = 250
     const val RECORDING_EXTRA = "recording_extra"
-
-    const val ARG_CONTACT = "arg_contact"
 
     fun showRecyclerView(
         recordingsRecycler: RecyclerView?,
@@ -45,6 +40,7 @@ object ContactDetailsExtra {
                 DividerItemDecoration.VERTICAL
             )
         )
+
         recordingsRecycler.adapter = recordingAdapter
     }
 
@@ -122,7 +118,6 @@ object ContactDetailsExtra {
             share.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
             context!!.startActivity(Intent.createChooser(share, "Share audio File"))
         } catch (e: java.lang.Exception) {
-            Log.d("TAG","Share Recording Error : " + e.message)
             e.printStackTrace()
         }
     }
@@ -202,14 +197,5 @@ object ContactDetailsExtra {
             selectedItems.remove(adapterPosition)
             true
         } else false
-    }
-
-    fun newInstance(contact: Contact?): ContactDetailFragment {
-        val args = Bundle()
-        args.putParcelable(ARG_CONTACT, contact)
-        val fragment = ContactDetailFragment()
-        fragment.arguments = args
-
-        return fragment
     }
 }
