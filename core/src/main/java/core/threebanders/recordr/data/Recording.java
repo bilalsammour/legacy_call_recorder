@@ -117,7 +117,7 @@ public class Recording implements Parcelable {
     }
 
     public String getHumanReadingFormat() {
-        final int wavBitrate = 705, aacHighBitrate = 128, aacMedBitrate = 64, aacBasBitrate = 32;
+        final int wavBitrate = 705, aacHighBitrate = 580, aacMedBitrate = 350, aacBasBitrate = 250;
 
         switch (format) {
             case "wav":
