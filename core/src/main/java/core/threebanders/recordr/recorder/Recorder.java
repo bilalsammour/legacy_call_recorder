@@ -5,7 +5,6 @@ import static android.media.MediaRecorder.AudioSource.VOICE_CALL;
 import static android.media.MediaRecorder.AudioSource.VOICE_COMMUNICATION;
 import static android.media.MediaRecorder.AudioSource.VOICE_RECOGNITION;
 
-
 import android.content.Context;
 import android.content.SharedPreferences;
 

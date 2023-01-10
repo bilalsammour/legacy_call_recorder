@@ -53,6 +53,7 @@ class ReadContactsFragment : Fragment() {
         allowBtn.setOnClickListener {
             activityResultLauncher.launch(Manifest.permission.READ_CONTACTS)
         }
+
         nextBtn.setOnClickListener {
             if (mainViewModel.fragments.value!!.size == mainViewModel.getCurrentFragmentPosition(
                     requireContext()

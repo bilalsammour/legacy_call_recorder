@@ -40,7 +40,6 @@ class AccessibilityFragment : Fragment() {
         switchOnButton.setOnClickListener {
             mainViewModel.openAccessibilitySettings(activityResultLauncher)
         }
-
     }
 
     private var activityResultLauncher =

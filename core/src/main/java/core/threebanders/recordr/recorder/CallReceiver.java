@@ -4,11 +4,9 @@ import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.media.AudioManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.telephony.TelephonyManager;
-import android.util.Log;
 
 import core.threebanders.recordr.Core;
 
@@ -53,8 +51,7 @@ public class CallReceiver extends BroadcastReceiver {
 
                         serviceStarted = true;
                     }
-                } 
-                else if (state != null && state.equals(TelephonyManager.EXTRA_STATE_OFFHOOK)) {
+                } else if (state != null && state.equals(TelephonyManager.EXTRA_STATE_OFFHOOK)) {
                     boolean isEnabled = Core.getInstance().getCache().enabled();
                     if (!serviceStarted && isEnabled) {
                         Intent intentService = new Intent(context, RecorderService.class);
