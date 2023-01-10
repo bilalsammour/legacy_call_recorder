@@ -29,7 +29,7 @@
         app:useSimpleSummaryProvider="true" />
 
     <ListPreference
-        android:defaultValue="wav"
+        android:defaultValue="aac_hi"
         android:entries="@array/format_names"
         android:entryValues="@array/format_values"
         android:key="format"

@@ -5,6 +5,7 @@ import android.app.NotificationManager;
 import android.content.Context;
 import android.media.AudioFormat;
 import android.media.AudioRecord;
+import android.util.Log;
 
 import core.threebanders.recordr.Core;
 import core.threebanders.recordr.R;
@@ -43,13 +44,17 @@ abstract class RecordingThread {
     private AudioRecord createAudioRecord() throws RecordingException {
         AudioRecord audioRecord;
         int source = Integer.parseInt(Core.getInstance().getCache().source());
+
         try {
             audioRecord = new AudioRecord(source, SAMPLE_RATE,
                     channels == 1 ? AudioFormat.CHANNEL_IN_MONO : AudioFormat.CHANNEL_IN_STEREO,
                     AudioFormat.ENCODING_PCM_16BIT, bufferSize * 10);
+
         } catch (Exception e) { //La VOICE_CALL dă IllegalArgumentException. Aplicația nu se oprește, rămîne
             //hanging, nu înregistrează nimic.
+            Log.d("TAG","VOICE CALL EXCEPTION" + e.getMessage());
             throw new RecordingException(e.getMessage());
+
         }
 
         if (audioRecord.getState() == AudioRecord.STATE_INITIALIZED) {

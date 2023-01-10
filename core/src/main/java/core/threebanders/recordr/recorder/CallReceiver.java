@@ -4,15 +4,18 @@ import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.media.AudioManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.telephony.TelephonyManager;
+import android.util.Log;
 
 import core.threebanders.recordr.Core;
 
 public class CallReceiver extends BroadcastReceiver {
     public static final String ARG_NUM_PHONE = "arg_num_phone";
     public static final String ARG_INCOMING = "arg_incoming";
+    public static final String BLUETOOTH_STATE = "state";
     private static boolean serviceStarted = false;
     private static ComponentName serviceName = null;
 
@@ -41,6 +44,7 @@ public class CallReceiver extends BroadcastReceiver {
                         intentService.putExtra(ARG_NUM_PHONE, incomingNumber);
                         intentService.putExtra(ARG_INCOMING, true);
 
+
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                             context.startForegroundService(intentService);
                         } else {
@@ -49,7 +53,8 @@ public class CallReceiver extends BroadcastReceiver {
 
                         serviceStarted = true;
                     }
-                } else if (state != null && state.equals(TelephonyManager.EXTRA_STATE_OFFHOOK)) {
+                } 
+                else if (state != null && state.equals(TelephonyManager.EXTRA_STATE_OFFHOOK)) {
                     boolean isEnabled = Core.getInstance().getCache().enabled();
                     if (!serviceStarted && isEnabled) {
                         Intent intentService = new Intent(context, RecorderService.class);

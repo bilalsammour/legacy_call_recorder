@@ -1,5 +1,7 @@
 package core.threebanders.recordr.recorder;
 
+import static core.threebanders.recordr.recorder.CallReceiver.BLUETOOTH_STATE;
+
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -13,6 +15,7 @@ import android.graphics.Color;
 import android.media.AudioManager;
 import android.os.Build;
 import android.os.IBinder;
+import android.util.Log;
 
 import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
@@ -146,6 +149,7 @@ public class RecorderService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         super.onStartCommand(intent, flags, startId);
 
+
         if (intent.hasExtra(CallReceiver.ARG_NUM_PHONE)) {
             receivedNumPhone = intent.getStringExtra(CallReceiver.ARG_NUM_PHONE);
         }
@@ -193,6 +197,7 @@ public class RecorderService extends Service {
             callIdentifier = getString(R.string.unknown_phone_number);
 
         try {
+
             recorder.startRecording(receivedNumPhone);
 
             if (settings.getBoolean(Const.SPEAKER_USE, false)) {
@@ -263,6 +268,10 @@ public class RecorderService extends Service {
     public void onDestroy() {
         super.onDestroy();
 
+        if(audioManager.isBluetoothScoOn()){
+            audioManager.setBluetoothScoOn(false);
+            audioManager.stopBluetoothSco();
+        }
         putSpeakerOff();
         if (!recorder.isRunning() || recorder.hasError()) {
             onDestroyCleanUp();

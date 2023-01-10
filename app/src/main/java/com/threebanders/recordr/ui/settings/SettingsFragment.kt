@@ -78,11 +78,17 @@ class SettingsFragment : PreferenceFragmentCompat() {
                 true
             }
         source?.summaryProvider =
-            Preference.SummaryProvider<ListPreference> { preference -> preference.entry }
+            Preference.SummaryProvider<ListPreference> { preference ->
+                preference.entry
+            }
         format?.summaryProvider =
-            Preference.SummaryProvider<ListPreference> { preference -> preference.entry }
+            Preference.SummaryProvider<ListPreference> { preference ->
+                preference.entry
+            }
         mode?.summaryProvider =
-            Preference.SummaryProvider<ListPreference> { preference -> preference.entry }
+            Preference.SummaryProvider<ListPreference> { preference ->
+                preference.entry
+            }
     }
 
     private fun googleAuth() {
