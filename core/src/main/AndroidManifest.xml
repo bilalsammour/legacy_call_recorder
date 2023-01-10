@@ -5,6 +5,7 @@
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
     <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT"/>
 
     <application>
 
@@ -13,7 +14,7 @@
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.PHONE_STATE" />
-                <action android:name="android.media.extra.SCO_AUDIO_STATE" />
+                <action android:name="android.media.extra.SCO_AUDIO_STATE"/>
             </intent-filter>
         </receiver>
 

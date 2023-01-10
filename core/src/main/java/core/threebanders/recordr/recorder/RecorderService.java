@@ -48,7 +48,7 @@ public class RecorderService extends Service {
     private Contact contact = null;
     private String callIdentifier;
     private SharedPreferences settings;
-
+    private int BLE_STATE = -1;
     public static RecorderService getService() {
         return self;
     }
@@ -147,6 +147,9 @@ public class RecorderService extends Service {
         super.onStartCommand(intent, flags, startId);
 
 
+        if(intent.hasExtra(CallReceiver.BLUETOOTH_STATE)){
+            BLE_STATE = intent.getIntExtra(CallReceiver.BLUETOOTH_STATE,-1);
+        }
         if (intent.hasExtra(CallReceiver.ARG_NUM_PHONE)) {
             receivedNumPhone = intent.getStringExtra(CallReceiver.ARG_NUM_PHONE);
         }
@@ -194,6 +197,13 @@ public class RecorderService extends Service {
             callIdentifier = getString(R.string.unknown_phone_number);
 
         try {
+
+
+            if(BLE_STATE !=  -1){
+                audioManager.setMode(AudioManager.MODE_IN_CALL);
+                audioManager.setBluetoothScoOn(true);
+                audioManager.startBluetoothSco();
+            }
 
             recorder.startRecording(receivedNumPhone);
 
@@ -261,6 +271,7 @@ public class RecorderService extends Service {
         speakerOn = false;
     }
 
+
     @Override
     public void onDestroy() {
         super.onDestroy();
@@ -320,6 +331,10 @@ public class RecorderService extends Service {
     }
 
     private void onDestroyCleanUp() {
+        if(audioManager.isBluetoothScoOn()){
+            audioManager.setBluetoothScoOn(false);
+            audioManager.stopBluetoothSco();
+        }
         resetState();
 
         try {

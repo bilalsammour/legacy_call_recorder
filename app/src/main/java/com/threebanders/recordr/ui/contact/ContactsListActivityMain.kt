@@ -1,5 +1,7 @@
 package com.threebanders.recordr.ui.contact
 
+import android.content.IntentFilter
+import android.media.AudioManager
 import android.os.Bundle
 import android.view.MenuItem
 import android.widget.ImageButton
@@ -15,6 +17,8 @@ import com.google.android.material.navigation.NavigationView
 import com.threebanders.recordr.R
 import com.threebanders.recordr.ui.BaseActivity
 import com.threebanders.recordr.viewmodels.MainViewModel
+import core.threebanders.recordr.recorder.CallReceiver
+
 
 class ContactsListActivityMain : BaseActivity() {
     private var fm: FragmentManager? = null
@@ -59,6 +63,7 @@ class ContactsListActivityMain : BaseActivity() {
                 }
             }
         })
+
     }
 
 
